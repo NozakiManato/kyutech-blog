@@ -1,5 +1,4 @@
 import Header from "@/components/header";
-import MainNav from "@/components/main-nav";
 import React, { ReactNode } from "react";
 
 type MarketingLayoutProps = {
