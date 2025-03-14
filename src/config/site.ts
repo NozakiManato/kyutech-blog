@@ -2,7 +2,7 @@ import { SiteConfig } from "@/types";
 
 export const siteConfig: SiteConfig = {
   name: "Kyutech Blog",
-  description: "",
+  description: "4研が使用できるWebアプリケーションです。",
   url: "http://localhost:3000",
   ogImage: "",
   links: {

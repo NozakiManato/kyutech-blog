@@ -1,4 +1,6 @@
-import Header from "@/components/header";
+import Footer from "@/components/footer/footer";
+import Header from "@/components/header/header";
+import { marketingConfig } from "@/config/marketing";
 import React, { ReactNode } from "react";
 
 type MarketingLayoutProps = {
@@ -8,8 +10,9 @@ type MarketingLayoutProps = {
 const MarketingLayout = ({ children }: MarketingLayoutProps) => {
   return (
     <>
-      <Header />
+      <Header items={marketingConfig.mainNav} />
       <main>{children}</main>
+      <Footer />
     </>
   );
 };

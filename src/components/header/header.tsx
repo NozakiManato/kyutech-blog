@@ -1,14 +1,18 @@
 import { cn } from "@/lib/utils";
-import React from "react";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "../ui/button";
 import Link from "next/link";
 import MainNav from "./main-nav";
+import { NavItem } from "@/types";
 
-const Header = () => {
+interface MainNavProps {
+  items: NavItem[];
+}
+
+const Header = ({ items }: MainNavProps) => {
   return (
     <header className="container z-40 bg-background">
       <div className="h-20 py-6 flex items-center justify-between">
-        <MainNav />
+        <MainNav items={items} />
         <nav>
           <Link
             href={"/login"}
