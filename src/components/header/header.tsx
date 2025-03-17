@@ -15,7 +15,7 @@ const Header = ({ items }: MainNavProps) => {
         <MainNav items={items} />
         <nav>
           <Link
-            href={"/login"}
+            href={"/sign-in"}
             className={cn(buttonVariants({ variant: "secondary", size: "sm" }))}
           >
             ログイン
