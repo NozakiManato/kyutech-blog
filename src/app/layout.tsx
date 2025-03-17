@@ -3,6 +3,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const fontNotoSansJP = Noto_Sans_JP({ subsets: ["latin"] });
 
@@ -35,16 +36,18 @@ const RootLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <html lang="ja">
-      <body
-        className={cn(
-          "bg-background antialiased min-h-screen",
-          fontNotoSansJP.className
-        )}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="ja">
+        <body
+          className={cn(
+            "bg-background antialiased min-h-screen",
+            fontNotoSansJP.className
+          )}
+        >
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 };
 
