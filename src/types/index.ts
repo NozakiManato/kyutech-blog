@@ -1,3 +1,4 @@
+import { HandleOAuthCallbackParams } from "@clerk/types";
 import { ReactNode } from "react";
 
 export type NavItem = {
@@ -26,4 +27,8 @@ export type SiteConfig = {
 export type MarketingConfig = {
   mainNav: NavItem[];
   techstack: TechStack[];
+};
+
+export type SSOCallbackPageProps = {
+  searchParams: HandleOAuthCallbackParams;
 };
