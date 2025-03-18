@@ -3,25 +3,26 @@ import { saveUserProfile } from "@/lib/actions";
 import { authFormSchema } from "@/lib/validations/auth";
 import { ProfileFormProps } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@radix-ui/react-select";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import {
+  Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "../ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const ProfileForm = ({ userId, defaultValues }: ProfileFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);

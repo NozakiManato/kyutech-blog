@@ -4,7 +4,8 @@ import { EditProfileProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-const EditProfilePage = async ({ params }: EditProfileProps) => {
+const EditProfilePage = async (props: EditProfileProps) => {
+  const params = await props.params;
   const { userId: currentUserId } = await auth();
 
   if (!currentUserId) {
