@@ -40,6 +40,12 @@ const IndexPage = () => {
             >
               Github
             </Link>
+            <Link
+              href="/profile"
+              className={cn(buttonVariants({ size: "lg", variant: "default" }))}
+            >
+              プロフィールを見る
+            </Link>
           </div>
         </div>
       </section>
