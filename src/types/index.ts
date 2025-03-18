@@ -1,4 +1,3 @@
-import { HandleOAuthCallbackParams } from "@clerk/types";
 import { ReactNode } from "react";
 
 export type NavItem = {
@@ -29,6 +28,25 @@ export type MarketingConfig = {
   techstack: TechStack[];
 };
 
-export type SSOCallbackPageProps = {
-  searchParams: HandleOAuthCallbackParams;
+export type AdditionalInfoFormProps = {
+  userId: string;
+};
+
+export type SaveUserProfileProps = {
+  userId: string;
+  researchLab: string;
+  academicYear: string;
+};
+
+export type EditProfileProps = {
+  params: {
+    userId: string;
+  };
+};
+export type ProfileFormProps = {
+  userId: string;
+  defaultValues: {
+    researchLab: string;
+    academicYear: string;
+  };
 };
