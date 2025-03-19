@@ -1,4 +1,4 @@
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { marketingConfig } from "@/config/marketing";
 import { siteConfig } from "@/config/site";
@@ -27,7 +27,7 @@ const IndexPage = () => {
           </p>
           <div className="space-x-4">
             <Link
-              href={"/login"}
+              href={"/sign-in"}
               className={cn(buttonVariants({ size: "lg" }))}
             >
               始める
@@ -40,12 +40,9 @@ const IndexPage = () => {
             >
               Github
             </Link>
-            <Link
-              href="/profile"
-              className={cn(buttonVariants({ size: "lg", variant: "default" }))}
-            >
-              プロフィールを見る
-            </Link>
+            <Button type="button" variant="ghost" size="lg">
+              <Link href="/profile">プロフィールを見る</Link>
+            </Button>
           </div>
         </div>
       </section>
