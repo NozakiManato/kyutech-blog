@@ -97,3 +97,7 @@ export type DashBoardHeaderProps = {
 export type PostItemProps = {
   post: Pick<Post, "id" | "title" | "published" | "createdAt">;
 };
+
+export type PostOperationsProps = {
+  post: Pick<Post, "id" | "title">;
+};

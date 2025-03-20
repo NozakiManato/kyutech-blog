@@ -2,6 +2,7 @@ import { PostItemProps } from "@/types";
 import { format } from "date-fns/format";
 import Link from "next/link";
 import React from "react";
+import PostOperations from "./post-operations";
 
 const PostItem = ({ post }: PostItemProps) => {
   return (
@@ -19,6 +20,7 @@ const PostItem = ({ post }: PostItemProps) => {
           </p>
         </div>
       </div>
+      <PostOperations post={post} />
     </div>
   );
 };
