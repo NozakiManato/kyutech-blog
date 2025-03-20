@@ -4,8 +4,8 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer>
-      <div className="container py-10 md:py-0 md:h-24">
+    <footer className="absolute bottom-0">
+      <div className="container py-10 md:py-0 md:h-20">
         <p className="text-center text-sm md:text-left">
           Built by {""}
           <Link

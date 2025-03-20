@@ -11,7 +11,7 @@ interface MainNavProps {
 
 const Header = ({ items }: MainNavProps) => {
   return (
-    <header className="container z-40 bg-background">
+    <header className="sticky top-0 border-b container z-40 bg-background">
       <div className="h-20 py-6 flex items-center justify-between">
         <MainNav items={items} />
         <div>

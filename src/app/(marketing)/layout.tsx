@@ -1,11 +1,7 @@
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import { marketingConfig } from "@/config/marketing";
-import React, { ReactNode } from "react";
-
-type MarketingLayoutProps = {
-  children: ReactNode;
-};
+import { MarketingLayoutProps } from "@/types";
 
 const MarketingLayout = ({ children }: MarketingLayoutProps) => {
   return (

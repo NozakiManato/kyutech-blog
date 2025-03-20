@@ -3,6 +3,7 @@ import { NavItem } from "@/types";
 import Link from "next/link";
 import React, { ReactNode } from "react";
 import HamburgerMenu from "./hamburger-menu";
+import Image from "next/image";
 
 interface MainNavProps {
   items: NavItem[];
@@ -13,15 +14,17 @@ const MainNav = ({ items }: MainNavProps) => {
   return (
     <div className=" flex items-center md:gap-10">
       <Link href={"/"} className="hidden md:flex items-center">
-        <img src="/icon.svg" alt="Icon" width="50" height="50" />
-        <span className="font-bold hidden md:inline-block pl-1">LocaLabo</span>
+        <Image src="/icon.svg" alt="Icon" width="50" height="50" />
+        <span className="font-bold hidden md:inline-block pl-1 md:text-4xl">
+          LocaLabo
+        </span>
       </Link>
       <nav className="md:flex gap-6 hidden">
         {items?.map((item, index) => (
           <Link
             key={index}
             href={item.href}
-            className="text-lg sm:text-sm font-medium hover:text-foreground/80"
+            className="sm:text-sm font-medium hover:text-foreground/80 md:text-lg"
           >
             {item.title}
           </Link>

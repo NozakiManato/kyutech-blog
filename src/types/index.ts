@@ -1,3 +1,6 @@
+import { Icon } from "@/components/icons/icon";
+import { Post } from "@prisma/client";
+import React from "react";
 import { ReactNode } from "react";
 
 export type NavItem = {
@@ -49,4 +52,48 @@ export type ProfileFormProps = {
     researchLab: string;
     academicYear: string;
   };
+};
+export type MainNavProps = {
+  items: NavItem[];
+};
+
+export type MarketingLayoutProps = {
+  children: ReactNode;
+};
+
+export type SidebarNavItem = {
+  title: string;
+  disabled?: boolean;
+  external?: boolean;
+  icon?: keyof typeof Icon;
+} & (
+  | {
+      href: string;
+      items?: never;
+    }
+  | {
+      href?: string;
+      items: NavItem[];
+    }
+);
+
+export type DashboardConfig = {
+  mainNav: NavItem[];
+  sidebarNav: SidebarNavItem[];
+};
+
+export type DashboardNavProps = {
+  items: SidebarNavItem[];
+};
+
+export type DashBoardShellProps = React.HTMLAttributes<HTMLDivElement>;
+
+export type DashBoardHeaderProps = {
+  heading: string;
+  text?: string;
+  children: React.ReactNode;
+};
+
+export type PostItemProps = {
+  post: Pick<Post, "id" | "title" | "published" | "createdAt">;
 };
