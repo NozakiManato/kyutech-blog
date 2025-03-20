@@ -19,10 +19,10 @@ const DashboardNav = ({ items }: DashboardNavProps) => {
           <Link href={item.href!} key={index}>
             <span
               className={`flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent text-accent-foreground ${
-                path === item.href
-              } ? "bg-accent": "bg-transparent" `}
+                path === item.href ? "bg-accent" : "bg-transparent"
+              }`}
             >
-              <Icon className="mr-2 h-4 w-4" />
+              <Icon className="mr-2" />
               {item.title}
             </span>
           </Link>
