@@ -46,9 +46,13 @@ export async function PostCard({ post }: PostCardProps) {
         </div>
         {post.author && (
           <CardDescription>
-            投稿者:{post.author.name} {timeAgo}
-            <br />
-            {post.author.researchLab} {post.author.academicYear}
+            <div className="flex justify-between">
+              <div>
+                投稿者:{post.author.name}({post.author.researchLab}{" "}
+                {post.author.academicYear})
+              </div>
+              <div>{timeAgo}</div>
+            </div>
           </CardDescription>
         )}
       </CardHeader>
