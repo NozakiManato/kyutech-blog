@@ -109,7 +109,6 @@ export type PostCardProps = {
       academicYear: string;
     };
   };
-  showAuthor?: boolean;
 };
 
 export type PostOperationsProps = {

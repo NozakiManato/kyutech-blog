@@ -11,8 +11,11 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PostCardProps } from "@/types";
+import PostOperations from "../dashboard/post-operations";
+import { requireAuth } from "@/lib/auth";
 
-export function PostCard({ post, showAuthor = true }: PostCardProps) {
+export async function PostCard({ post }: PostCardProps) {
+  const { profile } = await requireAuth();
   const contentText = post.content?.text || "";
   const truncatedContent =
     contentText.length > 150
@@ -25,18 +28,23 @@ export function PostCard({ post, showAuthor = true }: PostCardProps) {
     locale: ja,
   });
 
+  const isAuthor = profile?.id == post.author?.id;
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="text-xl">{post.title}</CardTitle>
-          {!post.published && (
-            <Badge variant="outline" className="ml-2">
-              下書き
-            </Badge>
-          )}
+          <div>
+            {!post.published && (
+              <Badge variant="outline" className="ml-2">
+                下書き
+              </Badge>
+            )}
+          </div>
+          <div>{isAuthor && <PostOperations post={post} />}</div>
         </div>
-        {showAuthor && post.author && (
+        {post.author && (
           <CardDescription>
             投稿者:{post.author.name} {timeAgo}
             <br />
@@ -51,7 +59,7 @@ export function PostCard({ post, showAuthor = true }: PostCardProps) {
       </CardContent>
       <CardFooter>
         <Link
-          href={`/posts/${post.id}`}
+          href={`/blog/${post.id}`}
           className="text-sm text-primary hover:underline"
         >
           続きを読む

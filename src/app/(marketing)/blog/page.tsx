@@ -26,7 +26,7 @@ const BlogPage = async () => {
       {posts?.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-muted-foreground mb-4">まだ投稿がありません</p>
-          <Link href="/posts/create">
+          <Link href="/blog/create">
             <Button>最初の投稿を作成</Button>
           </Link>
         </div>
