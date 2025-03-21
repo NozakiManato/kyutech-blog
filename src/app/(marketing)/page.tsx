@@ -61,9 +61,9 @@ const IndexPage = () => {
 
         <Card className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           {marketingConfig.techstack.map((item, index) => (
-            <Link href={item.href} key={index}>
-              <CardContent>
-                <div className="flex items-center space-x-4 rounded-md border p-4 hover:bg-gray-200">
+            <CardContent key={index}>
+              <Link href={item.href}>
+                <div className="flex h-full items-center space-x-4 rounded-md border p-4 hover:bg-gray-200">
                   {item.svg}
                   <div className="flex-1 space-y-1">
                     <p className="text-sm font-medium leading-none">
@@ -74,8 +74,8 @@ const IndexPage = () => {
                     </p>
                   </div>
                 </div>
-              </CardContent>
-            </Link>
+              </Link>
+            </CardContent>
           ))}
         </Card>
       </section>
