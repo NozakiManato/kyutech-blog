@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { saveUserProfile } from "@/lib/actions";
+import { saveUserProfileAction } from "@/lib/actions";
 import {
   Form,
   FormControl,
@@ -15,14 +15,20 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Select, SelectContent, SelectItem, SelectValue } from "../ui/select";
-import { SelectTrigger } from "@radix-ui/react-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Button } from "../ui/button";
+import { useUser } from "@clerk/nextjs";
 
 const AdditionalInfoForm = ({ userId }: AdditionalInfoFormProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { user } = useUser();
 
   const form = useForm<z.infer<typeof authFormSchema>>({
     resolver: zodResolver(authFormSchema),
@@ -36,8 +42,9 @@ const AdditionalInfoForm = ({ userId }: AdditionalInfoFormProps) => {
     try {
       setIsSubmitting(true);
 
-      await saveUserProfile({
+      await saveUserProfileAction({
         userId,
+        name: `${user?.lastName}${user?.firstName}` || "",
         researchLab: values.researchLab,
         academicYear: values.academicYear,
       });
@@ -72,10 +79,10 @@ const AdditionalInfoForm = ({ userId }: AdditionalInfoFormProps) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="serikawa">芹川研究室</SelectItem>
-                    <SelectItem value="zhang">張研究室</SelectItem>
-                    <SelectItem value="yamawaki">山脇研究室</SelectItem>
-                    <SelectItem value="yang">楊研究室</SelectItem>
+                    <SelectItem value="芹川研究室">芹川研究室</SelectItem>
+                    <SelectItem value="張研究室">張研究室</SelectItem>
+                    <SelectItem value="山脇研究室">山脇研究室</SelectItem>
+                    <SelectItem value="楊研究室">楊研究室</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -99,12 +106,12 @@ const AdditionalInfoForm = ({ userId }: AdditionalInfoFormProps) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="b4">B4</SelectItem>
-                    <SelectItem value="m1">M1</SelectItem>
-                    <SelectItem value="m2">M2</SelectItem>
-                    <SelectItem value="d1">D1</SelectItem>
-                    <SelectItem value="d2">D2</SelectItem>
-                    <SelectItem value="teacher">先生</SelectItem>
+                    <SelectItem value="B4">B4</SelectItem>
+                    <SelectItem value="M1">M1</SelectItem>
+                    <SelectItem value="M2">M2</SelectItem>
+                    <SelectItem value="D1">D1</SelectItem>
+                    <SelectItem value="D2">D2</SelectItem>
+                    <SelectItem value="先生">先生</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
