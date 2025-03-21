@@ -4,7 +4,7 @@ import { buttonVariants } from "../ui/button";
 import { useState } from "react";
 import { Icon } from "../icons/icon";
 
-const PostCreateButton = () => {
+const PostButton = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {};
@@ -27,4 +27,4 @@ const PostCreateButton = () => {
   );
 };
 
-export default PostCreateButton;
+export default PostButton;
