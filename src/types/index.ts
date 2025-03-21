@@ -37,6 +37,7 @@ export type AdditionalInfoFormProps = {
 
 export type SaveUserProfileProps = {
   userId: string;
+  name: string;
   researchLab: string;
   academicYear: string;
 };
@@ -57,7 +58,7 @@ export type MainNavProps = {
   items: NavItem[];
 };
 
-export type MarketingLayoutProps = {
+export type PageLayoutProps = {
   children: ReactNode;
 };
 
@@ -94,10 +95,30 @@ export type DashBoardHeaderProps = {
   children: React.ReactNode;
 };
 
-export type PostItemProps = {
-  post: Pick<Post, "id" | "title" | "published" | "createdAt">;
+export type PostCardProps = {
+  post: {
+    id: string;
+    title: string;
+    content: any;
+    published: boolean;
+    createdAt: Date;
+    author?: {
+      id: string;
+      name: string;
+      researchLab: string;
+      academicYear: string;
+    };
+  };
+  showAuthor?: boolean;
 };
 
 export type PostOperationsProps = {
   post: Pick<Post, "id" | "title">;
+};
+
+export type DataProps = {
+  title: string;
+  content: string;
+  published: boolean;
+  authorId: string;
 };

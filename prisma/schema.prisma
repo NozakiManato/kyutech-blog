@@ -10,6 +10,7 @@ datasource db {
 model UserProfile {
   id           String   @id @default(cuid())
   userId       String   @unique
+  name         String
   researchLab  String
   academicYear String
   createdAt    DateTime @default(now())

@@ -19,10 +19,12 @@ export const getUserProfile = async (userId: string) => {
 
 export const createUserProfile = async ({
   userId,
+  name,
   researchLab,
   academicYear,
 }: {
   userId: string;
+  name: string;
   researchLab: string;
   academicYear: string;
 }) => {
@@ -30,6 +32,7 @@ export const createUserProfile = async ({
     return await prisma.userProfile.create({
       data: {
         userId,
+        name,
         researchLab,
         academicYear,
       },
@@ -43,6 +46,7 @@ export const createUserProfile = async ({
 export const updateUserProfile = async (
   userId: string,
   data: {
+    name?: string;
     researchLab: string;
     academicYear: string;
   }
