@@ -24,7 +24,9 @@ const PostOperations = ({ post }: PostOperationsProps) => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-destructive">削除</DropdownMenuItem>
+          <DropdownMenuItem className="text-destructive focus:text-destructive">
+            削除
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>

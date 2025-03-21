@@ -2,10 +2,10 @@ import DashboardNav from "@/components/dashboard/dashboard-nav";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import { dashboardConfig } from "@/config/dashboard";
-import { MarketingLayoutProps } from "@/types";
+import { PageLayoutProps } from "@/types";
 import React from "react";
 
-const MarketingLayout = ({ children }: MarketingLayoutProps) => {
+const DashboardLayout = ({ children }: PageLayoutProps) => {
   return (
     <>
       <Header items={dashboardConfig.mainNav} />
@@ -22,4 +22,4 @@ const MarketingLayout = ({ children }: MarketingLayoutProps) => {
   );
 };
 
-export default MarketingLayout;
+export default DashboardLayout;

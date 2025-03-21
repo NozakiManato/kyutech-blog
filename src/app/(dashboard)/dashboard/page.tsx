@@ -1,8 +1,8 @@
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import DashBoardShell from "@/components/dashboard/dashboard-shell";
-import PostCreateButton from "@/components/dashboard/post-create-button";
+import PostButton from "@/components/dashboard/post-button";
 import PostItem from "@/components/dashboard/post-item";
-import { getPostsById } from "@/lib/prisma/post";
+import { getUserPosts } from "@/lib/prisma/post";
 import { EditProfileProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -16,12 +16,12 @@ const DashboardPage = async (props: EditProfileProps) => {
     redirect("/sign-in");
   }
 
-  const posts = await getPostsById(params.userId);
+  const posts = await getUserPosts(params.userId);
 
   return (
     <DashBoardShell>
       <DashboardHeader heading="記事投稿" text="記事の投稿と管理">
-        <PostCreateButton />
+        <PostButton />
       </DashboardHeader>
       <div>
         {posts?.length ? (
