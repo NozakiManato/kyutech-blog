@@ -1,5 +1,5 @@
 "use client";
-import { saveUserProfile } from "@/lib/actions";
+import { saveUserProfileAction } from "@/lib/actions";
 import { authFormSchema } from "@/lib/validations/auth";
 import { ProfileFormProps } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,7 +36,7 @@ const ProfileForm = ({ userId, defaultValues }: ProfileFormProps) => {
     try {
       setIsSubmitting(true);
 
-      await saveUserProfile({
+      await saveUserProfileAction({
         userId,
         researchLab: values.researchLab,
         academicYear: values.academicYear,
