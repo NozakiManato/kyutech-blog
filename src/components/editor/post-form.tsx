@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -82,7 +82,7 @@ export function PostForm({ authorId, post, isEditing = false }: PostFormProps) {
         const result = await updatePostAction(formData);
 
         if (result.success) {
-          router.push(`/posts/${post.id}`);
+          router.push(`/blog`);
         } else {
           console.error("Error updating post:", result.error);
           form.setError("root", {
