@@ -3,11 +3,13 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 import { useState } from "react";
 import { Icon } from "../icons/icon";
+import { z } from "zod";
+import { formSchema } from "@/lib/validations/post";
 
 const PostButton = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = async () => {};
+  const handleClick = async (values: z.infer<typeof formSchema>) => {};
 
   return (
     <button

@@ -1,5 +1,6 @@
 import { PostCard } from "@/components/blog/post-card";
-import PostButton from "@/components/dashboard/post-button";
+
+import { Icon } from "@/components/icons/icon";
 import { Button } from "@/components/ui/button";
 import { getAllPosts } from "@/lib/prisma/post";
 import Link from "next/link";
@@ -19,14 +20,19 @@ const BlogPage = async () => {
             週報やゼミの資料、研究のことなんでも投稿してください。
           </p>
         </div>
-        <PostButton />
+        <Link href={"/posts/create"}>
+          <Button>
+            <Icon.add />
+            新しい投稿
+          </Button>
+        </Link>
       </div>
       <hr className="my-8" />
 
       {posts?.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-muted-foreground mb-4">まだ投稿がありません</p>
-          <Link href="/blog/create">
+          <Link href="/posts/create">
             <Button>最初の投稿を作成</Button>
           </Link>
         </div>

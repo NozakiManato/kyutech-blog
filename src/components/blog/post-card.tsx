@@ -16,11 +16,35 @@ import { requireAuth } from "@/lib/auth";
 
 export async function PostCard({ post }: PostCardProps) {
   const { profile } = await requireAuth();
-  const contentText = post.content?.text || "";
+
+  const getPlainTextFromEditorJS = (content: any): string => {
+    if (!content || !content.blocks) {
+      return content?.text || "";
+    }
+
+    // 最初の段落ブロックを探す
+    const paragraphBlock = content.blocks.find(
+      (block: any) => block.type === "paragraph" || block.type === "text"
+    );
+
+    if (paragraphBlock) {
+      return paragraphBlock.data.text || "";
+    }
+
+    // 段落ブロックがない場合は最初のブロックのテキストを使用
+    const firstBlock = content.blocks[0];
+    if (firstBlock && firstBlock.data && firstBlock.data.text) {
+      return firstBlock.data.text;
+    }
+
+    // テキストが見つからない場合は空文字列を返す
+    return "";
+  };
+  const contentText = getPlainTextFromEditorJS(post.content);
   const truncatedContent =
     contentText.length > 150
       ? `${contentText.substring(0, 150)}...`
-      : post.content;
+      : contentText;
 
   // 投稿日時を「〜前」の形式で表示
   const timeAgo = formatDistanceToNow(new Date(post.createdAt), {
@@ -63,7 +87,7 @@ export async function PostCard({ post }: PostCardProps) {
       </CardContent>
       <CardFooter>
         <Link
-          href={`/blog/${post.id}`}
+          href={`/posts/${post.id}`}
           className="text-sm text-primary hover:underline"
         >
           続きを読む

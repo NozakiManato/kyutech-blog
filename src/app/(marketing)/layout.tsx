@@ -1,9 +1,9 @@
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import { marketingConfig } from "@/config/marketing";
-import { MarketingLayoutProps } from "@/types";
+import { PageLayoutProps } from "@/types";
 
-const MarketingLayout = ({ children }: MarketingLayoutProps) => {
+const MarketingLayout = ({ children }: PageLayoutProps) => {
   return (
     <>
       <Header items={marketingConfig.mainNav} />

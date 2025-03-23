@@ -117,7 +117,24 @@ export type PostOperationsProps = {
 
 export type DataProps = {
   title: string;
-  content: string;
+  content: any;
   published: boolean;
   authorId: string;
+};
+
+export type PostFormProps = {
+  authorId: string;
+  post?: {
+    id: string;
+    title: string;
+    content: any;
+    published: boolean;
+  };
+  isEditing?: boolean;
+};
+
+export type EditPostPageProps = {
+  params: {
+    postId: string;
+  };
 };
