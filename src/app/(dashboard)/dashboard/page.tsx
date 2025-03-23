@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 const DashboardPage = async (props: EditProfileProps) => {
-  const params = props.params;
+  const params = (await props.params);
   const { userId: currentUserId } = await auth();
 
   if (!currentUserId) {

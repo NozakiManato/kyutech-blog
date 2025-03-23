@@ -4,7 +4,8 @@ import { getPostById } from "@/lib/prisma/post";
 import { EditPostPageProps } from "@/types";
 import { notFound, redirect } from "next/navigation";
 
-const EditPostPage = async ({ params }: EditPostPageProps) => {
+const EditPostPage = async (props: EditPostPageProps) => {
+  const params = await props.params;
   const { profile } = await requireAuth();
 
   const post = await getPostById(params.postId);
