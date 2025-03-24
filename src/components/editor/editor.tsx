@@ -9,8 +9,10 @@ interface EditorJSOptions {
   tools?: Record<string, any>;
   data?: any;
   onChange?: (api: any, data: any) => void;
+  onReady?: any;
   autofocus?: boolean;
   placeholder?: string;
+  i18n?: Record<string, any>;
 }
 
 interface EditorProps {
@@ -57,7 +59,7 @@ export function Editor({
         const Embed = (await import("@editorjs/embed")).default;
         const Table = (await import("@editorjs/table")).default;
         const Code = (await import("@editorjs/code")).default;
-        const InlineCode = (await import("@editorjs/raw")).default;
+        const DragDrop = (await import("editorjs-drag-drop")).default;
         const Marker = (await import("@editorjs/marker")).default;
 
         // エディタが既に存在する場合は破棄
@@ -101,9 +103,7 @@ export function Editor({
             code: {
               class: Code,
             },
-            inlineCode: {
-              class: InlineCode,
-            },
+
             marker: {
               class: Marker,
             },
@@ -122,8 +122,77 @@ export function Editor({
             const content = await api.saver.save();
             onChange(content);
           },
+          onReady: () => {
+            new DragDrop(editorRef.current);
+          },
           autofocus: true,
           placeholder,
+          i18n: {
+            messages: {
+              ui: {
+                blockTunes: {
+                  toggler: {
+                    "Click to tune": "クリックして調整",
+                    "or drag to move": "またはドラッグして移動",
+                  },
+                },
+                inlineToolbar: {
+                  converter: {
+                    "Convert to": "変換",
+                  },
+                },
+                toolbar: {
+                  toolbox: {
+                    Add: "追加",
+                  },
+                },
+              },
+              toolNames: {
+                Text: "テキスト",
+                Heading: "見出し",
+                "Unordered List": "リスト",
+                Warning: "警告",
+                "Ordered List": "順序付きリスト",
+                Checklist: "チェックリスト",
+                Quote: "引用",
+                Code: "コード",
+                Delimiter: "区切り線",
+                Table: "表",
+                Link: "リンク",
+                Marker: "マーカー",
+                Bold: "太字",
+                Italic: "斜体",
+                InlineCode: "インラインコード",
+              },
+              tools: {
+                warning: {
+                  Title: "タイトル",
+                  Message: "メッセージ",
+                },
+                link: {
+                  "Add a link": "リンクを追加",
+                },
+                stub: {
+                  "The block can not be displayed correctly.":
+                    "このブロックは正しく表示できません。",
+                },
+              },
+              blockTunes: {
+                converter: {
+                  "Convert to": "変換",
+                },
+                delete: {
+                  Delete: "削除",
+                },
+                moveUp: {
+                  "Move up": "上げる",
+                },
+                moveDown: {
+                  "Move down": "下げる",
+                },
+              },
+            },
+          },
         };
 
         // エディタの初期化
@@ -150,16 +219,8 @@ export function Editor({
 
   // エディタのコンテナ要素
   return (
-    <div className="relative">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/50 z-10">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      )}
-      <div
-        id={editorId}
-        className="prose prose-sm sm:prose max-w-none dark:prose-invert min-h-[200px]"
-      />
+    <div>
+      <div id={editorId} className="min-h-[500px]" />
     </div>
   );
 }

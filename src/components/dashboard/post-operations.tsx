@@ -44,7 +44,7 @@ const PostOperations = ({ post }: PostOperationsProps) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem>
-            <Link href={`/editor/${post.id}`} className="w-full">
+            <Link href={`/posts/${post.id}`} className="w-full">
               編集
             </Link>
           </DropdownMenuItem>

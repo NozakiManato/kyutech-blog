@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { PostCardProps } from "@/types";
 import PostOperations from "../dashboard/post-operations";
 import { requireAuth } from "@/lib/auth";
+import { PostContent } from "../editor/post-content";
 
 export async function PostCard({ post }: PostCardProps) {
   const { profile } = await requireAuth();
@@ -81,18 +82,10 @@ export async function PostCard({ post }: PostCardProps) {
         )}
       </CardHeader>
       <CardContent className="flex-grow">
-        <p className="text-muted-foreground whitespace-pre-line">
-          {truncatedContent}
-        </p>
+        <div>
+          <PostContent content={post.content} />
+        </div>
       </CardContent>
-      <CardFooter>
-        <Link
-          href={`/posts/${post.id}`}
-          className="text-sm text-primary hover:underline"
-        >
-          続きを読む
-        </Link>
-      </CardFooter>
     </Card>
   );
 }
