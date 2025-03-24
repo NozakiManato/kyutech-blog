@@ -28,45 +28,140 @@ export const saveUserProfileAction = async ({
   }
 };
 
-export const createPostAction = async (formData: FormData) => {
+export async function createPostAction(formData: FormData) {
   try {
     const title = formData.get("title") as string;
-    const content = formData.get("content") as string;
+    const contentStr = formData.get("content") as string;
     const published = formData.get("published") === "true";
     const authorId = formData.get("authorId") as string;
 
-    if (!title || !content || !authorId) {
+    if (!title || !contentStr || !authorId) {
       return { success: false, error: "必須フィールドが不足しています" };
     }
-    await createPost({ title, content, published, authorId });
 
-    revalidatePath("/dashboard");
+    // 文字列をJSONオブジェクトに変換
+    let content;
+    try {
+      content = JSON.parse(contentStr);
+
+      // EditorJSのデータ構造が不完全な場合の対応
+      if (!content.blocks && !content.time) {
+        // 単純なテキストとして扱う
+        content = {
+          blocks: [
+            {
+              type: "paragraph",
+              data: {
+                text: contentStr,
+              },
+            },
+          ],
+          time: new Date().getTime(),
+          version: "2.22.2",
+        };
+      }
+
+      // コンソールに保存するデータを出力（デバッグ用）
+      console.log("Saving content:", content);
+    } catch (e) {
+      console.error("Error parsing JSON:", e);
+      // JSONパースに失敗した場合は単純なテキストとして扱う
+      content = {
+        blocks: [
+          {
+            type: "paragraph",
+            data: {
+              text: contentStr,
+            },
+          },
+        ],
+        time: new Date().getTime(),
+        version: "2.22.2",
+      };
+    }
+
+    await createPost({
+      title,
+      content,
+      published,
+      authorId,
+    });
+
+    revalidatePath("/posts");
     return { success: true };
   } catch (error) {
-    console.error("Error createing post:", error);
+    console.error("Error creating post:", error);
     return { success: false, error };
   }
-};
+}
 
-export const updatePostAction = async (formData: FormData) => {
+// 投稿の更新アクション
+export async function updatePostAction(formData: FormData) {
   try {
     const id = formData.get("id") as string;
     const title = formData.get("title") as string;
-    const content = formData.get("content") as string;
+    const contentStr = formData.get("content") as string;
     const published = formData.get("published") === "true";
 
-    if (!title || !content || !id) {
+    if (!id || !title || !contentStr) {
       return { success: false, error: "必須フィールドが不足しています" };
     }
-    await updatePost(id, { title, content, published });
 
-    revalidatePath("/dashboard");
+    // 文字列をJSONオブジェクトに変換
+    let content;
+    try {
+      content = JSON.parse(contentStr);
+
+      // EditorJSのデータ構造が不完全な場合の対応
+      if (!content.blocks && !content.time) {
+        // 単純なテキストとして扱う
+        content = {
+          blocks: [
+            {
+              type: "paragraph",
+              data: {
+                text: contentStr,
+              },
+            },
+          ],
+          time: new Date().getTime(),
+          version: "2.22.2",
+        };
+      }
+
+      // コンソールに保存するデータを出力（デバッグ用）
+      console.log("Updating content:", content);
+    } catch (e) {
+      console.error("Error parsing JSON:", e);
+      // JSONパースに失敗した場合は単純なテキストとして扱う
+      content = {
+        blocks: [
+          {
+            type: "paragraph",
+            data: {
+              text: contentStr,
+            },
+          },
+        ],
+        time: new Date().getTime(),
+        version: "2.22.2",
+      };
+    }
+
+    await updatePost(id, {
+      title,
+      content,
+      published,
+    });
+
+    revalidatePath(`/posts/${id}`);
+    revalidatePath("/posts");
     return { success: true };
   } catch (error) {
-    console.error("Error createing post:", error);
+    console.error("Error updating post:", error);
     return { success: false, error };
   }
-};
+}
 
 export const deletePostAction = async (formData: FormData) => {
   try {
