@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 const DashboardPage = async (props: EditProfileProps) => {
-  const params = (await props.params);
+  const params = await props.params;
   const { userId: currentUserId } = await auth();
 
   if (!currentUserId) {
@@ -24,7 +24,7 @@ const DashboardPage = async (props: EditProfileProps) => {
   return (
     <DashBoardShell>
       <DashboardHeader heading="記事投稿" text="記事の投稿と管理">
-        <Link href={"/post/create"}>
+        <Link href={"/posts/create"}>
           <Button>
             <Icon.add />
             新しい投稿

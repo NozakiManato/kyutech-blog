@@ -7,12 +7,8 @@ export const marketingConfig: MarketingConfig = {
       href: "#features",
     },
     {
-      title: "ブログ",
+      title: "ブログ📚",
       href: "/blog",
-    },
-    {
-      title: "価格",
-      href: "/pricing",
     },
   ],
   techstack: [

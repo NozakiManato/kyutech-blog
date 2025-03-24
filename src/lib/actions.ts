@@ -87,7 +87,7 @@ export async function createPostAction(formData: FormData) {
       authorId,
     });
 
-    revalidatePath("/posts");
+    revalidatePath("/blog");
     return { success: true };
   } catch (error) {
     console.error("Error creating post:", error);
@@ -155,7 +155,7 @@ export async function updatePostAction(formData: FormData) {
     });
 
     revalidatePath(`/posts/${id}`);
-    revalidatePath("/posts");
+    revalidatePath("/blog");
     return { success: true };
   } catch (error) {
     console.error("Error updating post:", error);

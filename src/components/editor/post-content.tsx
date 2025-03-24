@@ -21,14 +21,14 @@ export function PostContent({ content }: PostContentProps) {
         // 各ブロックをHTMLに変換
         content.blocks.forEach((block: any) => {
           const blockElement = document.createElement("div");
-          blockElement.className = "mb-4";
+          blockElement.className = "mb-1";
 
           switch (block.type) {
             case "header":
               const headerLevel = block.data.level;
               const headerTag = document.createElement(`h${headerLevel}`);
               headerTag.innerHTML = block.data.text;
-              headerTag.className = "font-bold mt-6 mb-2";
+              headerTag.className = "font-bold mt-6 mb-1";
               if (headerLevel === 2) headerTag.className += " text-2xl";
               if (headerLevel === 3) headerTag.className += " text-xl";
               if (headerLevel === 4) headerTag.className += " text-lg";
@@ -38,7 +38,7 @@ export function PostContent({ content }: PostContentProps) {
             case "paragraph":
               const p = document.createElement("p");
               p.innerHTML = block.data.text;
-              p.className = "mb-4";
+              p.className = "mb-1";
               blockElement.appendChild(p);
               break;
 
@@ -61,7 +61,8 @@ export function PostContent({ content }: PostContentProps) {
 
             case "code":
               const pre = document.createElement("pre");
-              pre.className = "bg-muted p-4 rounded-md overflow-x-auto";
+              pre.className =
+                "bg-muted text-inherit  p-2 rounded-md overflow-x-auto";
               const code = document.createElement("code");
               code.textContent = block.data.code;
               pre.appendChild(code);
@@ -139,7 +140,7 @@ export function PostContent({ content }: PostContentProps) {
             case "text":
               const textP = document.createElement("p");
               textP.innerHTML = block.data.text;
-              textP.className = "mb-4";
+              textP.className = "mb-1";
               blockElement.appendChild(textP);
               break;
 
@@ -190,7 +191,7 @@ export function PostContent({ content }: PostContentProps) {
   return (
     <div
       ref={containerRef}
-      className="prose prose-lg max-w-none dark:prose-invert"
+      className="prose prose-lg leading-tight max-w-none dark:prose-invert"
     />
   );
 }
