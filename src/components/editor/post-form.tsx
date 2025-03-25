@@ -9,17 +9,13 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
 import { createPostAction, updatePostAction } from "@/lib/actions";
-import Script from "next/script";
 import { Editor } from "./editor";
-import { Input } from "../ui/input";
+import TextareaAutosize from "react-textarea-autosize";
 
 const formSchema = z.object({
   title: z.string().min(1, "タイトルは必須です"),
@@ -39,7 +35,7 @@ interface PostFormProps {
 }
 
 export function PostForm({ authorId, post, isEditing = false }: PostFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [editorContent, setEditorContent] = useState<any>(
     post?.content || null
   );
@@ -51,9 +47,10 @@ export function PostForm({ authorId, post, isEditing = false }: PostFormProps) {
     defaultValues: {
       title: post?.title || "",
       content: post?.content || null,
-      published: post?.published || false,
+      published: post?.published || true,
     },
   });
+  const published = form.watch("published");
 
   // EditorJSのスクリプトがロードされたらフラグを設定
   useEffect(() => {
@@ -117,14 +114,51 @@ export function PostForm({ authorId, post, isEditing = false }: PostFormProps) {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="flex w-full items-center justify-between">
+            <div className="flex items-center space-x-10">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+              >
+                キャンセル
+              </Button>
+              <Button
+                name="published"
+                type="button"
+                variant={"secondary"}
+                onClick={() => {
+                  const currentValue = form.getValues("published");
+                  form.setValue("published", !currentValue);
+                }}
+              >
+                {published ? "公開" : "下書き"}
+              </Button>
+            </div>
+
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting
+                ? isEditing
+                  ? "更新中..."
+                  : "作成中..."
+                : isEditing
+                ? "投稿を更新"
+                : "投稿を作成"}
+            </Button>
+          </div>
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>タイトル</FormLabel>
                 <FormControl>
-                  <Input placeholder="投稿のタイトルを入力" {...field} />
+                  <TextareaAutosize
+                    id="title"
+                    autoFocus
+                    placeholder="新規投稿"
+                    className="w-full resize-none overflow-hidden bg-transparent text-5xl focus:outline-none font-bold"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -132,7 +166,6 @@ export function PostForm({ authorId, post, isEditing = false }: PostFormProps) {
           />
 
           <FormItem>
-            <FormLabel>内容</FormLabel>
             <FormControl>
               {editorLoaded && (
                 <Editor
@@ -146,52 +179,11 @@ export function PostForm({ authorId, post, isEditing = false }: PostFormProps) {
             <FormMessage />
           </FormItem>
 
-          <FormField
-            control={form.control}
-            name="published"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>公開する</FormLabel>
-                  <FormDescription>
-                    チェックすると投稿が公開されます。チェックしない場合は下書きとして保存されます。
-                  </FormDescription>
-                </div>
-              </FormItem>
-            )}
-          />
-
           {form.formState.errors.root && (
             <p className="text-sm font-medium text-destructive">
               {form.formState.errors.root.message}
             </p>
           )}
-
-          <div className="flex justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-            >
-              キャンセル
-            </Button>
-
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting
-                ? isEditing
-                  ? "更新中..."
-                  : "作成中..."
-                : isEditing
-                ? "投稿を更新"
-                : "投稿を作成"}
-            </Button>
-          </div>
         </form>
       </Form>
     </>
