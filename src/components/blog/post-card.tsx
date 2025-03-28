@@ -83,7 +83,7 @@ export async function PostCard({ post }: PostCardProps) {
       </CardHeader>
       <CardContent className="flex-grow">
         <div>
-          <PostContent content={post.content} />
+          <PostContent data={post.content} />
         </div>
       </CardContent>
     </Card>

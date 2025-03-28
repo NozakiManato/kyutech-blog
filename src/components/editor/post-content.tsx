@@ -1,197 +1,150 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React from "react";
+import EditorJSHTML from "editorjs-html";
 
-interface PostContentProps {
-  content: any;
-}
+// カスタムパーサーを作成
+const customParsers = {
+  // linkブロック用のカスタムパーサー（linkToolではなくlink）
+  link: (block) => {
+    const { link, meta } = block.data;
 
-export function PostContent({ content }: PostContentProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+    if (!link) return "";
 
-  useEffect(() => {
-    if (!containerRef.current || !content || !content.blocks) return;
+    // メタデータがない場合はシンプルなリンクを返す
+    if (!meta) {
+      return `<a href="${link}" target="_blank" rel="noopener noreferrer" class="text-primary underline">${link}</a>`;
+    }
 
-    const renderContent = async () => {
-      try {
-        // EditorJSのOutputデータをHTMLに変換
-        const container = containerRef.current;
-        container!.innerHTML = "";
+    // リンクカードのHTMLを構築
+    const title = meta.title
+      ? `<h3 class="font-bold text-lg mb-2">${meta.title}</h3>`
+      : "";
+    const description = meta.description
+      ? `<p class="text-sm text-muted-foreground line-clamp-2 mb-2">${meta.description}</p>`
+      : "";
 
-        // 各ブロックをHTMLに変換
-        content.blocks.forEach((block: any) => {
-          const blockElement = document.createElement("div");
-          blockElement.className = "mb-1";
+    const domain = meta.site_name || meta.domain || new URL(link).hostname;
+    const domainHTML = `
+      <div class="text-xs text-muted-foreground flex items-center mt-2">
+        <img src="https://www.google.com/s2/favicons?domain=${link}" class="w-4 h-4 mr-1" alt="" />
+        <span>${domain}</span>
+      </div>
+    `;
 
-          switch (block.type) {
-            case "header":
-              const headerLevel = block.data.level;
-              const headerTag = document.createElement(`h${headerLevel}`);
-              headerTag.innerHTML = block.data.text;
-              headerTag.className = "font-bold mt-6 mb-1";
-              if (headerLevel === 2) headerTag.className += " text-2xl";
-              if (headerLevel === 3) headerTag.className += " text-xl";
-              if (headerLevel === 4) headerTag.className += " text-lg";
-              blockElement.appendChild(headerTag);
-              break;
+    // 画像部分（オプション）
+    let imageHTML = "";
+    if (meta.image && meta.image.url) {
+      imageHTML = `
+        <div class="overflow-hidden">
+          <img 
+            src="${meta.image.url}" 
+            alt="${meta.title || "Link preview"}" 
+            class="object-cover"
+            onerror="this.parentNode.style.display='none'"
+            width="200" height="200"
+          />
+        </div>
+      `;
+    }
 
-            case "paragraph":
-              const p = document.createElement("p");
-              p.innerHTML = block.data.text;
-              p.className = "mb-1";
-              blockElement.appendChild(p);
-              break;
+    return `
+      <div class="border rounded-md overflow-hidden mb-4">
+        <a href="${link}" target="_blank" rel="noopener noreferrer" class="container flex hover:bg-muted/50 transition-colors">
 
-            case "list":
-              const listTag = block.data.style === "ordered" ? "ol" : "ul";
-              const list = document.createElement(listTag);
-              list.className =
-                block.data.style === "ordered"
-                  ? "list-decimal pl-5"
-                  : "list-disc pl-5";
+        <div class="p-4">
+        ${title}
+        ${description}
+        ${domainHTML}
+        </div>
+        ${imageHTML}
 
-              block.data.items.forEach((item: string) => {
-                const li = document.createElement("li");
-                li.innerHTML = item;
-                list.appendChild(li);
-              });
+        </a>
+      </div>
+    `;
+  },
 
-              blockElement.appendChild(list);
-              break;
+  // tableブロック用のカスタムパーサー
+  table: (block) => {
+    const { content, withHeadings } = block.data;
 
-            case "code":
-              const pre = document.createElement("pre");
-              pre.className =
-                "bg-muted text-inherit  p-2 rounded-md overflow-x-auto";
-              const code = document.createElement("code");
-              code.textContent = block.data.code;
-              pre.appendChild(code);
-              blockElement.appendChild(pre);
-              break;
+    if (!content || !content.length) return "";
 
-            case "table":
-              const table = document.createElement("table");
-              table.className = "w-full border-collapse border border-border";
+    let tableHTML =
+      '<table class="w-full border-collapse border border-border mb-4">';
 
-              // テーブルヘッダー
-              if (block.data.withHeadings) {
-                const thead = document.createElement("thead");
-                const headerRow = document.createElement("tr");
+    // テーブルヘッダー（withHeadingsがtrueの場合）
+    if (withHeadings && content.length > 0) {
+      tableHTML += "<thead>";
+      tableHTML += "<tr>";
 
-                block.data.content[0].forEach((cell: string) => {
-                  const th = document.createElement("th");
-                  th.innerHTML = cell;
-                  th.className = "border border-border p-2 bg-muted";
-                  headerRow.appendChild(th);
-                });
+      content[0].forEach((cell) => {
+        tableHTML += `<th class="border border-border p-2 bg-muted">${cell}</th>`;
+      });
 
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
+      tableHTML += "</tr>";
+      tableHTML += "</thead>";
 
-                // ヘッダー行を除外
-                block.data.content.shift();
-              }
+      // ヘッダー行を除外
+      content.shift();
+    }
 
-              // テーブル本体
-              const tbody = document.createElement("tbody");
+    // テーブル本体
+    tableHTML += "<tbody>";
 
-              block.data.content.forEach((row: string[]) => {
-                const tr = document.createElement("tr");
+    content.forEach((row) => {
+      tableHTML += "<tr>";
 
-                row.forEach((cell: string) => {
-                  const td = document.createElement("td");
-                  td.innerHTML = cell;
-                  td.className = "border border-border p-2";
-                  tr.appendChild(td);
-                });
+      row.forEach((cell) => {
+        tableHTML += `<td class="border border-border p-2">${cell}</td>`;
+      });
 
-                tbody.appendChild(tr);
-              });
+      tableHTML += "</tr>";
+    });
 
-              table.appendChild(tbody);
-              blockElement.appendChild(table);
-              break;
+    tableHTML += "</tbody>";
+    tableHTML += "</table>";
 
-            case "embed":
-              if (block.data.service === "youtube") {
-                const iframe = document.createElement("iframe");
-                iframe.src = `https://www.youtube.com/embed/${block.data.embed}`;
-                iframe.className = "w-full aspect-video rounded-md";
-                iframe.allowFullscreen = true;
-                blockElement.appendChild(iframe);
-              } else if (block.data.service === "codesandbox") {
-                const iframe = document.createElement("iframe");
-                iframe.src = `https://codesandbox.io/embed/${block.data.embed}`;
-                iframe.className = "w-full h-96 rounded-md";
-                iframe.allowFullscreen = true;
-                blockElement.appendChild(iframe);
-              } else {
-                const a = document.createElement("a");
-                a.href = block.data.embed;
-                a.textContent = block.data.caption || block.data.embed;
-                a.className = "text-primary underline";
-                a.target = "_blank";
-                a.rel = "noopener noreferrer";
-                blockElement.appendChild(a);
-              }
-              break;
+    return tableHTML;
+  },
+};
 
-            // 単純なテキストの場合（旧形式との互換性のため）
-            case "text":
-              const textP = document.createElement("p");
-              textP.innerHTML = block.data.text;
-              textP.className = "mb-1";
-              blockElement.appendChild(textP);
-              break;
+// カスタムパーサーを含むeditorjs-htmlパーサーを作成
+const edjsParser = EditorJSHTML({
+  link: customParsers.link, // linkに変更
+  table: customParsers.table,
+});
 
-            default:
-              // 未知のブロックタイプの場合はJSONを表示
-              if (block.data && block.data.text) {
-                const defaultP = document.createElement("p");
-                defaultP.innerHTML = block.data.text;
-                blockElement.appendChild(defaultP);
-              } else {
-                const pre = document.createElement("pre");
-                pre.textContent = JSON.stringify(block.data, null, 2);
-                pre.className = "text-xs bg-muted p-2 rounded";
-                blockElement.appendChild(pre);
-              }
-          }
-
-          container?.appendChild(blockElement);
-        });
-      } catch (error) {
-        console.error("Error rendering EditorJS content:", error);
-
-        // エラーが発生した場合は単純なテキスト表示にフォールバック
-        if (containerRef.current) {
-          const fallbackText =
-            content.blocks?.find(
-              (block: any) => block.type === "paragraph" && block.data.text
-            )?.data.text || "内容を表示できません";
-
-          containerRef.current.innerHTML = `<p>${fallbackText}</p>`;
-        }
-      }
-    };
-
-    renderContent();
-  }, [content]);
-
-  // 単純なテキストの場合のフォールバック
-  if (!content || !content.blocks) {
-    const textContent =
-      typeof content === "string"
-        ? content
-        : content?.text || "内容がありません";
-
-    return <div className="whitespace-pre-line">{textContent}</div>;
+export function PostContent({ data }) {
+  // データがない場合のフォールバック
+  if (!data || !data.blocks || data.blocks.length === 0) {
+    return <div className="text-muted">内容がありません</div>;
   }
 
+  // デバッグ用：ブロックタイプを確認
+  console.log(
+    "Block types:",
+    data.blocks.map((block) => block.type)
+  );
+
+  // HTMLに変換
+  const html = edjsParser.parse(data);
+
+  // 安全にHTMLを表示するためのコンポーネント
+  const HTMLContent = ({ htmlString }) => {
+    return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
+  };
+
   return (
-    <div
-      ref={containerRef}
-      className="prose prose-lg leading-tight max-w-none dark:prose-invert"
-    />
+    <div className="text-container prose-lg max-w-none dark:prose-invert">
+      {/* htmlが配列の場合はmapを使用し、文字列の場合は直接表示 */}
+      {Array.isArray(html) ? (
+        html.map((htmlString, index) => (
+          <HTMLContent key={index} htmlString={htmlString} />
+        ))
+      ) : (
+        <HTMLContent htmlString={html} />
+      )}
+    </div>
   );
 }
