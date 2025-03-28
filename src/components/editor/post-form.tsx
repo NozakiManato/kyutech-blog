@@ -146,24 +146,26 @@ export function PostForm({ authorId, post, isEditing = false }: PostFormProps) {
                 : "投稿を作成"}
             </Button>
           </div>
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <TextareaAutosize
-                    id="title"
-                    autoFocus
-                    placeholder="新規投稿"
-                    className="w-full resize-none overflow-hidden bg-transparent text-5xl focus:outline-none font-bold"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="w-[800px] mx-auto">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <TextareaAutosize
+                      id="title"
+                      autoFocus
+                      placeholder="新規投稿"
+                      className="w-full resize-none overflow-hidden bg-transparent text-5xl focus:outline-none font-bold"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormItem>
             <FormControl>
