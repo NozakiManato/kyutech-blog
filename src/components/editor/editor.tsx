@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
 
 // EditorJS型定義
 interface EditorJSOptions {
@@ -59,6 +58,7 @@ export function Editor({
         const Embed = (await import("@editorjs/embed")).default;
         const Table = (await import("@editorjs/table")).default;
         const Code = (await import("@editorjs/code")).default;
+        const LinkTool = (await import("@editorjs/link")).default;
         const DragDrop = (await import("editorjs-drag-drop")).default;
         const Marker = (await import("@editorjs/marker")).default;
 
@@ -94,6 +94,12 @@ export function Editor({
                   youtube: true,
                   codesandbox: true,
                 },
+              },
+            },
+            link: {
+              class: LinkTool,
+              config: {
+                endpoint: "/api/posts/create",
               },
             },
             table: {
