@@ -2,6 +2,47 @@
 
 import React from "react";
 import EditorJSHTML from "editorjs-html";
+import * as ReactDOMServer from "react-dom/server";
+import { Icon } from "../icons/icon";
+
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return (
+    Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+  );
+};
+
+// ファイル拡張子からアイコンクラスを取得する関数
+const getFileIconComponent = (extension) => {
+  const iconMap = {
+    pdf: Icon.pdf,
+    doc: Icon.word,
+    docx: Icon.word,
+    xls: Icon.excel,
+    xlsx: Icon.excel,
+    ppt: Icon.powerpoint,
+    pptx: Icon.powerpoint,
+    zip: Icon.zip,
+    rar: Icon.zip,
+    "7z": Icon.zip,
+    txt: Icon.text,
+    jpg: Icon.image,
+    jpeg: Icon.image,
+    png: Icon.image,
+    gif: Icon.image,
+    mp3: Icon.audio,
+    wav: Icon.audio,
+    mp4: Icon.video,
+    avi: Icon.video,
+    mov: Icon.video,
+  };
+
+  const ext = extension.toLowerCase();
+  return iconMap[ext] || Icon.file;
+};
 
 // カスタムパーサーを作成
 const customParsers = {
@@ -107,12 +148,114 @@ const customParsers = {
 
     return tableHTML;
   },
+  // Attachesブロック用のカスタムパーサー
+  attaches: (block) => {
+    const { file } = block.data;
+
+    if (!file || !file.url) return "";
+
+    const fileName = file.name || "ファイル";
+    const fileSize = file.size ? formatFileSize(file.size) : "";
+    const fileExtension = file.extension || fileName.split(".").pop() || "";
+    const IconComponent = getFileIconComponent(fileExtension);
+
+    return `
+      <div class="border rounded-md p-4 mb-4 flex items-center hover:bg-muted/50 transition-colors">
+        <div class="mr-4 text-2xl text-muted-foreground">
+          ${ReactDOMServer.renderToString(<IconComponent />)}
+        </div>
+        <div class="flex-1">
+          <a href="${
+            file.url
+          }" download="${fileName}" class="font-medium text-primary hover:underline">
+            ${fileName}
+          </a>
+          <div class="text-xs text-muted-foreground mt-1">
+            ${fileExtension.toUpperCase()} ${fileSize ? `• ${fileSize}` : ""}
+          </div>
+        </div>
+        <a href="${
+          file.url
+        }" download="${fileName}" class="ml-4 p-2 rounded-full hover:bg-muted">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="download">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+    `;
+  },
+
+  // Listブロック用のカスタムパーサー
+  list: (block) => {
+    const { style, items } = block.data;
+
+    if (!items || !items.length) return "";
+
+    const listType = style === "ordered" ? "ol" : "ul";
+    const listClass =
+      style === "ordered"
+        ? "list-decimal pl-5 mb-4 space-y-1"
+        : "list-disc pl-5 mb-4 space-y-1";
+
+    // リストアイテムを再帰的に処理する関数
+    const processItems = (items) => {
+      let html = `<${listType} class="${listClass}">`;
+
+      items.forEach((item) => {
+        if (typeof item === "string") {
+          html += `<li>${item}</li>`;
+        } else if (typeof item === "object") {
+          // 文字列とネストされたリストの両方を持つアイテム
+          html += `<li>${item.content}`;
+
+          if (item.items && item.items.length) {
+            html += processItems(item.items);
+          }
+
+          html += "</li>";
+        }
+      });
+
+      html += `</${listType}>`;
+      return html;
+    };
+
+    return processItems(items);
+  },
+
+  // Codeブロック用のカスタムパーサー
+  code: (block) => {
+    const { code, language } = block.data;
+
+    if (!code) return "";
+
+    const languageLabel = language
+      ? `<div class="text-xs text-right px-4 py-1 bg-muted border-t border-l border-r rounded-t-md border-border">${language}</div>`
+      : "";
+
+    return `
+      <div class="mb-4">
+        ${languageLabel}
+        <pre class="bg-muted p-4 overflow-x-auto rounded-md ${
+          language ? "rounded-t-none" : ""
+        } border border-border"><code class="language-${
+      language || "plaintext"
+    }">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>
+      </div>
+    `;
+  },
 };
 
 // カスタムパーサーを含むeditorjs-htmlパーサーを作成
 const edjsParser = EditorJSHTML({
   link: customParsers.link, // linkに変更
   table: customParsers.table,
+  attaches: customParsers.attaches,
+  Attaches: customParsers.attaches,
+  list: customParsers.list,
+  code: customParsers.code,
 });
 
 export function PostContent({ data }) {

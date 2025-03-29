@@ -31,10 +31,16 @@ interface PostFormProps {
     content: any;
     published: boolean;
   };
+  name: string;
   isEditing?: boolean;
 }
 
-export function PostForm({ authorId, post, isEditing = false }: PostFormProps) {
+export function PostForm({
+  authorId,
+  post,
+  name,
+  isEditing = false,
+}: PostFormProps) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [editorContent, setEditorContent] = useState<any>(
     post?.content || null
@@ -63,6 +69,12 @@ export function PostForm({ authorId, post, isEditing = false }: PostFormProps) {
       form.setValue("content", editorContent);
     }
   }, [editorContent, form]);
+
+  useEffect(() => {
+    if (!isEditing && !post?.title) {
+      form.setValue("title", `週報(${name ?? ""})`);
+    }
+  }, [isEditing, post, name, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {

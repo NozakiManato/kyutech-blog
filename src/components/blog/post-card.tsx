@@ -1,52 +1,18 @@
-import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PostCardProps } from "@/types";
 import PostOperations from "../dashboard/post-operations";
-import { requireAuth } from "@/lib/auth";
 import { PostContent } from "../editor/post-content";
 
-export async function PostCard({ post }: PostCardProps) {
-  const { profile } = await requireAuth();
-
-  const getPlainTextFromEditorJS = (content: any): string => {
-    if (!content || !content.blocks) {
-      return content?.text || "";
-    }
-
-    // 最初の段落ブロックを探す
-    const paragraphBlock = content.blocks.find(
-      (block: any) => block.type === "paragraph" || block.type === "text"
-    );
-
-    if (paragraphBlock) {
-      return paragraphBlock.data.text || "";
-    }
-
-    // 段落ブロックがない場合は最初のブロックのテキストを使用
-    const firstBlock = content.blocks[0];
-    if (firstBlock && firstBlock.data && firstBlock.data.text) {
-      return firstBlock.data.text;
-    }
-
-    // テキストが見つからない場合は空文字列を返す
-    return "";
-  };
-  const contentText = getPlainTextFromEditorJS(post.content);
-  const truncatedContent =
-    contentText.length > 150
-      ? `${contentText.substring(0, 150)}...`
-      : contentText;
-
+export async function PostCard({ post, profile }: PostCardProps) {
   // 投稿日時を「〜前」の形式で表示
   const timeAgo = formatDistanceToNow(new Date(post.createdAt), {
     addSuffix: true,

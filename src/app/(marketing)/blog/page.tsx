@@ -2,13 +2,13 @@ import { PostCard } from "@/components/blog/post-card";
 
 import { Icon } from "@/components/icons/icon";
 import { Button } from "@/components/ui/button";
+import { requireAuth } from "@/lib/auth";
 import { getAllPosts } from "@/lib/prisma/post";
 import Link from "next/link";
 
 const BlogPage = async () => {
-  const { profile } = await getAllPosts();
-
   const posts = await getAllPosts();
+  const { profile } = await requireAuth();
   return (
     <div className="container mx-auto py-6 lg:py-10 ">
       <div className="flex justify-between items-center mb-8">
@@ -39,7 +39,7 @@ const BlogPage = async () => {
       ) : (
         <div className="grid  gap-6">
           {posts?.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post} profile={profile!} />
           ))}
         </div>
       )}

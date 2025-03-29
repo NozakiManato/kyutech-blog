@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 
 // EditorJS型定義
@@ -61,6 +60,8 @@ export function Editor({
         const LinkTool = (await import("@editorjs/link")).default;
         const DragDrop = (await import("editorjs-drag-drop")).default;
         const Marker = (await import("@editorjs/marker")).default;
+        const AttachesTool = (await import("@editorjs/attaches")).default;
+        const ImageTool = (await import("@editorjs/image")).default;
 
         // エディタが既に存在する場合は破棄
         if (editorRef.current) {
@@ -109,9 +110,55 @@ export function Editor({
             code: {
               class: Code,
             },
-
+            image: {
+              class: ImageTool,
+              inlineToolbar: true,
+              config: {
+                endpoints: {
+                  byFile: "/api/posts/upload-image",
+                  byUrl: "/api/posts/fetch-url",
+                },
+                field: "image",
+                types: "image/*",
+              },
+            },
             marker: {
               class: Marker,
+            },
+            Attaches: {
+              class: AttachesTool,
+              config: {
+                endpoint: "/api/posts/upload-file",
+                uploader: {
+                  uploadByFile(file: File) {
+                    const formData = new FormData();
+                    formData.append("file", file);
+
+                    return fetch("/api/posts/upload-file", {
+                      method: "POST",
+                      body: formData,
+                    })
+                      .then((response) => response.json())
+                      .then((result) => {
+                        return {
+                          success: 1,
+                          file: {
+                            url: result.file.url,
+                            name: result.file.name,
+                            size: result.file.size,
+                          },
+                        };
+                      })
+                      .catch((error) => {
+                        console.error("Error uploading file:", error);
+                        return {
+                          success: 0,
+                          error,
+                        };
+                      });
+                  },
+                },
+              },
             },
           },
           data: initialData || {
@@ -124,7 +171,7 @@ export function Editor({
               },
             ],
           },
-          onChange: async (api, data) => {
+          onChange: async (api) => {
             const content = await api.saver.save();
             onChange(content);
           },
@@ -168,7 +215,9 @@ export function Editor({
                 Marker: "マーカー",
                 Bold: "太字",
                 Italic: "斜体",
+                Image: "画像",
                 InlineCode: "インラインコード",
+                Attachment: "ファイル",
               },
               tools: {
                 warning: {

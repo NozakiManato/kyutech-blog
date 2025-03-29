@@ -109,6 +109,15 @@ export type PostCardProps = {
       academicYear: string;
     };
   };
+  profile: {
+    name: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: string;
+    researchLab: string;
+    academicYear: string;
+  };
 };
 
 export type PostOperationsProps = {
