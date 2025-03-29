@@ -3,7 +3,7 @@ import { buttonVariants } from "../ui/button";
 import Link from "next/link";
 import MainNav from "./main-nav";
 import { NavItem } from "@/types";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 interface MainNavProps {
   items: NavItem[];
@@ -33,7 +33,12 @@ const Header = ({ items }: MainNavProps) => {
             </Link>
           </SignedOut>
           <SignedIn>
-            <UserButton />
+            <Link
+              href={"/dashboard"}
+              className={cn(buttonVariants({ variant: "outline" }))}
+            >
+              ダッシュボード
+            </Link>
           </SignedIn>
         </div>
       </div>

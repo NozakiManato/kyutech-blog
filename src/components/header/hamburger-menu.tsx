@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
+import Image from "next/image";
 
 interface MobileNavProps {
   items: NavItem[];
@@ -22,7 +23,7 @@ const HamburgerMenu = ({ items }: MobileNavProps) => {
         </SheetTrigger>
         <SheetContent side="left" className="w-64 bg-white p-4 shadow-lg">
           <SheetTitle className="flex flex-col space-y-4">
-            <img src="/icon.svg" alt="Icon" width="50" height="50" />
+            <Image src={"/icon.svg"} alt="Icon" width={50} height={50} />
             <Link
               href="/"
               onClick={() => setIsOpen(false)}
