@@ -80,11 +80,13 @@ export type SidebarNavItem = {
 );
 
 export type DashboardConfig = {
-  sidebarNav: SidebarNavItem[];
+  mainSidebarNav: SidebarNavItem[];
+  supportSidebarNav: SidebarNavItem[];
 };
 
 export type DashboardNavProps = {
-  items: SidebarNavItem[];
+  mainItems: SidebarNavItem[];
+  supportItems: SidebarNavItem[];
 };
 
 export type DashBoardShellProps = React.HTMLAttributes<HTMLDivElement>;

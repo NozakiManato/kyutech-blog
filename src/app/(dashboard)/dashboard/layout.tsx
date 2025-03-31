@@ -1,24 +1,25 @@
-import DashboardNav from "@/components/dashboard/dashboard-nav";
-import Footer from "@/components/footer/footer";
+"use client";
+
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { CustomTrigger } from "@/components/sidebar/custom-trigger";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { dashboardConfig } from "@/config/dashboard";
 import { PageLayoutProps } from "@/types";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import { useState } from "react";
 
 const DashboardLayout = ({ children }: PageLayoutProps) => {
+  const [open, setOpen] = useState(false);
   return (
-    <SidebarProvider>
-      <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr] pt-5">
-        <AppSidebar items={dashboardConfig.sidebarNav} />
+    <SidebarProvider open={open} onOpenChange={setOpen}>
+      <AppSidebar
+        mainItems={dashboardConfig.mainSidebarNav}
+        supportItems={dashboardConfig.supportSidebarNav}
+      />
 
-        <main className="flex flex-col w-full flex-1 overflow-hidden">
-          <SidebarTrigger />
-          {children}
-        </main>
-      </div>
+      <main className="container flex flex-col w-full flex-1 overflow-hidden">
+        <CustomTrigger />
+        {children}
+      </main>
     </SidebarProvider>
   );
 };

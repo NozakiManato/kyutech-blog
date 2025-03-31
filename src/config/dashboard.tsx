@@ -2,7 +2,7 @@ import { Icon } from "@/components/icons/icon";
 import { DashboardConfig } from "@/types";
 
 export const dashboardConfig: DashboardConfig = {
-  sidebarNav: [
+  mainSidebarNav: [
     {
       title: "ダッシュボード",
       href: "/dashboard",
@@ -18,6 +18,8 @@ export const dashboardConfig: DashboardConfig = {
       href: "/dashboard/profile",
       icon: Icon.user,
     },
+  ],
+  supportSidebarNav: [
     {
       title: "ドキュメント",
       href: "/docs",

@@ -17,6 +17,7 @@ import {
   Pizza,
   Plus,
   Settings,
+  Sidebar,
   SunMedium,
   Trash,
   User,
@@ -45,6 +46,7 @@ export const Icon = {
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
+  sidebar: Sidebar,
   github: () => (
     <svg
       aria-hidden="true"
