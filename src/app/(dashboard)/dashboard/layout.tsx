@@ -12,9 +12,8 @@ const DashboardLayout = ({ children }: PageLayoutProps) => {
   return (
     <SidebarProvider>
       <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr] pt-5">
-        <aside className="hidden md:flex w-52 flex-col">
-          <AppSidebar items={dashboardConfig.sidebarNav} />
-        </aside>
+        <AppSidebar items={dashboardConfig.sidebarNav} />
+
         <main className="flex flex-col w-full flex-1 overflow-hidden">
           <SidebarTrigger />
           {children}
