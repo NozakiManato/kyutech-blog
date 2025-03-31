@@ -23,13 +23,15 @@ const HamburgerMenu = ({ items }: MobileNavProps) => {
         </SheetTrigger>
         <SheetContent side="left" className="w-64 bg-white p-4 shadow-lg">
           <SheetTitle className="flex flex-col space-y-4">
-            <Image src={"/icon.svg"} alt="Icon" width={50} height={50} />
             <Link
               href="/"
               onClick={() => setIsOpen(false)}
-              className="font-extrabold text-2xl"
+              className="font-extrabold text-2xl "
             >
-              LocaLabo
+              <div className="flex  text-center m-auto">
+                <Image src={"/icon.svg"} alt="Icon" width={50} height={50} />
+                <div className="my-auto">LocaLabo</div>
+              </div>
             </Link>
             {items.map((item, index) => (
               <Link

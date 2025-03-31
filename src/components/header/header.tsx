@@ -37,7 +37,7 @@ const Header = ({ items }: MainNavProps) => {
               href={"/dashboard"}
               className={cn(buttonVariants({ variant: "outline" }))}
             >
-              ダッシュボード
+              ダッシュボード →
             </Link>
           </SignedIn>
         </div>

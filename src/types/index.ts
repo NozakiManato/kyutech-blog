@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/icon";
 import { Post } from "@prisma/client";
-import React from "react";
+import { IconNode } from "lucide-react";
+import React, { ComponentType } from "react";
 import { ReactNode } from "react";
 
 export type NavItem = {
@@ -66,7 +67,7 @@ export type SidebarNavItem = {
   title: string;
   disabled?: boolean;
   external?: boolean;
-  icon?: keyof typeof Icon;
+  icon: ComponentType<any>;
 } & (
   | {
       href: string;
@@ -79,7 +80,6 @@ export type SidebarNavItem = {
 );
 
 export type DashboardConfig = {
-  mainNav: NavItem[];
   sidebarNav: SidebarNavItem[];
 };
 
