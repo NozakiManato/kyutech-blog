@@ -9,7 +9,8 @@ import Link from "next/link";
 import React from "react";
 
 const DashboardPage = async (userId: string) => {
-  const posts = await getUserPosts(userId);
+  const posts = await getUserPosts(/* @next-codemod-error 'userId' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+  userId);
 
   return (
     <DashBoardShell>
