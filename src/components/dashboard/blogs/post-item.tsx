@@ -3,7 +3,6 @@ import { format } from "date-fns/format";
 import Link from "next/link";
 import React from "react";
 import PostOperations from "./post-operations";
-
 const PostItem = ({ post }: PostItemProps) => {
   return (
     <div className="flex items-center justify-between p-4">

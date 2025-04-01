@@ -4,14 +4,16 @@ import Link from "next/link";
 import MainNav from "./main-nav";
 import { NavItem } from "@/types";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { requireAuth } from "@/lib/auth";
 
 interface MainNavProps {
   items: NavItem[];
 }
 
-const Header = ({ items }: MainNavProps) => {
+const Header = async ({ items }: MainNavProps) => {
+  const { profile } = await requireAuth();
   return (
-    <header className="sticky top-0 border-b container z-40 bg-background">
+    <header className="sticky top-0 border-b max-w-screen container z-40 bg-background">
       <div className="h-20 py-6 flex items-center justify-between">
         <MainNav items={items} />
         <div>
@@ -34,7 +36,7 @@ const Header = ({ items }: MainNavProps) => {
           </SignedOut>
           <SignedIn>
             <Link
-              href={"/dashboard"}
+              href={`/dashboard/${profile!.id}`}
               className={cn(buttonVariants({ variant: "outline" }))}
             >
               ダッシュボード →

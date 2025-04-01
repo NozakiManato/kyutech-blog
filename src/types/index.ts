@@ -1,6 +1,4 @@
-import { Icon } from "@/components/icons/icon";
 import { Post } from "@prisma/client";
-import { IconNode } from "lucide-react";
 import React, { ComponentType } from "react";
 import { ReactNode } from "react";
 
@@ -96,6 +94,9 @@ export type DashBoardHeaderProps = {
   heading: string;
   text?: string;
   children: React.ReactNode;
+};
+export type PostItemProps = {
+  post: Pick<Post, "id" | "title" | "published" | "createdAt">;
 };
 
 export type PostCardProps = {

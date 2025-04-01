@@ -17,11 +17,11 @@ const DashboardLayout = async ({ children }: PageLayoutProps) => {
         userId={profile!.id}
       />
 
-      <main className="flex flex-col w-full flex-1 overflow-hidden">
+      <main className="flex  w-full flex-1 overflow-hidden">
         <div className="p-1">
           <CustomTrigger />
         </div>
-        <div>{children}</div>
+        <div className="container">{children}</div>
       </main>
     </SidebarClient>
   );
