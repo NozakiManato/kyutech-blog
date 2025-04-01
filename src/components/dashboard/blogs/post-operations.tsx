@@ -1,14 +1,7 @@
 "use client";
 import { PostOperationsProps } from "@/types";
 import React, { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Icon } from "../icons/icon";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deletePostAction } from "@/lib/actions";
@@ -21,8 +14,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Icon } from "@/components/icons/icon";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const PostOperations = ({ post }: PostOperationsProps) => {
   const [isDeleting, setIsDeleting] = useState(false);

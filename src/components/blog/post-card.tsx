@@ -9,8 +9,9 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PostCardProps } from "@/types";
-import PostOperations from "../dashboard/post-operations";
+
 import { PostContent } from "../editor/post-content";
+import PostOperations from "../dashboard/blogs/post-operations";
 
 export async function PostCard({ post, profile }: PostCardProps) {
   // 投稿日時を「〜前」の形式で表示

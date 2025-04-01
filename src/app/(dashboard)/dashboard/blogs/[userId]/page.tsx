@@ -1,25 +1,15 @@
-import DashboardHeader from "@/components/dashboard/dashboard-header";
-import DashBoardShell from "@/components/dashboard/dashboard-shell";
+import DashboardHeader from "@/components/dashboard/blogs/dashboard-header";
+import DashBoardShell from "@/components/dashboard/blogs/dashboard-shell";
 
-import PostItem from "@/components/dashboard/post-item";
+import PostItem from "@/components/dashboard/blogs/post-item";
 import { Icon } from "@/components/icons/icon";
 import { Button } from "@/components/ui/button";
 import { getUserPosts } from "@/lib/prisma/post";
-import { EditProfileProps } from "@/types";
-import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import React from "react";
 
-const DashboardPage = async (props: EditProfileProps) => {
-  const params = await props.params;
-  const { userId: currentUserId } = await auth();
-
-  if (!currentUserId) {
-    redirect("/sign-in");
-  }
-
-  const posts = await getUserPosts(params.userId);
+const DashboardPage = async (userId: string) => {
+  const posts = await getUserPosts(userId);
 
   return (
     <DashBoardShell>
