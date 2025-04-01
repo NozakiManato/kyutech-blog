@@ -10,12 +10,12 @@ export const dashboardConfig: DashboardConfig = {
     },
     {
       title: "記事投稿",
-      href: "/dashboard/blog",
+      href: "/dashboard/blogs",
       icon: Icon.post,
     },
     {
       title: "プロフィール",
-      href: "/dashboard/profile",
+      href: "/dashboard/profiles",
       icon: Icon.user,
     },
   ],

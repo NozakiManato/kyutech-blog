@@ -1,26 +1,29 @@
-"use client";
-
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { CustomTrigger } from "@/components/sidebar/custom-trigger";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { dashboardConfig } from "@/config/dashboard";
-import { PageLayoutProps } from "@/types";
-import { useState } from "react";
+import { SidebarClient } from "@/components/sidebar/sidebar-client";
 
-const DashboardLayout = ({ children }: PageLayoutProps) => {
-  const [open, setOpen] = useState(false);
+import { dashboardConfig } from "@/config/dashboard";
+import { requireAuth } from "@/lib/auth";
+import { PageLayoutProps } from "@/types";
+
+const DashboardLayout = async ({ children }: PageLayoutProps) => {
+  const { profile } = await requireAuth();
+
   return (
-    <SidebarProvider open={open} onOpenChange={setOpen}>
+    <SidebarClient>
       <AppSidebar
         mainItems={dashboardConfig.mainSidebarNav}
         supportItems={dashboardConfig.supportSidebarNav}
+        userId={profile!.id}
       />
 
-      <main className="container flex flex-col w-full flex-1 overflow-hidden">
-        <CustomTrigger />
-        {children}
+      <main className="flex flex-col w-full flex-1 overflow-hidden">
+        <div className="p-1">
+          <CustomTrigger />
+        </div>
+        <div>{children}</div>
       </main>
-    </SidebarProvider>
+    </SidebarClient>
   );
 };
 

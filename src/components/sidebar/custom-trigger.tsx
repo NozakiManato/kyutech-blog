@@ -7,7 +7,7 @@ export function CustomTrigger() {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Button onClick={toggleSidebar} size="icon" variant={"outline"}>
+    <Button onClick={toggleSidebar} size="icon" variant={"ghost"}>
       <Icon.sidebar />
     </Button>
   );

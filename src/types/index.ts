@@ -87,6 +87,7 @@ export type DashboardConfig = {
 export type DashboardNavProps = {
   mainItems: SidebarNavItem[];
   supportItems: SidebarNavItem[];
+  userId: string;
 };
 
 export type DashBoardShellProps = React.HTMLAttributes<HTMLDivElement>;

@@ -15,7 +15,11 @@ import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
-export function AppSidebar({ mainItems, supportItems }: DashboardNavProps) {
+export async function AppSidebar({
+  mainItems,
+  supportItems,
+  userId,
+}: DashboardNavProps) {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -40,7 +44,10 @@ export function AppSidebar({ mainItems, supportItems }: DashboardNavProps) {
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton tooltip={item.title} asChild>
-                    <a href={item.href} className="text-sm font-medium">
+                    <a
+                      href={`${item.href}/${userId}`}
+                      className="text-sm font-medium"
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </a>
