@@ -2,16 +2,14 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 import Link from "next/link";
 import MainNav from "./main-nav";
-import { NavItem } from "@/types";
+import { MainNavProps } from "@/types";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import { requireAuth } from "@/lib/auth";
-
-interface MainNavProps {
-  items: NavItem[];
-}
+import { auth } from "@clerk/nextjs/server";
+import { getUserProfile } from "@/lib/prisma/user";
 
 const Header = async ({ items }: MainNavProps) => {
-  const { profile } = await requireAuth();
+  const { userId } = await auth();
+  const profile = userId ? await getUserProfile(userId) : null;
   return (
     <header className="sticky top-0 border-b max-w-screen container z-40 bg-background">
       <div className="h-20 py-6 flex items-center justify-between">
@@ -35,12 +33,16 @@ const Header = async ({ items }: MainNavProps) => {
             </Link>
           </SignedOut>
           <SignedIn>
-            <Link
-              href={`/dashboard/${profile!.id}`}
-              className={cn(buttonVariants({ variant: "outline" }))}
-            >
-              ダッシュボード →
-            </Link>
+            {profile ? (
+              <Link
+                href={`/dashboard/${profile.id}`}
+                className={cn(buttonVariants({ variant: "outline" }))}
+              >
+                ダッシュボード →
+              </Link>
+            ) : (
+              ""
+            )}
           </SignedIn>
         </div>
       </div>
