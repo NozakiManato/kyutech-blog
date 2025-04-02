@@ -5,12 +5,14 @@ import PostItem from "@/components/dashboard/blogs/post-item";
 import { Icon } from "@/components/icons/icon";
 import { Button } from "@/components/ui/button";
 import { getUserPosts } from "@/lib/prisma/post";
+import { EditProfileProps } from "@/types";
 import Link from "next/link";
 import React from "react";
 
-const DashboardPage = async (userId: string) => {
-  const posts = await getUserPosts(/* @next-codemod-error 'userId' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-  userId);
+const DashboardPage = async (props: EditProfileProps) => {
+  const params = await props.params;
+
+  const posts = await getUserPosts(params.userId);
 
   return (
     <DashBoardShell>

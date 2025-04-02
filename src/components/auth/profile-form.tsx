@@ -1,6 +1,6 @@
 "use client";
 import { saveUserProfileAction } from "@/lib/actions";
-import { authFormSchema } from "@/lib/validations/auth";
+import { authFormSchema } from "@/lib/validations/profile";
 import { ProfileFormProps } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";

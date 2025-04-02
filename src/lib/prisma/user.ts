@@ -20,21 +20,36 @@ export const getUserProfile = async (userId: string) => {
 export const createUserProfile = async ({
   userId,
   name,
+  imageUrl,
   researchLab,
   academicYear,
+  description,
+  github,
+  x,
+  instagram,
 }: {
   userId: string;
   name: string;
+  imageUrl: string;
   researchLab: string;
   academicYear: string;
+  description: string;
+  github: string;
+  x: string;
+  instagram: string;
 }) => {
   try {
     return await prisma.userProfile.create({
       data: {
         userId,
         name,
+        imageUrl,
         researchLab,
         academicYear,
+        description,
+        github,
+        x,
+        instagram,
       },
     });
   } catch (error) {
@@ -47,8 +62,13 @@ export const updateUserProfile = async (
   userId: string,
   data: {
     name?: string;
+    imageUrl: string;
     researchLab: string;
     academicYear: string;
+    description: string;
+    github: string;
+    x: string;
+    instagram: string;
   }
 ) => {
   try {

@@ -8,17 +8,37 @@ import { createPost, deletePost, updatePost } from "./prisma/post";
 export const saveUserProfileAction = async ({
   userId,
   name,
+  imageUrl,
   researchLab,
   academicYear,
+  description,
+  github,
+  x,
+  instagram,
 }: SaveUserProfileProps) => {
   try {
     const result = await updateUserProfile(userId, {
+      imageUrl,
       researchLab,
       academicYear,
+      description,
+      github,
+      x,
+      instagram,
     });
 
     if (!result) {
-      await createUserProfile({ userId, name, researchLab, academicYear });
+      await createUserProfile({
+        userId,
+        name,
+        imageUrl,
+        researchLab,
+        academicYear,
+        description,
+        github,
+        x,
+        instagram,
+      });
     }
     revalidatePath("/profile");
     return { success: true };

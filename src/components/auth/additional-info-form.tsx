@@ -1,6 +1,6 @@
 "use client";
-import { authFormSchema } from "@/lib/validations/auth";
-import { AdditionalInfoFormProps } from "@/types";
+import { profileFormSchema } from "@/lib/validations/profile";
+import { ProfileFormProps } from "@/types";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -24,29 +24,35 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { useUser } from "@clerk/nextjs";
+import { Input } from "../ui/input";
 
-const AdditionalInfoForm = ({ userId }: AdditionalInfoFormProps) => {
+const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { user } = useUser();
 
-  const form = useForm<z.infer<typeof authFormSchema>>({
-    resolver: zodResolver(authFormSchema),
+  const form = useForm<z.infer<typeof profileFormSchema>>({
+    resolver: zodResolver(profileFormSchema),
     defaultValues: {
       researchLab: "",
       academicYear: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof authFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof profileFormSchema>) => {
     try {
       setIsSubmitting(true);
 
       await saveUserProfileAction({
         userId,
         name: `${user?.lastName}${user?.firstName}` || "",
+        imageUrl: user?.imageUrl || "",
         researchLab: values.researchLab,
         academicYear: values.academicYear,
+        description: values.description,
+        x: values.x,
+        github: values.github,
+        instagram: values.instagram,
       });
 
       router.push("/");
@@ -63,6 +69,19 @@ const AdditionalInfoForm = ({ userId }: AdditionalInfoFormProps) => {
       <h2 className="text-lg font-medium mb-4">追加情報</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>名前</FormLabel>
+                <FormControl>
+                  <Input placeholder="名前" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="researchLab"
@@ -114,6 +133,45 @@ const AdditionalInfoForm = ({ userId }: AdditionalInfoFormProps) => {
                     <SelectItem value="先生">先生</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="github"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>GitHub</FormLabel>
+                <FormControl>
+                  <Input placeholder="GitHub" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="x"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>X</FormLabel>
+                <FormControl>
+                  <Input placeholder="X" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="instagram"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Instagram</FormLabel>
+                <FormControl>
+                  <Input placeholder="Instagram" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

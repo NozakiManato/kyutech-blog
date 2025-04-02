@@ -37,8 +37,13 @@ export type AdditionalInfoFormProps = {
 export type SaveUserProfileProps = {
   userId: string;
   name: string;
+  imageUrl: string;
   researchLab: string;
   academicYear: string;
+  description: string;
+  github: string;
+  x: string;
+  instagram: string;
 };
 
 export type EditProfileProps = {
@@ -150,4 +155,28 @@ export type EditPostPageProps = {
   params: {
     postId: string;
   };
+};
+
+export type profileProps = {
+  id: string;
+  userId: string;
+  name: string;
+  imageUrl: string;
+  researchLab: string;
+  academicYear: string;
+  description: string | null;
+  isCheckedIn: boolean;
+  github: string | null;
+  x: string | null;
+  instagram: string | null;
+};
+
+export type editProfileProps = {
+  name: string;
+  researchLab: string;
+  academicYear: string;
+  description: string;
+  github: string;
+  x: string;
+  instagram: string;
 };
