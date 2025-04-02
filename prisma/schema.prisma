@@ -11,8 +11,14 @@ model UserProfile {
   id           String   @id @default(cuid())
   userId       String   @unique
   name         String
+  imageUrl     String
   researchLab  String
   academicYear String
+  description  String?
+  isCheckedIn  Boolean @default(false)
+  github       String?
+  x            String?
+  instagram    String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   posts        Post[]
