@@ -185,7 +185,8 @@ export interface TechSkill {
     | "frontend"
     | "backend"
     | "database"
-    | "image"
+    | "image processing"
+    | "fpga"
     | "ai"
     | "devops"
     | "other";
@@ -202,4 +203,5 @@ export interface CategoryIconMapping {
 
 export interface ProfileCardProps {
   initialProfile: profileProps;
+  initialtechSkills: TechSkill[];
 }

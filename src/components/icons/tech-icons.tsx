@@ -383,5 +383,3 @@ export const defaultIcons: CategoryIconMapping = {
   devops: Cloud,
   other: Wrench,
 };
-
-export const defaultTechSkills: TechSkill[] = [];

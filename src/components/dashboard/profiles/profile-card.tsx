@@ -20,11 +20,13 @@ import { profileFormSchema } from "@/lib/validations/profile";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import TechSkillsSection from "./ui/tech-skills-section";
-import { defaultTechSkills } from "@/components/icons/tech-icons";
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-const ProfileCard = ({ initialProfile }: ProfileCardProps) => {
+const ProfileCard = ({
+  initialProfile,
+  initialtechSkills,
+}: ProfileCardProps) => {
   const defaultProfile: profileProps = {
     name: initialProfile?.name || "",
     academicYear: initialProfile?.academicYear || "",
@@ -40,7 +42,7 @@ const ProfileCard = ({ initialProfile }: ProfileCardProps) => {
   };
 
   const [profile, setProfile] = useState<profileProps>(defaultProfile);
-  const [techSkills, setTechSkills] = useState<TechSkill[]>(defaultTechSkills);
+  const [techSkills, setTechSkills] = useState<TechSkill[]>(initialtechSkills);
   const [editMode, setEditMode] = useState(false);
   const [editingProfile, setEditingProfile] = useState<profileProps>({
     ...defaultProfile,

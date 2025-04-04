@@ -259,6 +259,9 @@ export async function getUserTechSkills(profileId: string) {
         | "frontend"
         | "backend"
         | "database"
+        | "image processing"
+        | "ai"
+        | "fpga"
         | "devops"
         | "other",
       iconName: skill.iconName || undefined,
@@ -291,6 +294,9 @@ export async function addTechSkill(
         | "frontend"
         | "backend"
         | "database"
+        | "image processing"
+        | "ai"
+        | "fpga"
         | "devops"
         | "other",
       iconName: newSkill.iconName || undefined,
@@ -322,6 +328,9 @@ export async function updateTechSkill(
         | "frontend"
         | "backend"
         | "database"
+        | "image processing"
+        | "ai"
+        | "fpga"
         | "devops"
         | "other",
       iconName: updatedSkill.iconName || undefined,

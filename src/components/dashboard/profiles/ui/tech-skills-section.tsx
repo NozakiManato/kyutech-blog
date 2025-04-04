@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TechSkill } from "@/types";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
@@ -48,6 +48,17 @@ const TechSkillsSection = ({
         </Button>
       </div>
       <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
+        <TabsList className="mb-4 w-full justify-start">
+          <TabsTrigger value="all">すべて</TabsTrigger>
+          <TabsTrigger value="frontend">フロントエンド</TabsTrigger>
+          <TabsTrigger value="backend">バックエンド</TabsTrigger>
+          <TabsTrigger value="database">データベース</TabsTrigger>
+          <TabsTrigger value="ai">機械学習</TabsTrigger>
+          <TabsTrigger value="image processing">画像処理</TabsTrigger>
+          <TabsTrigger value="fpga">FPGA</TabsTrigger>
+          <TabsTrigger value="devops">DevOps</TabsTrigger>
+          <TabsTrigger value="other">その他</TabsTrigger>
+        </TabsList>
         <TabsContent value={activeTab} className="mt-0">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {filteredSkills.map((skill) => (
