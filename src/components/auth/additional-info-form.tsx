@@ -10,6 +10,7 @@ import { saveUserProfileAction } from "@/lib/actions";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -36,6 +37,10 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
     defaultValues: {
       researchLab: "",
       academicYear: "",
+      description: "",
+      github: "",
+      x: "",
+      instagram: "",
     },
   });
 
@@ -50,9 +55,10 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
         researchLab: values.researchLab,
         academicYear: values.academicYear,
         description: values.description,
-        x: values.x,
         github: values.github,
+        x: values.x,
         instagram: values.instagram,
+        isCheckedIn: true,
       });
 
       router.push("/");
@@ -69,19 +75,6 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
       <h2 className="text-lg font-medium mb-4">追加情報</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>名前</FormLabel>
-                <FormControl>
-                  <Input placeholder="名前" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="researchLab"
@@ -104,6 +97,7 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
                     <SelectItem value="楊研究室">楊研究室</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormDescription>必須</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -133,6 +127,21 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
                     <SelectItem value="先生">先生</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormDescription>必須</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>自己紹介・ひとこと</FormLabel>
+                <FormControl>
+                  <Input placeholder="自由に記入してください" {...field} />
+                </FormControl>
+                <FormDescription>任意</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -146,6 +155,7 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
                 <FormControl>
                   <Input placeholder="GitHub" {...field} />
                 </FormControl>
+                <FormDescription>任意</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -159,6 +169,7 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
                 <FormControl>
                   <Input placeholder="X" {...field} />
                 </FormControl>
+                <FormDescription>任意</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -172,6 +183,7 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
                 <FormControl>
                   <Input placeholder="Instagram" {...field} />
                 </FormControl>
+                <FormDescription>任意</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

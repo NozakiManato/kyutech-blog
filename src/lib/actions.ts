@@ -2,7 +2,11 @@
 
 import { SaveUserProfileProps } from "@/types";
 import { revalidatePath } from "next/cache";
-import { createUserProfile, updateUserProfile } from "./prisma/user";
+import {
+  createUserProfile,
+  getUserProfile,
+  updateUserProfile,
+} from "./prisma/user";
 import { createPost, deletePost, updatePost } from "./prisma/post";
 
 export const saveUserProfileAction = async ({
@@ -15,6 +19,7 @@ export const saveUserProfileAction = async ({
   github,
   x,
   instagram,
+  isCheckedIn,
 }: SaveUserProfileProps) => {
   try {
     const result = await updateUserProfile(userId, {
@@ -25,6 +30,7 @@ export const saveUserProfileAction = async ({
       github,
       x,
       instagram,
+      isCheckedIn,
     });
 
     if (!result) {
@@ -38,6 +44,7 @@ export const saveUserProfileAction = async ({
         github,
         x,
         instagram,
+        isCheckedIn,
       });
     }
     revalidatePath("/profile");
@@ -47,6 +54,37 @@ export const saveUserProfileAction = async ({
     return { success: false, error };
   }
 };
+
+export async function toggleCheckedInStatus(
+  userId: string,
+  isCheckedIn: boolean
+) {
+  try {
+    const profile = await getUserProfile(userId);
+
+    if (!profile) {
+      throw new Error("プロフィールが見つかりません");
+    }
+
+    await updateUserProfile(userId, {
+      name: profile.name,
+      imageUrl: profile.imageUrl,
+      researchLab: profile.researchLab,
+      academicYear: profile.academicYear,
+      description: profile.description || "",
+      github: profile.github || "",
+      x: profile.x || "",
+      instagram: profile.instagram || "",
+      isCheckedIn,
+    });
+
+    revalidatePath("/");
+    return isCheckedIn;
+  } catch (error) {
+    console.error("チェックイン状態更新エラー:", error);
+    throw new Error("チェックイン状態の更新に失敗しました");
+  }
+}
 
 export async function createPostAction(formData: FormData) {
   try {

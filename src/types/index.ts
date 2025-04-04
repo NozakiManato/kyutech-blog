@@ -1,4 +1,5 @@
 import { Post } from "@prisma/client";
+import { LucideIcon } from "lucide-react";
 import React, { ComponentType } from "react";
 import { ReactNode } from "react";
 
@@ -44,6 +45,7 @@ export type SaveUserProfileProps = {
   github: string;
   x: string;
   instagram: string;
+  isCheckedIn: boolean;
 };
 
 export type EditProfileProps = {
@@ -53,10 +55,6 @@ export type EditProfileProps = {
 };
 export type ProfileFormProps = {
   userId: string;
-  defaultValues: {
-    researchLab: string;
-    academicYear: string;
-  };
 };
 export type MainNavProps = {
   items: NavItem[];
@@ -164,11 +162,11 @@ export type profileProps = {
   imageUrl: string;
   researchLab: string;
   academicYear: string;
-  description: string | null;
+  description: string | "";
   isCheckedIn: boolean;
-  github: string | null;
-  x: string | null;
-  instagram: string | null;
+  github: string | "";
+  x: string | "";
+  instagram: string | "";
 };
 
 export type editProfileProps = {
@@ -180,3 +178,21 @@ export type editProfileProps = {
   x: string;
   instagram: string;
 };
+export interface TechSkill {
+  id: string;
+  name: string;
+  category: "frontend" | "backend" | "database" | "devops" | "other";
+  iconName?: string;
+}
+
+export interface IconMapping {
+  [key: string]: LucideIcon;
+}
+
+export interface CategoryIconMapping {
+  [key: string]: LucideIcon;
+}
+
+export interface ProfileCardProps {
+  initialProfile: profileProps;
+}

@@ -8,4 +8,5 @@ export const profileFormSchema = z.object({
   github: z.string(),
   x: z.string(),
   instagram: z.string(),
+  isCheckedIn: z.boolean(),
 });

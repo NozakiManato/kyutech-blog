@@ -27,6 +27,7 @@ export const createUserProfile = async ({
   github,
   x,
   instagram,
+  isCheckedIn,
 }: {
   userId: string;
   name: string;
@@ -37,6 +38,7 @@ export const createUserProfile = async ({
   github: string;
   x: string;
   instagram: string;
+  isCheckedIn: boolean;
 }) => {
   try {
     return await prisma.userProfile.create({
@@ -50,6 +52,7 @@ export const createUserProfile = async ({
         github,
         x,
         instagram,
+        isCheckedIn,
       },
     });
   } catch (error) {
@@ -69,6 +72,7 @@ export const updateUserProfile = async (
     github: string;
     x: string;
     instagram: string;
+    isCheckedIn: boolean;
   }
 ) => {
   try {

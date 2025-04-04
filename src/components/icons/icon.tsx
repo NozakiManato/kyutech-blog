@@ -1,6 +1,8 @@
+import { CategoryIconMapping, TechSkill } from "@/types";
 import {
   AlertTriangle,
   ArrowRight,
+  Code,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -22,6 +24,10 @@ import {
   Trash,
   User,
   X,
+  Server,
+  Database,
+  Cloud,
+  Wrench,
 } from "lucide-react";
 
 export const Icon = {
@@ -796,3 +802,20 @@ export const Icon = {
     </svg>;
   },
 };
+
+// デフォルトアイコン（マッピングにない場合）
+export const defaultIcons: CategoryIconMapping = {
+  frontend: Code,
+  backend: Server,
+  database: Database,
+  devops: Cloud,
+  other: Wrench,
+};
+
+export const defaultTechSkills: TechSkill[] = [
+  { id: "1", name: "React", category: "frontend", iconName: "React" },
+  { id: "2", name: "Next.js", category: "frontend", iconName: "Next.js" },
+  { id: "3", name: "AWS", category: "devops", iconName: "AWS" },
+  { id: "4", name: "PostgreSQL", category: "database", iconName: "PostgreSQL" },
+  { id: "5", name: "Python", category: "backend", iconName: "Python" },
+];
