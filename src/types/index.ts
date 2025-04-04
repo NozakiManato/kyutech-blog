@@ -1,6 +1,6 @@
 import { Post } from "@prisma/client";
 import { LucideIcon } from "lucide-react";
-import React, { ComponentType } from "react";
+import React, { ComponentType, JSX } from "react";
 import { ReactNode } from "react";
 
 export type NavItem = {
@@ -181,12 +181,19 @@ export type editProfileProps = {
 export interface TechSkill {
   id: string;
   name: string;
-  category: "frontend" | "backend" | "database" | "devops" | "other";
+  category:
+    | "frontend"
+    | "backend"
+    | "database"
+    | "image"
+    | "ai"
+    | "devops"
+    | "other";
   iconName?: string;
 }
 
 export interface IconMapping {
-  [key: string]: LucideIcon;
+  [key: string]: (props?: { className?: string }) => JSX.Element;
 }
 
 export interface CategoryIconMapping {

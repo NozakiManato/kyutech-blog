@@ -1,6 +1,6 @@
 "use server";
 
-import { SaveUserProfileProps } from "@/types";
+import { SaveUserProfileProps, TechSkill } from "@/types";
 import { revalidatePath } from "next/cache";
 import {
   createUserProfile,
@@ -8,6 +8,12 @@ import {
   updateUserProfile,
 } from "./prisma/user";
 import { createPost, deletePost, updatePost } from "./prisma/post";
+import {
+  createSkill,
+  deleteSkill,
+  getUserSkills,
+  updateSkill,
+} from "./prisma/skill";
 
 export const saveUserProfileAction = async ({
   userId,
@@ -237,3 +243,104 @@ export const deletePostAction = async (formData: FormData) => {
     return { success: false, error };
   }
 };
+
+// ユーザーのスキルを取得
+export async function getUserTechSkills(profileId: string) {
+  try {
+    const skills = await getUserSkills(profileId);
+
+    if (!skills) return [];
+
+    // TechSkill型に変換
+    return skills.map((skill) => ({
+      id: skill.id,
+      name: skill.name,
+      category: skill.category as
+        | "frontend"
+        | "backend"
+        | "database"
+        | "devops"
+        | "other",
+      iconName: skill.iconName || undefined,
+    })) as TechSkill[];
+  } catch (error) {
+    console.error("スキル取得エラー:", error);
+    throw new Error("スキルの取得に失敗しました");
+  }
+}
+
+// スキルを追加
+export async function addTechSkill(
+  profileId: string,
+  skill: Omit<TechSkill, "id">
+) {
+  try {
+    const newSkill = await createSkill({
+      name: skill.name,
+      category: skill.category,
+      iconName: skill.iconName,
+      profileId,
+    });
+
+    revalidatePath("/");
+
+    return {
+      id: newSkill.id,
+      name: newSkill.name,
+      category: newSkill.category as
+        | "frontend"
+        | "backend"
+        | "database"
+        | "devops"
+        | "other",
+      iconName: newSkill.iconName || undefined,
+    } as TechSkill;
+  } catch (error) {
+    console.error("スキル追加エラー:", error);
+    throw new Error("スキルの追加に失敗しました");
+  }
+}
+
+// スキルを更新
+export async function updateTechSkill(
+  skillId: string,
+  skill: Omit<TechSkill, "id">
+) {
+  try {
+    const updatedSkill = await updateSkill(skillId, {
+      name: skill.name,
+      category: skill.category,
+      iconName: skill.iconName,
+    });
+
+    revalidatePath("/");
+
+    return {
+      id: updatedSkill.id,
+      name: updatedSkill.name,
+      category: updatedSkill.category as
+        | "frontend"
+        | "backend"
+        | "database"
+        | "devops"
+        | "other",
+      iconName: updatedSkill.iconName || undefined,
+    } as TechSkill;
+  } catch (error) {
+    console.error("スキル更新エラー:", error);
+    throw new Error("スキルの更新に失敗しました");
+  }
+}
+
+// スキルを削除
+export async function deleteTechSkill(skillId: string) {
+  try {
+    await deleteSkill(skillId);
+
+    revalidatePath("/");
+    return true;
+  } catch (error) {
+    console.error("スキル削除エラー:", error);
+    throw new Error("スキルの削除に失敗しました");
+  }
+}

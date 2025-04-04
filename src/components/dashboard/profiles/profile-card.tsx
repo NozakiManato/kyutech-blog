@@ -6,14 +6,21 @@ import ProfileHeader from "./ui/profile-header";
 
 import { ProfileEditButtons } from "./ui/profile-edit-button";
 import { ProfileCardProps, profileProps, TechSkill } from "@/types";
-import { defaultTechSkills } from "@/components/icons/icon";
 import { toast } from "sonner";
-import { saveUserProfileAction, toggleCheckedInStatus } from "@/lib/actions";
+import {
+  addTechSkill,
+  deleteTechSkill,
+  saveUserProfileAction,
+  toggleCheckedInStatus,
+  updateTechSkill,
+} from "@/lib/actions";
 import ProfileForm from "./ui/profile-form";
 import { z } from "zod";
 import { profileFormSchema } from "@/lib/validations/profile";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import TechSkillsSection from "./ui/tech-skills-section";
+import { defaultTechSkills } from "@/components/icons/tech-icons";
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
@@ -130,6 +137,65 @@ const ProfileCard = ({ initialProfile }: ProfileCardProps) => {
     }
   };
 
+  const handleAddSkill = async (newSkill: Omit<TechSkill, "id">) => {
+    try {
+      if (!profile.id) {
+        const tempId = Math.random().toString(36).substring(2, 9);
+        setTechSkills([...techSkills, { id: tempId, ...newSkill }]);
+        return;
+      }
+      const skill = await addTechSkill(profile.id, newSkill);
+      setTechSkills([...techSkills, skill]);
+      toast.success("スキルが追加されました");
+    } catch (error) {
+      console.error("スキル追加エラー:", error);
+      toast.error("スキルの追加に失敗しました");
+    }
+  };
+  const handleEditSkill = (skill: TechSkill) => {
+    setEditingSkill(skill);
+  };
+
+  const handleSaveEditSkill = async () => {
+    if (!editingSkill || !profile.id) {
+      return;
+    }
+    try {
+      const updatedSkill = await updateTechSkill(editingSkill.id, {
+        name: editingSkill.name,
+        category: editingSkill.category,
+        iconName: editingSkill.iconName,
+      });
+
+      setTechSkills(
+        techSkills.map((skill) =>
+          skill.id === editingSkill.id ? updatedSkill : skill
+        )
+      );
+      setEditingSkill(null);
+
+      toast.success("スキルが更新されました");
+    } catch (error) {
+      console.error("スキル更新エラー:", error);
+      toast.error("スキルの更新に失敗しました");
+    }
+  };
+
+  const handleDeleteSkill = async (id: string) => {
+    try {
+      if (!profile.id) {
+        setTechSkills(techSkills.filter((skill) => skill.id !== id));
+        return;
+      }
+      await deleteTechSkill(id);
+      setTechSkills(techSkills.filter((skill) => skill.id !== id));
+      toast.success("スキルが削除されました");
+    } catch (error) {
+      console.error("スキル削除エラー:", error);
+      toast.error("スキルの削除に失敗しました");
+    }
+  };
+
   if (isLoading) {
     return (
       <Card className="w-full max-w-3xl mx-auto">
@@ -171,7 +237,7 @@ const ProfileCard = ({ initialProfile }: ProfileCardProps) => {
           </Card>
           <Card>
             <CardContent className="pb-1">
-              {/* <TechSkillsSection
+              <TechSkillsSection
                 techSkills={techSkills}
                 onAddSkill={handleAddSkill}
                 onEditSkill={handleEditSkill}
@@ -179,7 +245,7 @@ const ProfileCard = ({ initialProfile }: ProfileCardProps) => {
                 onDeleteSkill={handleDeleteSkill}
                 editingSkill={editingSkill}
                 setEditingSkill={setEditingSkill}
-              /> */}
+              />
             </CardContent>
           </Card>
         </CardContent>

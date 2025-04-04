@@ -28,12 +28,11 @@ const ProfileHeader = ({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-2xl">{profile.name}</CardTitle>
-              <CardDescription className="text-lg font-medium text-muted-foreground">
-                {profile.academicYear}
+              <CardDescription className="font-medium text-muted-foreground">
+                <div>
+                  {profile.academicYear}・{profile.researchLab}
+                </div>
               </CardDescription>
-              <p className="text-sm text-muted-foreground">
-                {profile.researchLab}
-              </p>
             </div>
             <div className="pr-20">
               <Button

@@ -7,7 +7,7 @@ const DashBoardShell = ({
   ...props
 }: DashBoardShellProps) => {
   return (
-    <div className={cn("grid items-center gap-8", className)} {...props}>
+    <div className={cn("grid items-center gap-8 pt-5", className)} {...props}>
       {children}
     </div>
   );
