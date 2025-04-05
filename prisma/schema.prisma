@@ -24,6 +24,7 @@ model UserProfile {
   updatedAt    DateTime @updatedAt
   posts        Post[]
   techSkills   TechSkill[]
+  Attendance Attendance[]
 
   @@index([userId])
 }
@@ -50,6 +51,17 @@ model TechSkill {
   profile   UserProfile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+}
+
+model Attendance {
+  id        String      @id @default(cuid())
+  profileId String      @map("user_id")
+  profile   UserProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  checkIn   DateTime    @default(now()) @map("check_in")
+  checkOut  DateTime?   @map("check_out")
+  createdAt DateTime    @default(now()) @map("created_at")
 
   @@index([profileId])
 }
