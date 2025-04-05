@@ -24,7 +24,7 @@ const HamburgerMenu = ({ items }: MobileNavProps) => {
         <SheetContent side="left" className="w-64 bg-white p-4 shadow-lg">
           <SheetTitle className="flex flex-col space-y-4">
             <Link
-              href="/"
+              href="/localabo"
               onClick={() => setIsOpen(false)}
               className="font-extrabold text-2xl "
             >

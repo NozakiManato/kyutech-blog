@@ -23,7 +23,7 @@ export async function AppSidebar({
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Link href={"/"} className="hidden md:flex items-center">
+        <Link href={"/localabo"} className="hidden md:flex items-center">
           <Image
             src="/icon.svg"
             alt="icon"

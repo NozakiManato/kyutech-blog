@@ -13,7 +13,7 @@ interface MainNavProps {
 const MainNav = ({ items }: MainNavProps) => {
   return (
     <div className=" flex items-center md:gap-10">
-      <Link href={"/"} className="hidden md:flex items-center">
+      <Link href={"/localabo"} className="hidden md:flex items-center">
         <Image src="/icon.svg" alt="Icon" width="50" height="50" />
         <span className="font-bold hidden md:inline-block pl-1 md:text-4xl my-auto">
           LocaLabo

@@ -55,7 +55,12 @@ const EditSkillDialog = ({
           </div>
           <div>
             <Label htmlFor="edit-skill-category">カテゴリー</Label>
-            <Select>
+            <Select
+              value={skill.category}
+              onValueChange={(value: any) => {
+                onUpdateSkill({ ...skill, category: value });
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="カテゴリーを選択" />
               </SelectTrigger>
@@ -63,6 +68,9 @@ const EditSkillDialog = ({
                 <SelectItem value="frontend">フロントエンド</SelectItem>
                 <SelectItem value="backend">バックエンド</SelectItem>
                 <SelectItem value="database">データベース</SelectItem>
+                <SelectItem value="ai">機械学習</SelectItem>
+                <SelectItem value="image processing">画像処理</SelectItem>
+                <SelectItem value="fpga">FPGA</SelectItem>
                 <SelectItem value="devops">DevOps</SelectItem>
                 <SelectItem value="other">その他</SelectItem>
               </SelectContent>

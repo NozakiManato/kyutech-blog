@@ -94,6 +94,10 @@ export function Editor({
                 services: {
                   youtube: true,
                   codesandbox: true,
+                  facebook: true,
+                  instagram: true,
+                  twitter: true,
+                  miro: true,
                 },
               },
             },
