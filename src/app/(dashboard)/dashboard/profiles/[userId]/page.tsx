@@ -4,16 +4,21 @@ import { requireAuth } from "@/lib/auth";
 import { getUserProfile } from "@/lib/prisma/user";
 import { notFound } from "next/navigation";
 
-const Profile = async ({ params }: { params: { userId: string } }) => {
+type Props = {
+  params: { userId: string };
+};
+
+export default async function Profile(props: Props) {
   const { userId: currentUserId } = await requireAuth();
-  const profile = await getUserProfile(params.userId);
+  const userId = props.params.userId;
+  const profile = await getUserProfile(userId);
 
   if (!profile) {
     notFound();
   }
 
   const skills = await getUserTechSkills(profile.id);
-  const isOwnProfile = currentUserId === params.userId;
+  const isOwnProfile = currentUserId === userId;
 
   return (
     <>
@@ -38,6 +43,4 @@ const Profile = async ({ params }: { params: { userId: string } }) => {
       </div>
     </>
   );
-};
-
-export default Profile;
+}

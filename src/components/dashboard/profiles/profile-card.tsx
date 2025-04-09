@@ -2,10 +2,10 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import React, { useState } from "react";
-import ProfileHeader from "./ui/profile-header";
+import { ProfileHeader } from "./ui/profile-header";
 
 import { ProfileEditButtons } from "./ui/profile-edit-button";
-import { ProfileCardProps, profileProps, TechSkill } from "@/types";
+import { profileProps, TechSkill } from "@/types";
 import { toast } from "sonner";
 import {
   addTechSkill,
@@ -51,11 +51,8 @@ const ProfileCard = ({
   const [profile, setProfile] = useState<profileProps>(defaultProfile);
   const [techSkills, setTechSkills] = useState<TechSkill[]>(initialtechSkills);
   const [editMode, setEditMode] = useState(false);
-  const [editingProfile, setEditingProfile] = useState<profileProps>({
-    ...defaultProfile,
-  });
   const [editingSkill, setEditingSkill] = useState<TechSkill | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const isLoading = false;
 
   const methods = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -82,7 +79,6 @@ const ProfileCard = ({
       x: profile.x || "",
       instagram: profile.instagram || "",
     });
-    setEditingProfile({ ...profile });
     setEditMode(true);
   };
 
@@ -121,7 +117,6 @@ const ProfileCard = ({
   };
 
   const handleProfileCancel = () => {
-    setEditingProfile({ ...profile });
     setEditMode(false);
   };
 
@@ -238,7 +233,7 @@ const ProfileCard = ({
                 {!editMode ? (
                   <ProfileHeader
                     profile={profile}
-                    toggleCheckedInStatus={handleToggleCheckedInStatus}
+                    onToggleCheckedIn={handleToggleCheckedInStatus}
                     isOwnProfile={isOwnProfile}
                   />
                 ) : (
