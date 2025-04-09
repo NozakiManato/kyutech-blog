@@ -1,21 +1,22 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { CardDescription, CardTitle } from "@/components/ui/card";
 import { profileProps } from "@/types";
 
 import SocialCard from "./social-card";
+import { AttendanceButton } from "@/components/attendance/attendance-button";
 
 interface ProfileHeaderProps {
   profile: profileProps;
   toggleCheckedInStatus: () => void;
+  isOwnProfile?: boolean;
 }
 
 const ProfileHeader = ({
   profile,
   toggleCheckedInStatus,
+  isOwnProfile = false,
 }: ProfileHeaderProps) => {
   return (
     <>
@@ -34,24 +35,14 @@ const ProfileHeader = ({
                 </div>
               </CardDescription>
             </div>
-            <div className="pr-20">
-              <Button
-                variant={"ghost"}
-                size={"lg"}
-                onClick={toggleCheckedInStatus}
-                className="p-0 h-auto"
-              >
-                {profile.isCheckedIn ? (
-                  <Badge className="text-lg px-10 py-5 bg-green-500">
-                    在室中
-                  </Badge>
-                ) : (
-                  <Badge variant={"outline"} className="text-lg px-10 py-5">
-                    不在
-                  </Badge>
-                )}
-              </Button>
-            </div>
+            {isOwnProfile && (
+              <div className="pr-20">
+                <AttendanceButton
+                  isCheckedIn={profile.isCheckedIn || false}
+                  onStatusChange={toggleCheckedInStatus}
+                />
+              </div>
+            )}
           </div>
           <SocialCard profile={profile} />
         </div>

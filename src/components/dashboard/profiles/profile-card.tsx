@@ -23,9 +23,16 @@ import TechSkillsSection from "./ui/tech-skills-section";
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
+interface ProfileCardProps {
+  initialProfile: profileProps;
+  initialtechSkills: TechSkill[];
+  isOwnProfile?: boolean;
+}
+
 const ProfileCard = ({
   initialProfile,
   initialtechSkills,
+  isOwnProfile = false,
 }: ProfileCardProps) => {
   const defaultProfile: profileProps = {
     name: initialProfile?.name || "",
@@ -219,17 +226,20 @@ const ProfileCard = ({
         <CardContent className="space-y-6">
           <Card>
             <CardContent className="pb-4">
-              <ProfileEditButtons
-                editMode={editMode}
-                onEdit={handleProfileEdit}
-                onSave={handleProfileSave}
-                onCancel={handleProfileCancel}
-              />
+              {isOwnProfile && (
+                <ProfileEditButtons
+                  editMode={editMode}
+                  onEdit={handleProfileEdit}
+                  onSave={handleProfileSave}
+                  onCancel={handleProfileCancel}
+                />
+              )}
               <FormProvider {...methods}>
                 {!editMode ? (
                   <ProfileHeader
                     profile={profile}
                     toggleCheckedInStatus={handleToggleCheckedInStatus}
+                    isOwnProfile={isOwnProfile}
                   />
                 ) : (
                   <ProfileForm />
@@ -247,6 +257,7 @@ const ProfileCard = ({
                 onDeleteSkill={handleDeleteSkill}
                 editingSkill={editingSkill}
                 setEditingSkill={setEditingSkill}
+                isOwnProfile={isOwnProfile}
               />
             </CardContent>
           </Card>

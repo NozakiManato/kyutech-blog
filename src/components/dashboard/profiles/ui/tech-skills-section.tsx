@@ -8,15 +8,16 @@ import TechSkillItem from "./tech-skill-item";
 import AddSkillDialog from "./add-skill-dialog";
 import EditSkillDialog from "./edit-skill-dialog";
 
-type Props = {
+interface Props {
   techSkills: TechSkill[];
   onAddSkill: (skill: Omit<TechSkill, "id">) => void;
-  onEditSkill: (Skill: TechSkill) => void;
+  onEditSkill: (skill: TechSkill) => void;
   onSaveEditSkill: () => void;
   onDeleteSkill: (id: string) => void;
   editingSkill: TechSkill | null;
   setEditingSkill: (skill: TechSkill | null) => void;
-};
+  isOwnProfile?: boolean;
+}
 
 const TechSkillsSection = ({
   techSkills,
@@ -26,6 +27,7 @@ const TechSkillsSection = ({
   onDeleteSkill,
   editingSkill,
   setEditingSkill,
+  isOwnProfile = false,
 }: Props) => {
   const [activeTab, setActiveTab] = useState("all");
   const [isAddSkillOpen, setIsAddSkillOpen] = useState(false);
@@ -38,16 +40,18 @@ const TechSkillsSection = ({
     <>
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-lg font-medium">技術スタック</h3>
-        <Button
-          variant={"outline"}
-          size={"sm"}
-          onClick={() => setIsAddSkillOpen(true)}
-        >
-          <Plus className="h-3.5 w-3.5 mr-1.5" />
-          スキル追加
-        </Button>
+        {isOwnProfile && (
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            onClick={() => setIsAddSkillOpen(true)}
+          >
+            <Plus className="h-3.5 w-3.5 mr-1.5" />
+            スキル追加
+          </Button>
+        )}
       </div>
-      <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
+      <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-4 w-full justify-start">
           <TabsTrigger value="all">すべて</TabsTrigger>
           <TabsTrigger value="frontend">フロントエンド</TabsTrigger>
@@ -67,6 +71,7 @@ const TechSkillsSection = ({
                 skill={skill}
                 onEdit={onEditSkill}
                 onDelete={onDeleteSkill}
+                isOwnProfile={isOwnProfile}
               />
             ))}
             {filteredSkills.length === 0 && (
@@ -78,21 +83,25 @@ const TechSkillsSection = ({
         </TabsContent>
       </Tabs>
 
-      <AddSkillDialog
-        isOpen={isAddSkillOpen}
-        onOpenChange={setIsAddSkillOpen}
-        onAddSkill={onAddSkill}
-      />
-      <EditSkillDialog
-        skill={editingSkill}
-        onOpenChange={(open) => {
-          if (!open) {
-            setEditingSkill(null);
-          }
-        }}
-        onSaveSkill={onSaveEditSkill}
-        onUpdateSkill={setEditingSkill}
-      />
+      {isOwnProfile && (
+        <>
+          <AddSkillDialog
+            isOpen={isAddSkillOpen}
+            onOpenChange={setIsAddSkillOpen}
+            onAddSkill={onAddSkill}
+          />
+          <EditSkillDialog
+            skill={editingSkill}
+            onOpenChange={(open) => {
+              if (!open) {
+                setEditingSkill(null);
+              }
+            }}
+            onSaveSkill={onSaveEditSkill}
+            onUpdateSkill={setEditingSkill}
+          />
+        </>
+      )}
     </>
   );
 };
