@@ -5,6 +5,7 @@ export const profileFormSchema = z.object({
   researchLab: z.string().min(1, "研究室は必須です"),
   academicYear: z.string().min(1, "学年は必須です"),
   description: z.string(),
+  email: z.string().email("有効なメールアドレスを入力してください").optional(),
   github: z.string(),
   x: z.string(),
   instagram: z.string(),

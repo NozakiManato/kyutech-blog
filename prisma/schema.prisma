@@ -13,6 +13,7 @@ model UserProfile {
   userId       String   @unique
   name         String
   imageUrl     String
+  email        String?
   researchLab  String
   academicYear String
   description  String?

@@ -1,6 +1,9 @@
 import { db } from "../db";
+import { UserProfile } from "@prisma/client";
 
-export const getUserProfile = async (userIdOrId: string) => {
+export const getUserProfile = async (
+  userIdOrId: string
+): Promise<UserProfile | null> => {
   try {
     // まずuserIdで検索
     let profile = await db.userProfile.findUnique({
@@ -25,6 +28,7 @@ export const createUserProfile = async ({
   userId,
   name,
   imageUrl,
+  email,
   researchLab,
   academicYear,
   description,
@@ -36,6 +40,7 @@ export const createUserProfile = async ({
   userId: string;
   name: string;
   imageUrl: string;
+  email?: string;
   researchLab: string;
   academicYear: string;
   description: string;
@@ -50,6 +55,7 @@ export const createUserProfile = async ({
         userId,
         name,
         imageUrl,
+        email,
         researchLab,
         academicYear,
         description,
@@ -65,19 +71,22 @@ export const createUserProfile = async ({
   }
 };
 
+type UpdateUserProfileData = {
+  name: string;
+  imageUrl: string;
+  email: string;
+  researchLab: string;
+  academicYear: string;
+  description: string;
+  github: string;
+  x: string;
+  instagram: string;
+  isCheckedIn: boolean;
+};
+
 export const updateUserProfile = async (
   userId: string,
-  data: {
-    name?: string;
-    imageUrl: string;
-    researchLab: string;
-    academicYear: string;
-    description: string;
-    github: string;
-    x: string;
-    instagram: string;
-    isCheckedIn: boolean;
-  }
+  data: UpdateUserProfileData
 ) => {
   try {
     return await db.userProfile.update({

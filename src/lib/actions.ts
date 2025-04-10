@@ -19,6 +19,7 @@ export const saveUserProfileAction = async ({
   userId,
   name,
   imageUrl,
+  email,
   researchLab,
   academicYear,
   description,
@@ -29,7 +30,9 @@ export const saveUserProfileAction = async ({
 }: SaveUserProfileProps) => {
   try {
     const result = await updateUserProfile(userId, {
+      name,
       imageUrl,
+      email,
       researchLab,
       academicYear,
       description,
@@ -44,6 +47,7 @@ export const saveUserProfileAction = async ({
         userId,
         name,
         imageUrl,
+        email,
         researchLab,
         academicYear,
         description,
@@ -75,6 +79,7 @@ export async function toggleCheckedInStatus(
     await updateUserProfile(userId, {
       name: profile.name,
       imageUrl: profile.imageUrl,
+      email: profile.email || "",
       researchLab: profile.researchLab,
       academicYear: profile.academicYear,
       description: profile.description || "",

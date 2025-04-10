@@ -2,7 +2,7 @@
 import { profileFormSchema } from "@/lib/validations/profile";
 import { ProfileFormProps } from "@/types";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,20 +31,37 @@ import { toast } from "sonner";
 const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
 
   const form = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: `${user?.lastName} ${user?.firstName}`,
+      name: "",
       researchLab: "",
       academicYear: "",
       description: "",
+      email: "",
       github: "",
       x: "",
       instagram: "",
     },
   });
+
+  // ユーザー情報が読み込まれた後にフォームの値を更新
+  useEffect(() => {
+    if (isLoaded && user) {
+      form.reset({
+        name: `${user.lastName || ""} ${user.firstName || ""}`.trim(),
+        researchLab: "",
+        academicYear: "",
+        description: "",
+        email: user.emailAddresses[0]?.emailAddress || "",
+        github: "",
+        x: "",
+        instagram: "",
+      });
+    }
+  }, [isLoaded, user, form]);
 
   const onSubmit = async (values: z.infer<typeof profileFormSchema>) => {
     try {
@@ -54,12 +71,13 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
         userId,
         name: values.name || "",
         imageUrl: user?.imageUrl || "",
+        email: values.email || "",
         researchLab: values.researchLab,
         academicYear: values.academicYear,
-        description: values.description,
-        github: values.github,
-        x: values.x,
-        instagram: values.instagram,
+        description: values.description || "",
+        github: values.github || "",
+        x: values.x || "",
+        instagram: values.instagram || "",
         isCheckedIn: true,
       });
 
@@ -92,6 +110,24 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
                 <FormLabel>名前</FormLabel>
                 <FormControl>
                   <Input placeholder="九工大 太郎" {...field} />
+                </FormControl>
+                <FormDescription>必須</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>メールアドレス</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="example@example.com"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>必須</FormDescription>
                 <FormMessage />

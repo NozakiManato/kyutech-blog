@@ -41,6 +41,7 @@ const ProfileCard = ({
     id: initialProfile?.id || "",
     userId: initialProfile?.userId || "",
     imageUrl: initialProfile?.imageUrl || "",
+    email: initialProfile?.email || "",
     description: initialProfile?.description || "",
     isCheckedIn: initialProfile?.isCheckedIn,
     github: initialProfile?.github || "",
@@ -60,6 +61,7 @@ const ProfileCard = ({
       name: profile.name,
       researchLab: profile.researchLab,
       academicYear: profile.academicYear,
+      email: profile.email || "",
       description: profile.description || "",
       isCheckedIn: profile.isCheckedIn,
       github: profile.github || "",
@@ -73,6 +75,7 @@ const ProfileCard = ({
       name: profile.name,
       researchLab: profile.researchLab,
       academicYear: profile.academicYear,
+      email: profile.email || "",
       description: profile.description || "",
       isCheckedIn: profile.isCheckedIn,
       github: profile.github || "",
@@ -98,21 +101,21 @@ const ProfileCard = ({
         userId: updatedProfileData.userId,
         name: updatedProfileData.name,
         imageUrl: updatedProfileData.imageUrl,
+        email: updatedProfileData.email,
         researchLab: updatedProfileData.researchLab,
         academicYear: updatedProfileData.academicYear,
         description: updatedProfileData.description,
-        x: updatedProfileData.x,
         github: updatedProfileData.github,
+        x: updatedProfileData.x,
         instagram: updatedProfileData.instagram,
         isCheckedIn: updatedProfileData.isCheckedIn,
       });
       setProfile(updatedProfileData);
       setEditMode(false);
-
-      toast.success("プロフィールが保存されました");
+      toast.success("プロフィールを更新しました");
     } catch (error) {
-      console.error("保存エラー:", error);
-      toast.error("プロフィールの保存に失敗しました");
+      console.error("Error saving profile:", error);
+      toast.error("プロフィールの更新に失敗しました");
     }
   };
 

@@ -37,6 +37,24 @@ const ProfileForm = () => {
         )}
       />
 
+      <FormField
+        control={control}
+        name="email"
+        render={({ field }) => (
+          <FormItem className="space-y-2">
+            <FormLabel>メールアドレス</FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                type="email"
+                placeholder="example@example.com"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <div className="flex space-x-4">
         <FormField
           control={control}
