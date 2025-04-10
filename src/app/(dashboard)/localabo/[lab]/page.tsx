@@ -6,12 +6,13 @@ import { getUserProfile } from "@/lib/prisma/user";
 import { notFound } from "next/navigation";
 
 type Props = {
-  params: {
+  params: Promise<{
     lab: string;
-  };
+  }>;
 };
 
-export default async function LabLocalaboPage({ params }: Props) {
+export default async function LabLocalaboPage(props: Props) {
+  const params = await props.params;
   const { userId } = await auth();
 
   if (!userId) {

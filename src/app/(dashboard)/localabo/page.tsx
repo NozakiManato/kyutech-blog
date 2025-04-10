@@ -2,9 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AllAttendanceList } from "@/components/attendance/all-attendance-list";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Monitor } from "lucide-react";
 
 export default async function LocalaboPage() {
   const { userId } = await auth();

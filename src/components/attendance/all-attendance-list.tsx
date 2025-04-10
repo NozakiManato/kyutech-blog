@@ -103,7 +103,11 @@ export function AllAttendanceList() {
         return (
           <Card key={lab} className="h-full overflow-hidden">
             <CardHeader className="pb-2">
-              <CardTitle>{lab}</CardTitle>
+              <CardTitle>
+                <Link href={`localabo/${lab}`} className="hover:underline">
+                  {lab}
+                </Link>
+              </CardTitle>
             </CardHeader>
             <CardContent className="h-[calc(100%-3rem)] overflow-y-auto">
               <div className="space-y-4">
