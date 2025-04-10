@@ -1,5 +1,4 @@
 "use client";
-import TextareaAutosize from "react-textarea-autosize";
 import {
   FormField,
   FormItem,
@@ -17,9 +16,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
 
 const ProfileForm = () => {
-  const { control } = useFormContext();
+  const { control, setValue } = useFormContext();
+  const { user, isLoaded } = useUser();
+
+  // ユーザー情報が読み込まれた後にメールアドレスを設定
+  useEffect(() => {
+    if (isLoaded && user) {
+      const userEmail = user.emailAddresses[0]?.emailAddress || "";
+      setValue("email", userEmail);
+    }
+  }, [isLoaded, user, setValue]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

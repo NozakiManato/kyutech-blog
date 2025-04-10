@@ -28,7 +28,7 @@ export const ProfileHeader = ({
         <div className="space-y-1">
           <h2 className="text-2xl font-bold">{profile.name}</h2>
           <div className="flex items-center space-x-2">
-            <Badge variant="outline">{profile.academicYear}年</Badge>
+            <Badge variant="outline">{profile.academicYear}</Badge>
             <Badge variant="outline">{profile.researchLab}</Badge>
           </div>
         </div>
