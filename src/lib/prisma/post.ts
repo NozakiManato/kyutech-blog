@@ -1,15 +1,9 @@
 import { DataProps } from "@/types";
-import { PrismaClient } from "@prisma/client";
-
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
-
-export const prisma = globalForPrisma.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+import { db } from "../db";
 
 export const getAllPosts = async () => {
   try {
-    return await prisma.post.findMany({
+    return await db.post.findMany({
       include: {
         author: true,
       },
@@ -25,7 +19,7 @@ export const getAllPosts = async () => {
 
 export const getUserPosts = async (authorId: string) => {
   try {
-    return await prisma.post.findMany({
+    return await db.post.findMany({
       where: {
         authorId,
       },
@@ -47,7 +41,7 @@ export const getUserPosts = async (authorId: string) => {
 
 export const getPostById = async (id: string) => {
   try {
-    return await prisma.post.findUnique({
+    return await db.post.findUnique({
       where: {
         id,
       },
@@ -63,7 +57,7 @@ export const getPostById = async (id: string) => {
 
 export const createPost = async (data: DataProps) => {
   try {
-    return await prisma.post.create({
+    return await db.post.create({
       data,
     });
   } catch (error) {
@@ -81,7 +75,7 @@ export const updatePost = async (
   }
 ) => {
   try {
-    return await prisma.post.update({
+    return await db.post.update({
       where: {
         id,
       },
@@ -95,7 +89,7 @@ export const updatePost = async (
 
 export const deletePost = async (id: string) => {
   try {
-    return await prisma.post.delete({
+    return await db.post.delete({
       where: {
         id,
       },

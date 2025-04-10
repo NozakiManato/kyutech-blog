@@ -1,10 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AttendanceList } from "@/components/attendance/attendance-list";
-import { getUserProfile } from "@/lib/prisma/user";
+import { AllAttendanceList } from "@/components/attendance/all-attendance-list";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Monitor } from "lucide-react";
 
 export default async function LocalaboPage() {
   const { userId } = await auth();
@@ -13,24 +13,18 @@ export default async function LocalaboPage() {
     redirect("/sign-in");
   }
 
-  const profile = await getUserProfile(userId);
-
-  if (!profile) {
-    redirect("/profile");
-  }
-
   return (
-    <div className="container mx-auto py-8">
+    <div className="py-8">
       <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>研究室在室状況</CardTitle>
+            <CardTitle>全研究室在室状況</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              {profile.researchLab}の在室状況をリアルタイムで表示しています。
+              全研究室の在室状況をリアルタイムで表示しています。
             </p>
-            <AttendanceList />
+            <AllAttendanceList />
           </CardContent>
         </Card>
       </div>

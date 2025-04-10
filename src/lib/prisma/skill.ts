@@ -1,14 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
-
-export const prisma = globalForPrisma.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+import { db } from "../db";
 
 export const getAllSkills = async () => {
   try {
-    return await prisma.techSkill.findMany({
+    return await db.techSkill.findMany({
       orderBy: {
         name: "asc",
       },
@@ -21,7 +15,7 @@ export const getAllSkills = async () => {
 
 export const getUserSkills = async (profileId: string) => {
   try {
-    return await prisma.techSkill.findMany({
+    return await db.techSkill.findMany({
       where: {
         profileId,
       },
@@ -37,7 +31,7 @@ export const getUserSkills = async (profileId: string) => {
 
 export const getSkillById = async (id: string) => {
   try {
-    return await prisma.techSkill.findUnique({
+    return await db.techSkill.findUnique({
       where: {
         id,
       },
@@ -55,7 +49,7 @@ export const createSkill = async (data: {
   profileId: string;
 }) => {
   try {
-    return await prisma.techSkill.create({
+    return await db.techSkill.create({
       data,
     });
   } catch (error) {
@@ -73,7 +67,7 @@ export const updateSkill = async (
   }
 ) => {
   try {
-    return await prisma.techSkill.update({
+    return await db.techSkill.update({
       where: {
         id,
       },
@@ -87,7 +81,7 @@ export const updateSkill = async (
 
 export const deleteSkill = async (id: string) => {
   try {
-    return await prisma.techSkill.delete({
+    return await db.techSkill.delete({
       where: {
         id,
       },
@@ -100,7 +94,7 @@ export const deleteSkill = async (id: string) => {
 
 export const deleteAllUserSkills = async (profileId: string) => {
   try {
-    return await prisma.techSkill.deleteMany({
+    return await db.techSkill.deleteMany({
       where: {
         profileId,
       },

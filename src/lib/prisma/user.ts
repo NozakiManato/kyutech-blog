@@ -1,16 +1,20 @@
-import { PrismaClient } from "@prisma/client";
+import { db } from "../db";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
-
-export const prisma = globalForPrisma.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
-
-export const getUserProfile = async (userId: string) => {
+export const getUserProfile = async (userIdOrId: string) => {
   try {
-    return await prisma.userProfile.findUnique({
-      where: { userId },
+    // まずuserIdで検索
+    let profile = await db.userProfile.findUnique({
+      where: { userId: userIdOrId },
     });
+
+    // 見つからない場合はidで検索
+    if (!profile) {
+      profile = await db.userProfile.findUnique({
+        where: { id: userIdOrId },
+      });
+    }
+
+    return profile;
   } catch (error) {
     console.error("Error fetching user profile:", error);
     return null;
@@ -41,7 +45,7 @@ export const createUserProfile = async ({
   isCheckedIn: boolean;
 }) => {
   try {
-    return await prisma.userProfile.create({
+    return await db.userProfile.create({
       data: {
         userId,
         name,
@@ -76,7 +80,7 @@ export const updateUserProfile = async (
   }
 ) => {
   try {
-    return await prisma.userProfile.update({
+    return await db.userProfile.update({
       where: { userId },
       data,
     });

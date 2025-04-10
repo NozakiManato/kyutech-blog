@@ -26,6 +26,7 @@ import {
 import { Button } from "../ui/button";
 import { useUser } from "@clerk/nextjs";
 import { Input } from "../ui/input";
+import { toast } from "sonner";
 
 const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +36,7 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
   const form = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
+      name: `${user?.lastName} ${user?.firstName}`,
       researchLab: "",
       academicYear: "",
       description: "",
@@ -48,9 +50,9 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
     try {
       setIsSubmitting(true);
 
-      await saveUserProfileAction({
+      const result = await saveUserProfileAction({
         userId,
-        name: `${user?.lastName}${user?.firstName}` || "",
+        name: values.name || "",
         imageUrl: user?.imageUrl || "",
         researchLab: values.researchLab,
         academicYear: values.academicYear,
@@ -61,10 +63,17 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
         isCheckedIn: true,
       });
 
-      router.push("/");
-      router.refresh();
+      if (result.success) {
+        toast.success("プロフィールが保存されました");
+        router.push("/");
+        router.refresh();
+      } else {
+        toast.error("プロフィールの保存に失敗しました");
+        console.error("Error saving profile:", result.error);
+      }
     } catch (error) {
       console.error("Error saving user profile:", error);
+      toast.error("エラーが発生しました");
     } finally {
       setIsSubmitting(false);
     }
@@ -75,6 +84,20 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
       <h2 className="text-lg font-medium mb-4">追加情報</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>名前</FormLabel>
+                <FormControl>
+                  <Input placeholder="九工大 太郎" {...field} />
+                </FormControl>
+                <FormDescription>必須</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="researchLab"
@@ -188,7 +211,12 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isSubmitting}
+            onClick={() => onSubmit(form.getValues())}
+          >
             {isSubmitting ? "保存中..." : "情報を保存"}
           </Button>
         </form>

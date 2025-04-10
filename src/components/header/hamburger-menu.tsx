@@ -1,7 +1,7 @@
 "use client";
 import { NavItem } from "@/types";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
@@ -13,6 +13,25 @@ interface MobileNavProps {
 
 const HamburgerMenu = ({ items }: MobileNavProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [labs, setLabs] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchLabs = async () => {
+      try {
+        const response = await fetch("/api/labs");
+        if (!response.ok) {
+          throw new Error("Failed to fetch labs");
+        }
+        const data = await response.json();
+        setLabs(data);
+      } catch (error) {
+        console.error("Error fetching labs:", error);
+      }
+    };
+
+    fetchLabs();
+  }, []);
+
   return (
     <div>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -43,6 +62,19 @@ const HamburgerMenu = ({ items }: MobileNavProps) => {
                 {item.title}
               </Link>
             ))}
+            <div className="pt-2 border-t">
+              <div className="font-semibold mb-2">研究室</div>
+              {labs.map((lab) => (
+                <Link
+                  key={lab}
+                  href={`/localabo/${encodeURIComponent(lab)}`}
+                  onClick={() => setIsOpen(false)}
+                  className="block hover:text-blue-500"
+                >
+                  {lab}
+                </Link>
+              ))}
+            </div>
           </SheetTitle>
         </SheetContent>
       </Sheet>

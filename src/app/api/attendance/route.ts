@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma/user";
+import { db } from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     }
 
     const { action } = await req.json();
-    const profile = await prisma.userProfile.findUnique({
+    const profile = await db.userProfile.findUnique({
       where: { userId },
     });
 
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     }
 
     // 現在の在室状態を確認
-    const activeAttendance = await prisma.attendance.findFirst({
+    const activeAttendance = await db.attendance.findFirst({
       where: {
         profileId: profile.id,
         checkOut: null,
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     // プロフィールの在室状態と実際のAttendanceレコードの整合性を確認
     if (profile.isCheckedIn && !activeAttendance) {
       // プロフィールは在室中とマークされているが、実際のレコードがない場合
-      await prisma.userProfile.update({
+      await db.userProfile.update({
         where: { id: profile.id },
         data: { isCheckedIn: false },
       });
@@ -46,14 +46,14 @@ export async function POST(req: Request) {
       }
 
       // 新しいチェックインを作成
-      await prisma.attendance.create({
+      await db.attendance.create({
         data: {
           profileId: profile.id,
         },
       });
 
       // プロフィールの在室状態を更新
-      await prisma.userProfile.update({
+      await db.userProfile.update({
         where: { id: profile.id },
         data: { isCheckedIn: true },
       });
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
       // 未完了のチェックインを探す
       if (!activeAttendance) {
         // プロフィールの在室状態を更新（整合性を保つため）
-        await prisma.userProfile.update({
+        await db.userProfile.update({
           where: { id: profile.id },
           data: { isCheckedIn: false },
         });
@@ -72,13 +72,13 @@ export async function POST(req: Request) {
       }
 
       // チェックアウトを記録
-      await prisma.attendance.update({
+      await db.attendance.update({
         where: { id: activeAttendance.id },
         data: { checkOut: new Date() },
       });
 
       // プロフィールの在室状態を更新
-      await prisma.userProfile.update({
+      await db.userProfile.update({
         where: { id: profile.id },
         data: { isCheckedIn: false },
       });
@@ -93,14 +93,14 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse("認証が必要です", { status: 401 });
     }
 
-    const profile = await prisma.userProfile.findUnique({
+    const profile = await db.userProfile.findUnique({
       where: { userId },
     });
 
@@ -108,13 +108,18 @@ export async function GET() {
       return new NextResponse("プロフィールが見つかりません", { status: 404 });
     }
 
+    // URLから研究室名を取得
+    const url = new URL(req.url);
+    const labName = url.searchParams.get("lab");
+
     // 研究室メンバーの在室状況を取得
-    const labMembers = await prisma.userProfile.findMany({
-      where: {
-        researchLab: profile.researchLab,
-      },
+    const labMembers = await db.userProfile.findMany({
+      where: labName
+        ? { researchLab: labName }
+        : { researchLab: profile.researchLab },
       select: {
         id: true,
+        userId: true,
         name: true,
         imageUrl: true,
         isCheckedIn: true,

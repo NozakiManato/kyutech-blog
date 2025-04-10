@@ -10,6 +10,7 @@ import Link from "next/link";
 
 interface LabMember {
   id: string;
+  userId: string;
   name: string;
   imageUrl: string;
   isCheckedIn: boolean;
@@ -19,14 +20,23 @@ interface LabMember {
   }[];
 }
 
-export function AttendanceList() {
+interface AttendanceListProps {
+  labName?: string;
+}
+
+export function AttendanceList({ labName }: AttendanceListProps) {
   const [members, setMembers] = useState<LabMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await fetch("/api/attendance");
+        // 研究室名が指定されている場合は、その研究室のメンバーのみを取得
+        const url = labName
+          ? `/api/attendance?lab=${encodeURIComponent(labName)}`
+          : "/api/attendance";
+
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch members");
         }
@@ -43,17 +53,20 @@ export function AttendanceList() {
     const interval = setInterval(fetchMembers, 60000); // 1分ごとに更新
 
     return () => clearInterval(interval);
-  }, []);
+  }, [labName]);
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="flex items-center space-x-4">
+      <div className="grid grid-cols-1 gap-4">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div
+            key={i}
+            className="flex items-center space-x-4 p-4 rounded-lg border bg-card"
+          >
             <Skeleton className="h-12 w-12 rounded-full" />
             <div className="space-y-2">
-              <Skeleton className="h-4 w-[200px]" />
               <Skeleton className="h-4 w-[150px]" />
+              <Skeleton className="h-4 w-[100px]" />
             </div>
           </div>
         ))}
@@ -65,7 +78,7 @@ export function AttendanceList() {
   const absentMembers = members.filter((member) => !member.isCheckedIn);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h3 className="text-lg font-semibold mb-4">
           在室中 ({presentMembers.length})
@@ -75,7 +88,7 @@ export function AttendanceList() {
             現在在室しているメンバーはいません
           </p>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
             {presentMembers.map((member) => (
               <div
                 key={member.id}
@@ -91,7 +104,7 @@ export function AttendanceList() {
                   <div>
                     <div className="flex items-center space-x-2">
                       <Link
-                        href={`/dashboard/profiles/${member.id}`}
+                        href={`/dashboard/profiles/${member.userId}`}
                         className="font-medium hover:underline"
                       >
                         {member.name}
@@ -123,6 +136,7 @@ export function AttendanceList() {
           </div>
         )}
       </div>
+
       <div>
         <h3 className="text-lg font-semibold mb-4">
           不在 ({absentMembers.length})
@@ -132,7 +146,7 @@ export function AttendanceList() {
             退室しているメンバーはいません
           </p>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
             {absentMembers.map((member) => (
               <div
                 key={member.id}
@@ -148,7 +162,7 @@ export function AttendanceList() {
                   <div>
                     <div className="flex items-center space-x-2">
                       <Link
-                        href={`/dashboard/profiles/${member.id}`}
+                        href={`/dashboard/profiles/${member.userId}`}
                         className="font-medium hover:underline"
                       >
                         {member.name}
