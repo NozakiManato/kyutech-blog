@@ -1,0 +1,30 @@
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { db } from "@/lib/db";
+
+export async function GET(
+  req: Request,
+  { params }: { params: { userId: string } }
+) {
+  try {
+    const { userId: currentUserId } = await auth();
+    if (!currentUserId) {
+      return new NextResponse("認証が必要です", { status: 401 });
+    }
+
+    const targetUserId = await params.userId;
+
+    const profile = await db.userProfile.findUnique({
+      where: { userId: targetUserId },
+    });
+
+    if (!profile) {
+      return new NextResponse("プロフィールが見つかりません", { status: 404 });
+    }
+
+    return NextResponse.json(profile);
+  } catch (error) {
+    console.error("[PROFILE_GET]", error);
+    return new NextResponse("サーバーエラーが発生しました", { status: 500 });
+  }
+}
