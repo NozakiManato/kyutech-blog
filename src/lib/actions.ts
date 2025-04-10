@@ -14,6 +14,7 @@ import {
   getUserSkills,
   updateSkill,
 } from "./prisma/skill";
+import { createAttendance, updateAttendance } from "./prisma/attendance";
 
 export const saveUserProfileAction = async ({
   userId,
@@ -32,7 +33,7 @@ export const saveUserProfileAction = async ({
     const result = await updateUserProfile(userId, {
       name,
       imageUrl,
-      email,
+      email: email || "",
       researchLab,
       academicYear,
       description,
@@ -74,6 +75,17 @@ export async function toggleCheckedInStatus(
 
     if (!profile) {
       throw new Error("プロフィールが見つかりません");
+    }
+
+    if (!profile.id) {
+      throw new Error("プロフィールIDが見つかりません");
+    }
+
+    // Attendanceテーブルへの記録
+    if (isCheckedIn) {
+      await createAttendance(profile.id);
+    } else {
+      await updateAttendance(profile.id);
     }
 
     await updateUserProfile(userId, {
