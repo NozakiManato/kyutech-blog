@@ -9,7 +9,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  TooltipProps,
 } from "recharts";
 
 type AttendanceRecord = {
@@ -22,17 +21,20 @@ type ChartData = {
   date: string;
   dayOfMonth: string;
   hours: number;
+  hoursText: string;
 };
 
 type AttendanceChartProps = {
   records: AttendanceRecord[];
 };
 
-type CustomTooltipProps = TooltipProps<number, string> & {
+type CustomTooltipProps = {
+  active?: boolean;
   payload?: Array<{
     payload: ChartData;
     value: number;
   }>;
+  label?: string;
 };
 
 export function AttendanceChart({ records }: AttendanceChartProps) {
@@ -58,10 +60,18 @@ export function AttendanceChart({ records }: AttendanceChartProps) {
       return acc + duration / (1000 * 60 * 60);
     }, 0);
 
+    // 時間と分に変換
+    const hours = Math.floor(totalHours);
+    const minutes = Math.round((totalHours - hours) * 60);
+
+    // 表示用のテキストを作成
+    const hoursText = minutes > 0 ? `${hours}時間${minutes}分` : `${hours}時間`;
+
     return {
       date: format(date, "E", { locale: ja }),
       dayOfMonth: format(date, "M/d"),
       hours: Number(totalHours.toFixed(1)),
+      hoursText,
     };
   });
 
@@ -70,7 +80,7 @@ export function AttendanceChart({ records }: AttendanceChartProps) {
       return (
         <div className="bg-background border rounded-lg p-2 shadow-md">
           <p className="font-medium">{`${payload[0].payload.dayOfMonth} (${label})`}</p>
-          <p className="text-sm">{`${payload[0].value}時間`}</p>
+          <p className="text-sm">{`${payload[0].payload.hoursText}`}</p>
         </div>
       );
     }
