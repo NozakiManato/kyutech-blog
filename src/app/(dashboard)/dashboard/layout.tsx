@@ -1,8 +1,6 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { CustomTrigger } from "@/components/sidebar/custom-trigger";
 import { SidebarClient } from "@/components/sidebar/sidebar-client";
-import { Toaster } from "@/components/ui/sonner";
-
 import { dashboardConfig } from "@/config/dashboard";
 import { requireAuth } from "@/lib/auth";
 import { PageLayoutProps } from "@/types";
@@ -24,7 +22,6 @@ const DashboardLayout = async ({ children }: PageLayoutProps) => {
         </div>
         <div className="container">{children}</div>
       </main>
-      <Toaster richColors />
     </SidebarClient>
   );
 };

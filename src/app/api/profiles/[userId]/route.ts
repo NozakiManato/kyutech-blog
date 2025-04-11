@@ -4,15 +4,16 @@ import { db } from "@/lib/db";
 
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
+  const params = await props.params;
   try {
     const { userId: currentUserId } = await auth();
     if (!currentUserId) {
       return new NextResponse("認証が必要です", { status: 401 });
     }
 
-    const targetUserId = await params.userId;
+    const targetUserId = params.userId;
 
     const profile = await db.userProfile.findUnique({
       where: { userId: targetUserId },

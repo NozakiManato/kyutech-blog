@@ -139,7 +139,7 @@ export function AllAttendanceList() {
                             <div>
                               <div className="flex items-center space-x-1">
                                 <Link
-                                  href={`/dashboard/profiles/${member.userId}`}
+                                  href={`/dashboard/${member.userId}`}
                                   className="font-medium hover:underline text-sm"
                                 >
                                   {member.name}
@@ -207,7 +207,7 @@ export function AllAttendanceList() {
                             <div>
                               <div className="flex items-center space-x-1">
                                 <Link
-                                  href={`/dashboard/profiles/${member.userId}`}
+                                  href={`/dashboard/${member.userId}`}
                                   className="font-medium hover:underline text-sm"
                                 >
                                   {member.name}

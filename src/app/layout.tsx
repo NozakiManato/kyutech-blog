@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 import { ClerkProvider } from "@clerk/nextjs";
 import { jaJP } from "@clerk/localizations";
+import { Toaster } from "sonner";
 
 const fontNotoSansJP = Noto_Sans_JP({ subsets: ["latin"] });
 
@@ -46,6 +47,7 @@ const RootLayout = ({
           )}
         >
           {children}
+          <Toaster richColors />
         </body>
       </html>
     </ClerkProvider>

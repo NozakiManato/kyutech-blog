@@ -30,13 +30,21 @@ export const ProfileHeader = ({
           <div className="flex items-center space-x-2">
             <Badge variant="outline">{profile.academicYear}</Badge>
             <Badge variant="outline">{profile.researchLab}</Badge>
+            <SocialLinks
+              github={profile.github}
+              x={profile.x}
+              instagram={profile.instagram}
+            />
           </div>
         </div>
         {isOwnProfile && (
           <Button
-            variant={profile.isCheckedIn ? "destructive" : "default"}
             onClick={onToggleCheckedIn}
-            className="ml-auto"
+            className={`ml-auto px-6 py-2 text-lg ${
+              profile.isCheckedIn
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
           >
             {profile.isCheckedIn ? "退室" : "在室"}
           </Button>
@@ -48,14 +56,7 @@ export const ProfileHeader = ({
           <h3 className="text-lg font-semibold">自己紹介</h3>
           <p className="text-muted-foreground">{profile.description}</p>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold mb-2">ソーシャルリンク</h3>
-          <SocialLinks
-            github={profile.github}
-            x={profile.x}
-            instagram={profile.instagram}
-          />
-        </div>
+        <div></div>
       </div>
     </div>
   );
