@@ -2,7 +2,15 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendCheckoutReminderEmail } from "@/lib/mail";
 
+export async function GET() {
+  return await sendReminderEmails();
+}
+
 export async function POST() {
+  return await sendReminderEmails();
+}
+
+async function sendReminderEmails() {
   try {
     // 現在在室中のユーザーを取得
     const activeUsers = await db.userProfile.findMany({
