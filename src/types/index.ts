@@ -53,6 +53,7 @@ export type EditProfileProps = {
   params: {
     userId: string;
   };
+  searchParams?: { [key: string]: string | string[] | undefined };
 };
 export type ProfileFormProps = {
   userId: string;
@@ -69,7 +70,7 @@ export type SidebarNavItem = {
   title: string;
   disabled?: boolean;
   external?: boolean;
-  icon: ComponentType<any>;
+  icon: ComponentType<{ className?: string }>;
 } & (
   | {
       href: string;
@@ -107,7 +108,7 @@ export type PostCardProps = {
   post: {
     id: string;
     title: string;
-    content: any;
+    content: Record<string, unknown>;
     published: boolean;
     createdAt: Date;
     author?: {
@@ -134,7 +135,7 @@ export type PostOperationsProps = {
 
 export type DataProps = {
   title: string;
-  content: any;
+  content: Record<string, unknown>;
   published: boolean;
   authorId: string;
 };
@@ -144,7 +145,7 @@ export type PostFormProps = {
   post?: {
     id: string;
     title: string;
-    content: any;
+    content: Record<string, unknown>;
     published: boolean;
   };
   isEditing?: boolean;
@@ -206,4 +207,98 @@ export interface CategoryIconMapping {
 export interface ProfileCardProps {
   initialProfile: profileProps;
   initialtechSkills: TechSkill[];
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  content: string;
+  description: string;
+  published: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  authorId: string;
+  author: User;
+  tags: string[];
+  likes: number;
+  views: number;
+  comments: Comment[];
+}
+
+export interface Comment {
+  id: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  authorId: string;
+  author: User;
+  postId: string;
+  post: Post;
+  parentId?: string;
+  parent?: Comment;
+  replies: Comment[];
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+  bio?: string;
+  github?: string;
+  twitter?: string;
+  website?: string;
+  role: UserRole;
+  posts: Post[];
+  comments: Comment[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type UserRole = "ADMIN" | "USER" | "EDITOR";
+
+export interface Profile {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  image?: string;
+  bio?: string;
+  github?: string;
+  twitter?: string;
+  website?: string;
+  academicYear?: string;
+  researchLab?: string;
+  isCheckedIn: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  userId: string;
+  user: User;
+  checkIn: Date;
+  checkOut?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AttendanceHistory {
+  records: AttendanceRecord[];
+  totalTime: number;
+}
+
+export interface AttendanceStatus {
+  id: string;
+  userId: string;
+  name: string;
+  imageUrl: string;
+  isCheckedIn: boolean;
+  academicYear?: string;
+  researchLab?: string;
+  Attendance: {
+    checkIn: string;
+  }[];
+  weekRecords?: AttendanceRecord[];
 }

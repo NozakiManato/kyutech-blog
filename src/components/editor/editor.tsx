@@ -4,20 +4,27 @@ import { useEffect, useRef, useState } from "react";
 // EditorJS型定義
 interface EditorJSOptions {
   holder: string;
-  tools?: Record<string, any>;
-  data?: any;
-  onChange?: (api: any, data: any) => void;
-  onReady?: any;
+  tools?: Record<string, unknown>;
+  data?: EditorData;
+  onChange?: (api: EditorJS, data: EditorData) => void;
+  onReady?: () => void;
   autofocus?: boolean;
   placeholder?: string;
-  i18n?: Record<string, any>;
+  i18n?: Record<string, unknown>;
 }
 
 interface EditorProps {
-  onChange: (data: any) => void;
-  initialData?: any;
+  onChange: (data: EditorData) => void;
+  initialData?: EditorData;
   editorId?: string;
   placeholder?: string;
+}
+
+interface EditorData {
+  blocks: Array<{
+    type: string;
+    data: Record<string, unknown>;
+  }>;
 }
 
 export function Editor({
@@ -26,8 +33,7 @@ export function Editor({
   editorId = "editorjs",
   placeholder = "内容を入力してください...",
 }: EditorProps) {
-  const editorRef = useRef<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const editorRef = useRef<EditorJS | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   // クライアントサイドでのみ実行
@@ -46,8 +52,6 @@ export function Editor({
 
     // EditorJSとプラグインを動的にインポート
     const initEditor = async () => {
-      setIsLoading(true);
-
       try {
         // EditorJSとプラグインを動的にインポート
         const EditorJS = (await import("@editorjs/editorjs")).default;
@@ -257,19 +261,8 @@ export function Editor({
         // エディタの初期化
         const editor = new EditorJS(options);
         editorRef.current = editor;
-
-        // エディタの準備完了を待つ
-        editor.isReady
-          .then(() => {
-            setIsLoading(false);
-          })
-          .catch((error) => {
-            console.error("Editor.js initialization failed:", error);
-            setIsLoading(false);
-          });
       } catch (error) {
         console.error("Failed to load Editor.js:", error);
-        setIsLoading(false);
       }
     };
 

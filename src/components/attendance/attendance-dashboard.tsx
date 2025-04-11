@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   startOfWeek,
   endOfWeek,
@@ -36,7 +36,7 @@ export function AttendanceDashboard({
   const [weekRecords, setWeekRecords] = useState<AttendanceRecord[]>([]);
   const [monthRecords, setMonthRecords] = useState<AttendanceRecord[]>([]);
 
-  const fetchRecords = async () => {
+  const fetchRecords = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -88,11 +88,11 @@ export function AttendanceDashboard({
     } finally {
       setLoading(false);
     }
-  };
+  }, [targetUserId]);
 
   useEffect(() => {
     fetchRecords();
-  }, [targetUserId]);
+  }, [fetchRecords]);
 
   // 在室時間を計算する関数
   const calculateTotalTime = (records: AttendanceRecord[]) => {

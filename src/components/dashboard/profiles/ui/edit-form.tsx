@@ -20,13 +20,12 @@ import { saveUserProfileAction } from "@/lib/actions";
 import { profileFormSchema } from "@/lib/validations/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const EditForm = ({ profile, onCancel }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const form = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -53,7 +52,6 @@ const EditForm = ({ profile, onCancel }) => {
 
   const onSubmit = async (values: z.infer<typeof profileFormSchema>) => {
     try {
-      setIsSubmitting(true);
       await saveUserProfileAction({
         userId: profile.userId,
         name: values.name,
@@ -66,13 +64,17 @@ const EditForm = ({ profile, onCancel }) => {
         instagram: values.instagram,
         isCheckedIn: profile.isCheckedIn,
       });
+      toast.success("プロフィールを更新しました", {
+        description: "プロフィールが正常に更新されました。",
+      });
       if (onCancel) {
         onCancel();
       }
     } catch (error) {
-      console.error("Error saving user profile:", error);
-    } finally {
-      setIsSubmitting(false);
+      console.error(error);
+      toast.error("エラーが発生しました", {
+        description: "プロフィールの更新中にエラーが発生しました。",
+      });
     }
   };
   return (

@@ -63,7 +63,7 @@ const AddSkillDialogProps = ({ isOpen, onOpenChange, onAddSkill }: Props) => {
             <Label htmlFor="skill-category">カテゴリー</Label>
             <Select
               value={newSkill.category}
-              onValueChange={(value: any) =>
+              onValueChange={(value: TechSkill["category"]) =>
                 setNewSkill({ ...newSkill, category: value })
               }
             >

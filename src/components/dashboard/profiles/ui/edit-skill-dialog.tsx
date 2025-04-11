@@ -57,7 +57,7 @@ const EditSkillDialog = ({
             <Label htmlFor="edit-skill-category">カテゴリー</Label>
             <Select
               value={skill.category}
-              onValueChange={(value: any) => {
+              onValueChange={(value: TechSkill["category"]) => {
                 onUpdateSkill({ ...skill, category: value });
               }}
             >

@@ -124,6 +124,11 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
     if (!member.weekRecords) return false;
 
     const totalMinutes = calculateTotalTime(member.weekRecords);
+    console.log(
+      `メンバー: ${member.name}, 研究室: ${
+        member.researchLab
+      }, 在室時間: ${totalMinutes}分, 20時間以上: ${totalMinutes > 20 * 60}`
+    );
     return totalMinutes > 20 * 60; // 20時間 = 20 * 60分
   };
 
@@ -224,11 +229,7 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                       }`}
                     >
                       {formatDuration(calculateTotalTime(member.weekRecords))}
-                      {isOverTwentyHours(member) && (
-                        <span className="ml-1 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
-                          20時間以上
-                        </span>
-                      )}
+                      {isOverTwentyHours(member)}
                     </p>
                   </div>
                 )}

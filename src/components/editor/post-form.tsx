@@ -19,7 +19,7 @@ import TextareaAutosize from "react-textarea-autosize";
 
 const formSchema = z.object({
   title: z.string().min(1, "タイトルは必須です"),
-  content: z.any().optional(), // EditorJSのJSONデータを受け取るためにany型を使用
+  content: z.record(z.unknown()).optional(),
   published: z.boolean().default(false),
 });
 
@@ -28,7 +28,7 @@ interface PostFormProps {
   post?: {
     id: string;
     title: string;
-    content: any;
+    content: Record<string, unknown>;
     published: boolean;
   };
   name: string;
@@ -42,9 +42,10 @@ export function PostForm({
   isEditing = false,
 }: PostFormProps) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [editorContent, setEditorContent] = useState<any>(
-    post?.content || null
-  );
+  const [editorContent, setEditorContent] = useState<Record<
+    string,
+    unknown
+  > | null>(post?.content || null);
   const [editorLoaded, setEditorLoaded] = useState(false);
   const router = useRouter();
 

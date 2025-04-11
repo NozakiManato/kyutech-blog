@@ -1,4 +1,4 @@
-import { CategoryIconMapping, IconMapping, TechSkill } from "@/types";
+import { CategoryIconMapping, IconMapping } from "@/types";
 import { Cloud, Code, Database, Server, Wrench } from "lucide-react";
 
 export const techIcons: IconMapping = {

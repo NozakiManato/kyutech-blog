@@ -1,32 +1,37 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "../ui/button";
+
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Icon } from "../icons/icon";
-import { z } from "zod";
-import { formSchema } from "@/lib/validations/post";
+import { toast } from "sonner";
 
-const PostButton = () => {
-  const [isLoading, setIsLoading] = useState(false);
+interface PostButtonProps {
+  onPost: () => Promise<void>;
+  disabled?: boolean;
+}
 
-  const handleClick = async (values: z.infer<typeof formSchema>) => {};
+export function PostButton({ onPost, disabled = false }: PostButtonProps) {
+  const [isPosting, setIsPosting] = useState(false);
+
+  const handlePost = async () => {
+    try {
+      setIsPosting(true);
+      await onPost();
+      toast.success("投稿しました", {
+        description: "記事が正常に投稿されました。",
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("エラーが発生しました", {
+        description: "記事の投稿中にエラーが発生しました。",
+      });
+    } finally {
+      setIsPosting(false);
+    }
+  };
 
   return (
-    <button
-      className={cn(buttonVariants(), {
-        "cursor-not-allowed opacity-60": isLoading,
-      })}
-      onClick={handleClick}
-      disabled={isLoading}
-    >
-      {isLoading ? (
-        <Icon.spinner className="animate-spin mr-2 h-4 w-4" />
-      ) : (
-        <Icon.add className="mr-2 h-4 w-4" />
-      )}
-      新しい投稿
-    </button>
+    <Button onClick={handlePost} disabled={disabled || isPosting}>
+      {isPosting ? "投稿中..." : "投稿"}
+    </Button>
   );
-};
-
-export default PostButton;
+}

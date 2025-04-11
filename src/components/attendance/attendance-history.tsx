@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getAttendanceHistory } from "@/app/actions/attendance";
+import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 type AttendanceRecord = {
   id: string;
@@ -21,29 +20,30 @@ export function AttendanceHistory({ targetUserId }: { targetUserId?: string }) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const { toast } = useToast();
 
-  const fetchRecords = async () => {
+  const fetchRecords = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await getAttendanceHistory(targetUserId, page);
-      setRecords(response.records);
-      setTotalPages(response.totalPages);
+      const response = await fetch(
+        `/api/attendance/history?userId=${targetUserId}&page=${page}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch records");
+      }
+      const data = await response.json();
+      setRecords(data.records);
+      setTotalPages(data.totalPages);
     } catch (error) {
       console.error("在室記録の取得に失敗しました:", error);
-      toast({
-        title: "エラー",
-        description: "在室記録の取得に失敗しました",
-        variant: "destructive",
-      });
+      toast.error("在室記録の取得に失敗しました");
     } finally {
       setLoading(false);
     }
-  };
+  }, [targetUserId, page]);
 
   useEffect(() => {
     fetchRecords();
-  }, [page, targetUserId]);
+  }, [targetUserId, fetchRecords]);
 
   const formatDate = (date: Date) => {
     return format(new Date(date), "yyyy年MM月dd日 HH:mm", { locale: ja });

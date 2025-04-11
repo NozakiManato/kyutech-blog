@@ -5,14 +5,18 @@ import PostItem from "@/components/dashboard/blogs/post-item";
 import { Icon } from "@/components/icons/icon";
 import { Button } from "@/components/ui/button";
 import { getUserPosts } from "@/lib/prisma/post";
-import { EditProfileProps } from "@/types";
 import Link from "next/link";
 import React from "react";
 
-const DashboardPage = async (props: EditProfileProps) => {
-  const params = await props.params;
+interface PageProps {
+  params: {
+    userId: string;
+  };
+}
 
-  const posts = await getUserPosts(params.userId);
+const DashboardPage = async ({ params }: PageProps) => {
+  const targetUserIdOrId = params.userId;
+  const posts = await getUserPosts(targetUserIdOrId);
 
   return (
     <DashBoardShell>
