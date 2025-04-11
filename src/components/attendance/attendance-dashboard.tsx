@@ -174,7 +174,7 @@ export function AttendanceDashboard({
           {loading ? (
             <Skeleton className="h-64 w-full" />
           ) : (
-            <AttendanceChart records={weekRecords} />
+            <AttendanceChart records={records} />
           )}
         </CardContent>
       </Card>

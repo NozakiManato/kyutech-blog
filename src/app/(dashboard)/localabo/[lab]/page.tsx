@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AttendanceList } from "@/components/attendance/attendance-list";
+import { LabAttendanceList } from "@/components/attendance/lab-attendance-list";
 import { getUserProfile } from "@/lib/prisma/user";
 import { notFound } from "next/navigation";
 
@@ -45,7 +45,7 @@ export default async function LabLocalaboPage(props: Props) {
             <p className="text-sm text-muted-foreground mb-4">
               {labName}の在室状況をリアルタイムで表示しています。
             </p>
-            <AttendanceList labName={labName} />
+            <LabAttendanceList labName={labName} />
           </CardContent>
         </Card>
       </div>

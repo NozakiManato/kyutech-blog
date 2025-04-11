@@ -169,9 +169,6 @@ export function AllAttendanceList() {
                           </div>
                           <div className="flex items-center space-x-1">
                             <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                            <span className="text-xs text-muted-foreground">
-                              在室中
-                            </span>
                           </div>
                         </div>
                       ))}
@@ -225,9 +222,6 @@ export function AllAttendanceList() {
                           </div>
                           <div className="flex items-center space-x-1">
                             <div className="h-2 w-2 rounded-full bg-gray-300"></div>
-                            <span className="text-xs text-muted-foreground">
-                              退室中
-                            </span>
                           </div>
                         </div>
                       ))}

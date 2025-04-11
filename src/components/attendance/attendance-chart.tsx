@@ -1,14 +1,15 @@
 "use client";
 
-import { format, startOfWeek, addDays } from "date-fns";
+import { format, addDays, startOfWeek } from "date-fns";
 import { ja } from "date-fns/locale";
 import {
-  BarChart,
   Bar,
+  BarChart,
+  ResponsiveContainer,
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer,
+  TooltipProps,
 } from "recharts";
 
 type AttendanceRecord = {
@@ -19,72 +20,83 @@ type AttendanceRecord = {
 
 type ChartData = {
   date: string;
+  dayOfMonth: string;
   hours: number;
 };
 
-type CustomTooltipProps = {
-  active?: boolean;
+type AttendanceChartProps = {
+  records: AttendanceRecord[];
+};
+
+type CustomTooltipProps = TooltipProps<number, string> & {
   payload?: Array<{
     payload: ChartData;
+    value: number;
   }>;
-  label?: string;
 };
 
-const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-white p-2 border rounded shadow">
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-sm text-gray-600">
-          在室時間: {payload[0].payload.hours.toFixed(1)}時間
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
+export function AttendanceChart({ records }: AttendanceChartProps) {
+  const today = new Date();
+  const weekStart = startOfWeek(today, { locale: ja, weekStartsOn: 1 });
+  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-export function AttendanceChart({ records }: { records: AttendanceRecord[] }) {
-  // 月曜日始まりの過去7日間のデータを準備
-  const data: ChartData[] = Array.from({ length: 7 }, (_, i) => {
-    // 現在の日付から月曜日を基準に日付を計算
-    const today = new Date();
-    const monday = startOfWeek(today, { locale: ja, weekStartsOn: 1 });
-    const date = addDays(monday, i);
-    const dateStr = format(date, "yyyy-MM-dd");
-
-    // その日の記録をフィルタリング
+  const chartData: ChartData[] = weekDays.map((date) => {
     const dayRecords = records.filter((record) => {
-      const recordDate = format(new Date(record.checkIn), "yyyy-MM-dd");
-      return recordDate === dateStr;
+      const recordDate = new Date(record.checkIn);
+      return (
+        recordDate.getDate() === date.getDate() &&
+        recordDate.getMonth() === date.getMonth() &&
+        recordDate.getFullYear() === date.getFullYear()
+      );
     });
 
-    // 在室時間を計算
-    const totalHours = dayRecords.reduce((total, record) => {
-      if (!record.checkOut) return total;
+    const totalHours = dayRecords.reduce((acc, record) => {
+      if (!record.checkOut) return acc;
       const duration =
         new Date(record.checkOut).getTime() -
         new Date(record.checkIn).getTime();
-      return total + duration / (1000 * 60 * 60);
+      return acc + duration / (1000 * 60 * 60);
     }, 0);
 
     return {
-      date: format(date, "M/d (E)", { locale: ja }),
+      date: format(date, "E", { locale: ja }),
+      dayOfMonth: format(date, "M/d"),
       hours: Number(totalHours.toFixed(1)),
     };
   });
 
+  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-background border rounded-lg p-2 shadow-md">
+          <p className="font-medium">{`${payload[0].payload.dayOfMonth} (${label})`}</p>
+          <p className="text-sm">{`${payload[0].value}時間`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <div className="w-full h-[300px]">
+    <div className="h-[400px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={data}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
-          <XAxis dataKey="date" />
-          <YAxis domain={[0, "auto"]} />
+        <BarChart data={chartData}>
+          <XAxis
+            dataKey="date"
+            tickFormatter={(value) =>
+              `${value}\n${
+                chartData.find((d) => d.date === value)?.dayOfMonth || ""
+              }`
+            }
+            height={40}
+          />
+          <YAxis domain={[0, 8]} />
           <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="hours" fill="#4F46E5" />
+          <Bar
+            dataKey="hours"
+            fill="hsl(var(--primary))"
+            radius={[4, 4, 0, 0]}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>
