@@ -27,7 +27,7 @@ export async function GET(req: Request) {
     // 対象ユーザーのプロフィールを取得
     const targetProfile = targetUserId
       ? await db.userProfile.findUnique({
-          where: { id: targetUserId },
+          where: { userId: targetUserId },
         })
       : profile;
 
@@ -40,19 +40,19 @@ export async function GET(req: Request) {
     // 在室記録を取得
     const attendanceRecords = await db.attendance.findMany({
       where: {
-        profileId: targetProfile.id,
+        user_id: targetProfile.id,
       },
       orderBy: {
-        checkIn: "desc",
+        check_in: "desc",
       },
       skip,
       take: limit,
     });
 
-    // 総記録数を取得
+    // 総レコード数を取得
     const totalRecords = await db.attendance.count({
       where: {
-        profileId: targetProfile.id,
+        user_id: targetProfile.id,
       },
     });
 

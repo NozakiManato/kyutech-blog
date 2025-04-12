@@ -21,8 +21,8 @@ export async function POST(req: Request) {
     // 現在の在室状態を確認
     const activeAttendance = await db.attendance.findFirst({
       where: {
-        profileId: profile.id,
-        checkOut: null,
+        user_id: profile.id,
+        check_out: null,
       },
     });
 
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       // 新しいチェックインを作成
       await db.attendance.create({
         data: {
-          profileId: profile.id,
+          user_id: profile.id,
         },
       });
 
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
       // チェックアウトを記録
       await db.attendance.update({
         where: { id: activeAttendance.id },
-        data: { checkOut: new Date() },
+        data: { check_out: new Date() },
       });
 
       // プロフィールの在室状態を更新
@@ -127,10 +127,10 @@ export async function GET(req: Request) {
         researchLab: true,
         Attendance: {
           where: {
-            checkOut: null,
+            check_out: null,
           },
           select: {
-            checkIn: true,
+            check_in: true,
           },
           take: 1,
         },

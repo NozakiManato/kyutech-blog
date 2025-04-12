@@ -16,20 +16,20 @@ import Link from "next/link";
 
 interface AttendanceRecord {
   id: string;
-  checkIn: string;
-  checkOut: string | null;
+  check_in: string;
+  check_out: string | null;
 }
 
 interface LabMember {
   id: string;
-  profileId: string;
+  userId: string;
   name: string;
   imageUrl: string;
   isCheckedIn: boolean;
   academicYear?: string;
   researchLab: string;
   Attendance: {
-    checkIn: string;
+    check_in: string;
   }[];
   weekRecords?: AttendanceRecord[];
 }
@@ -60,7 +60,7 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
         const membersWithWeekRecords = await Promise.all(
           data.map(async (member: LabMember) => {
             const historyResponse = await fetch(
-              `/api/attendance/history?userId=${member.profileId}`
+              `/api/attendance/history?userId=${member.userId}`
             );
             if (!historyResponse.ok) {
               return member;
@@ -75,8 +75,8 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
 
             const weekRecords = historyData.records.filter(
               (record: AttendanceRecord) => {
-                const checkInDate = new Date(record.checkIn);
-                return checkInDate >= weekStart && checkInDate <= weekEnd;
+                const check_in_date = new Date(record.check_in);
+                return check_in_date >= weekStart && check_in_date <= weekEnd;
               }
             );
 
@@ -104,10 +104,12 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
   // 在室時間を計算する関数
   const calculateTotalTime = (records: AttendanceRecord[] = []) => {
     return records.reduce((total, record) => {
-      const checkIn = new Date(record.checkIn);
-      const checkOut = record.checkOut ? new Date(record.checkOut) : new Date();
-      const diffMinutes = differenceInMinutes(checkOut, checkIn);
-      return total + diffMinutes;
+      const check_in = new Date(record.check_in);
+      const check_out = record.check_out
+        ? new Date(record.check_out)
+        : new Date();
+      const diff_minutes = differenceInMinutes(check_out, check_in);
+      return total + diff_minutes;
     }, 0);
   };
 
@@ -181,7 +183,7 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                   <div>
                     <div className="flex items-center space-x-2">
                       <Link
-                        href={`/dashboard/${member.profileId}`}
+                        href={`/dashboard/${member.userId}`}
                         className="font-medium hover:underline"
                       >
                         {member.name}
@@ -193,7 +195,7 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                     {member.Attendance[0] && (
                       <p className="text-sm text-muted-foreground">
                         {formatDistanceToNow(
-                          new Date(member.Attendance[0].checkIn),
+                          new Date(member.Attendance[0].check_in),
                           {
                             addSuffix: true,
                             locale: ja,
@@ -268,7 +270,7 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                   <div>
                     <div className="flex items-center space-x-2">
                       <Link
-                        href={`/dashboard/profiles/${member.profileId}`}
+                        href={`/dashboard/profiles/${member.userId}`}
                         className="font-medium hover:underline"
                       >
                         {member.name}

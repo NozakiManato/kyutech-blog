@@ -10,9 +10,9 @@ import { toast } from "sonner";
 
 type AttendanceRecord = {
   id: string;
-  checkIn: Date;
-  checkOut: Date | null;
-  profileId: string;
+  check_in: Date;
+  check_out: Date | null;
+  user_id: string;
 };
 
 export function AttendanceHistory({ targetUserId }: { targetUserId?: string }) {
@@ -49,11 +49,11 @@ export function AttendanceHistory({ targetUserId }: { targetUserId?: string }) {
     return format(new Date(date), "yyyy年MM月dd日 HH:mm", { locale: ja });
   };
 
-  const formatDuration = (checkIn: Date, checkOut: Date | null) => {
-    if (!checkOut) return "在室中";
+  const formatDuration = (check_in: Date, check_out: Date | null) => {
+    if (!check_out) return "在室中";
 
-    const start = new Date(checkIn);
-    const end = new Date(checkOut);
+    const start = new Date(check_in);
+    const end = new Date(check_out);
     const diffMs = end.getTime() - start.getTime();
     const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
@@ -87,18 +87,18 @@ export function AttendanceHistory({ targetUserId }: { targetUserId?: string }) {
                 <div className="flex justify-between">
                   <div>
                     <p className="font-medium">
-                      チェックイン: {formatDate(record.checkIn)}
+                      チェックイン: {formatDate(record.check_in)}
                     </p>
-                    {record.checkOut && (
+                    {record.check_out && (
                       <p className="font-medium">
-                        チェックアウト: {formatDate(record.checkOut)}
+                        チェックアウト: {formatDate(record.check_out)}
                       </p>
                     )}
                   </div>
                   <div className="text-right">
                     <p className="font-medium">
                       在室時間:{" "}
-                      {formatDuration(record.checkIn, record.checkOut)}
+                      {formatDuration(record.check_in, record.check_out)}
                     </p>
                   </div>
                 </div>
