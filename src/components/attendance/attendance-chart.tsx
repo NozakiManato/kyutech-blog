@@ -13,8 +13,8 @@ import {
 
 type AttendanceRecord = {
   id: string;
-  checkIn: Date;
-  checkOut: Date | null;
+  check_in: Date;
+  check_out: Date | null;
 };
 
 type ChartData = {
@@ -44,7 +44,7 @@ export function AttendanceChart({ records }: AttendanceChartProps) {
 
   const chartData: ChartData[] = weekDays.map((date) => {
     const dayRecords = records.filter((record) => {
-      const recordDate = new Date(record.checkIn);
+      const recordDate = new Date(record.check_in);
       return (
         recordDate.getDate() === date.getDate() &&
         recordDate.getMonth() === date.getMonth() &&
@@ -53,10 +53,10 @@ export function AttendanceChart({ records }: AttendanceChartProps) {
     });
 
     const totalHours = dayRecords.reduce((acc, record) => {
-      if (!record.checkOut) return acc;
+      if (!record.check_out) return acc;
       const duration =
-        new Date(record.checkOut).getTime() -
-        new Date(record.checkIn).getTime();
+        new Date(record.check_out).getTime() -
+        new Date(record.check_in).getTime();
       return acc + duration / (1000 * 60 * 60);
     }, 0);
 
