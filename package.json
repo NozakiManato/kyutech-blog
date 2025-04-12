@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "clean": "rimraf .next",
-    "build": "npm run clean && next build",
+    "generate": "prisma generate",
+    "build": "npm run clean && npm run generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
