@@ -89,6 +89,7 @@ export async function toggleCheckedInStatus(
         await updateAttendance(profile.id);
       } catch (error) {
         // チェックイン記録が見つからない場合は、プロフィールの状態のみを更新
+        console.error(error);
         console.warn(
           "チェックイン記録が見つかりませんが、プロフィールの状態を更新します"
         );
