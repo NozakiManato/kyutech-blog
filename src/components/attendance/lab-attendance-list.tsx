@@ -22,7 +22,7 @@ interface AttendanceRecord {
 
 interface LabMember {
   id: string;
-  userId: string;
+  profileId: string;
   name: string;
   imageUrl: string;
   isCheckedIn: boolean;
@@ -60,7 +60,7 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
         const membersWithWeekRecords = await Promise.all(
           data.map(async (member: LabMember) => {
             const historyResponse = await fetch(
-              `/api/attendance/history?userId=${member.userId}`
+              `/api/attendance/history?userId=${member.profileId}`
             );
             if (!historyResponse.ok) {
               return member;
@@ -181,7 +181,7 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                   <div>
                     <div className="flex items-center space-x-2">
                       <Link
-                        href={`/dashboard/${member.userId}`}
+                        href={`/dashboard/${member.profileId}`}
                         className="font-medium hover:underline"
                       >
                         {member.name}
@@ -268,7 +268,7 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                   <div>
                     <div className="flex items-center space-x-2">
                       <Link
-                        href={`/dashboard/profiles/${member.userId}`}
+                        href={`/dashboard/profiles/${member.profileId}`}
                         className="font-medium hover:underline"
                       >
                         {member.name}

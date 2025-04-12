@@ -276,7 +276,7 @@ export interface Profile {
 
 export interface AttendanceRecord {
   id: string;
-  userId: string;
+  profileId: string;
   user: User;
   checkIn: Date;
   checkOut?: Date;
@@ -291,7 +291,7 @@ export interface AttendanceHistory {
 
 export interface AttendanceStatus {
   id: string;
-  userId: string;
+  profileId: string;
   name: string;
   imageUrl: string;
   isCheckedIn: boolean;

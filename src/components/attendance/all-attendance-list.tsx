@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface LabMember {
   id: string;
-  userId: string;
+  profileId: string;
   name: string;
   imageUrl: string;
   isCheckedIn: boolean;
@@ -139,7 +139,7 @@ export function AllAttendanceList() {
                             <div>
                               <div className="flex items-center space-x-1">
                                 <Link
-                                  href={`/dashboard/${member.userId}`}
+                                  href={`/dashboard/${member.profileId}`}
                                   className="font-medium hover:underline text-sm"
                                 >
                                   {member.name}
@@ -204,7 +204,7 @@ export function AllAttendanceList() {
                             <div>
                               <div className="flex items-center space-x-1">
                                 <Link
-                                  href={`/dashboard/${member.userId}`}
+                                  href={`/dashboard/${member.profileId}`}
                                   className="font-medium hover:underline text-sm"
                                 >
                                   {member.name}
