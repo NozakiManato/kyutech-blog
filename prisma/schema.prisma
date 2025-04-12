@@ -57,12 +57,12 @@ model TechSkill {
 }
 
 model Attendance {
-  id        String      @id @default(cuid())
-  profileId String      @map("user_id")
-  profile   UserProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  checkIn   DateTime    @default(now()) @map("check_in")
-  checkOut  DateTime?   @map("check_out")
-  createdAt DateTime    @default(now()) @map("created_at")
+  id         String      @id @default(cuid())
+  user_id    String      
+  profile    UserProfile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  check_in   DateTime    @default(now()) @map("check_in")
+  check_out  DateTime?   @map("check_out")
+  created_at DateTime    @default(now()) @map("created_at")
 
-  @@index([profileId])
+  @@index([user_id])
 }
