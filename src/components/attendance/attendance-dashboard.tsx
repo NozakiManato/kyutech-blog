@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
   startOfWeek,
   endOfWeek,
@@ -36,63 +36,66 @@ export function AttendanceDashboard({
   const [weekRecords, setWeekRecords] = useState<AttendanceRecord[]>([]);
   const [monthRecords, setMonthRecords] = useState<AttendanceRecord[]>([]);
 
-  const fetchRecords = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `/api/attendance/history${
-          targetUserId ? `?userId=${targetUserId}` : ""
-        }`
-      );
-
-      if (!response.ok) {
-        throw new Error("在室記録の取得に失敗しました");
-      }
-
-      const data = await response.json();
-      setRecords(data.records);
-
-      // 今日の記録を抽出
-      const today = new Date();
-      const todayStart = new Date(today.setHours(0, 0, 0, 0));
-      const todayEnd = new Date(today.setHours(23, 59, 59, 999));
-
-      const todayFiltered = data.records.filter((record: AttendanceRecord) => {
-        const checkInDate = new Date(record.checkIn);
-        return checkInDate >= todayStart && checkInDate <= todayEnd;
-      });
-      setTodayRecords(todayFiltered);
-
-      // 先週の記録を抽出
-      const weekStart = startOfWeek(subWeeks(new Date(), 1), { locale: ja });
-      const weekEnd = endOfWeek(subWeeks(new Date(), 1), { locale: ja });
-
-      const weekFiltered = data.records.filter((record: AttendanceRecord) => {
-        const checkInDate = new Date(record.checkIn);
-        return checkInDate >= weekStart && checkInDate <= weekEnd;
-      });
-      setWeekRecords(weekFiltered);
-
-      // 今月の記録を抽出
-      const monthStart = startOfMonth(new Date());
-      const monthEnd = endOfMonth(new Date());
-
-      const monthFiltered = data.records.filter((record: AttendanceRecord) => {
-        const checkInDate = new Date(record.checkIn);
-        return checkInDate >= monthStart && checkInDate <= monthEnd;
-      });
-      setMonthRecords(monthFiltered);
-    } catch (error) {
-      console.error("在室記録の取得に失敗しました:", error);
-      toast.error("在室記録の取得に失敗しました");
-    } finally {
-      setLoading(false);
-    }
-  }, [targetUserId]);
-
   useEffect(() => {
+    const fetchRecords = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `/api/attendance/history${
+            targetUserId ? `?userId=${targetUserId}` : ""
+          }`
+        );
+
+        if (!response.ok) {
+          throw new Error("在室記録の取得に失敗しました");
+        }
+
+        const data = await response.json();
+        setRecords(data.records);
+
+        // 今日の記録を抽出
+        const today = new Date();
+        const todayStart = new Date(today.setHours(0, 0, 0, 0));
+        const todayEnd = new Date(today.setHours(23, 59, 59, 999));
+
+        const todayFiltered = data.records.filter(
+          (record: AttendanceRecord) => {
+            const checkInDate = new Date(record.checkIn);
+            return checkInDate >= todayStart && checkInDate <= todayEnd;
+          }
+        );
+        setTodayRecords(todayFiltered);
+
+        // 先週の記録を抽出
+        const weekStart = startOfWeek(subWeeks(new Date(), 1), { locale: ja });
+        const weekEnd = endOfWeek(subWeeks(new Date(), 1), { locale: ja });
+
+        const weekFiltered = data.records.filter((record: AttendanceRecord) => {
+          const checkInDate = new Date(record.checkIn);
+          return checkInDate >= weekStart && checkInDate <= weekEnd;
+        });
+        setWeekRecords(weekFiltered);
+
+        // 今月の記録を抽出
+        const monthStart = startOfMonth(new Date());
+        const monthEnd = endOfMonth(new Date());
+
+        const monthFiltered = data.records.filter(
+          (record: AttendanceRecord) => {
+            const checkInDate = new Date(record.checkIn);
+            return checkInDate >= monthStart && checkInDate <= monthEnd;
+          }
+        );
+        setMonthRecords(monthFiltered);
+      } catch (error) {
+        console.error("在室記録の取得に失敗しました:", error);
+        toast.error("在室記録の取得に失敗しました");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchRecords();
-  }, [fetchRecords]);
+  }, [targetUserId]);
 
   // 在室時間を計算する関数
   const calculateTotalTime = (records: AttendanceRecord[]) => {

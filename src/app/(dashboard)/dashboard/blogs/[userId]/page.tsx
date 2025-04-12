@@ -14,7 +14,8 @@ interface PageProps {
   };
 }
 
-const DashboardPage = async ({ params }: PageProps) => {
+const DashboardPage = async (props: PageProps) => {
+  const params = props.params;
   const targetUserIdOrId = params.userId;
   const posts = await getUserPosts(targetUserIdOrId);
 
