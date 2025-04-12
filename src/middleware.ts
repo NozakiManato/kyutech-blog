@@ -15,7 +15,7 @@ export default clerkMiddleware(
     }
   },
   {
-    authorizedParties: ["https://www.kyutech-4lab.jp/"],
+    authorizedParties: ["https://www.kyutech-4lab.jp"],
   }
 );
 
