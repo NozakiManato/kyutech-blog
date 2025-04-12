@@ -1,7 +1,8 @@
-import { Post } from "@prisma/client";
+import { Post as PrismaPost } from "@prisma/client";
 import { LucideIcon } from "lucide-react";
 import React, { ComponentType, JSX } from "react";
 import { ReactNode } from "react";
+import { Prisma } from "@prisma/client";
 
 export type NavItem = {
   title: string;
@@ -50,10 +51,9 @@ export type SaveUserProfileProps = {
 };
 
 export type EditProfileProps = {
-  params: {
+  params: Promise<{
     userId: string;
-  };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  }>;
 };
 export type ProfileFormProps = {
   userId: string;
@@ -101,14 +101,14 @@ export type DashBoardHeaderProps = {
   children: React.ReactNode;
 };
 export type PostItemProps = {
-  post: Pick<Post, "id" | "title" | "published" | "createdAt">;
+  post: Pick<PrismaPost, "id" | "title" | "published" | "createdAt">;
 };
 
 export type PostCardProps = {
   post: {
     id: string;
     title: string;
-    content: Record<string, unknown>;
+    content: Prisma.JsonValue;
     published: boolean;
     createdAt: Date;
     author?: {
@@ -130,12 +130,12 @@ export type PostCardProps = {
 };
 
 export type PostOperationsProps = {
-  post: Pick<Post, "id" | "title">;
+  post: Pick<PrismaPost, "id" | "title">;
 };
 
 export type DataProps = {
   title: string;
-  content: Record<string, unknown>;
+  content: Prisma.InputJsonValue;
   published: boolean;
   authorId: string;
 };
@@ -152,9 +152,9 @@ export type PostFormProps = {
 };
 
 export type EditPostPageProps = {
-  params: {
+  params: Promise<{
     postId: string;
-  };
+  }>;
 };
 
 export type profileProps = {

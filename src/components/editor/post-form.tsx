@@ -53,7 +53,7 @@ export function PostForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: post?.title || "",
-      content: post?.content || null,
+      content: post?.content || {},
       published: post?.published || true,
     },
   });

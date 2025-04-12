@@ -24,9 +24,10 @@ const EditPostPage = async (props: EditPostPageProps) => {
         post={{
           id: post.id,
           title: post.title,
-          content: post.content,
+          content: post.content as Record<string, unknown>,
           published: post.published,
         }}
+        name={profile.name}
         isEditing={true}
       />
     </div>

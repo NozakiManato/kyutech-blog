@@ -1,4 +1,5 @@
 "use client";
+import EditorJS, { API, EditorConfig } from "@editorjs/editorjs";
 import { useEffect, useRef, useState } from "react";
 
 // EditorJS型定義
@@ -6,7 +7,7 @@ interface EditorJSOptions {
   holder: string;
   tools?: Record<string, unknown>;
   data?: EditorData;
-  onChange?: (api: EditorJS, data: EditorData) => void;
+  onChange?: (api: API, data: EditorData) => void;
   onReady?: () => void;
   autofocus?: boolean;
   placeholder?: string;
@@ -14,8 +15,8 @@ interface EditorJSOptions {
 }
 
 interface EditorProps {
-  onChange: (data: EditorData) => void;
-  initialData?: EditorData;
+  onChange: (data: Record<string, unknown>) => void;
+  initialData?: Record<string, unknown>;
   editorId?: string;
   placeholder?: string;
 }
@@ -54,7 +55,6 @@ export function Editor({
     const initEditor = async () => {
       try {
         // EditorJSとプラグインを動的にインポート
-        const EditorJS = (await import("@editorjs/editorjs")).default;
         const Header = (await import("@editorjs/header")).default;
         const List = (await import("@editorjs/list")).default;
         const Paragraph = (await import("@editorjs/paragraph")).default;
@@ -169,7 +169,7 @@ export function Editor({
               },
             },
           },
-          data: initialData || {
+          data: (initialData as unknown as EditorData) || {
             blocks: [
               {
                 type: "paragraph",
@@ -181,7 +181,7 @@ export function Editor({
           },
           onChange: async (api) => {
             const content = await api.saver.save();
-            onChange(content);
+            onChange(content as unknown as Record<string, unknown>);
           },
           onReady: () => {
             new DragDrop(editorRef.current);
@@ -259,7 +259,7 @@ export function Editor({
         };
 
         // エディタの初期化
-        const editor = new EditorJS(options);
+        const editor = new EditorJS(options as unknown as EditorConfig);
         editorRef.current = editor;
       } catch (error) {
         console.error("Failed to load Editor.js:", error);
