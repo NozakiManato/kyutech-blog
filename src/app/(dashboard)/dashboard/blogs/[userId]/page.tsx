@@ -9,13 +9,13 @@ import Link from "next/link";
 import React from "react";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 }
 
 const DashboardPage = async (props: PageProps) => {
-  const params = props.params;
+  const params = (await props.params);
   const targetUserIdOrId = params.userId;
   const posts = await getUserPosts(targetUserIdOrId);
 
