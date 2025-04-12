@@ -85,7 +85,14 @@ export async function toggleCheckedInStatus(
     if (isCheckedIn) {
       await createAttendance(profile.id);
     } else {
-      await updateAttendance(profile.id);
+      try {
+        await updateAttendance(profile.id);
+      } catch (error) {
+        // チェックイン記録が見つからない場合は、プロフィールの状態のみを更新
+        console.warn(
+          "チェックイン記録が見つかりませんが、プロフィールの状態を更新します"
+        );
+      }
     }
 
     await updateUserProfile(userId, {
