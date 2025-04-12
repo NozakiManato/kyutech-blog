@@ -20,9 +20,9 @@ import { AttendanceChart } from "./attendance-chart";
 
 type AttendanceRecord = {
   id: string;
-  checkIn: Date;
-  checkOut: Date | null;
-  profileId: string;
+  check_in: Date;
+  check_out: Date | null;
+  user_id: string;
 };
 
 export function AttendanceDashboard({
@@ -60,7 +60,7 @@ export function AttendanceDashboard({
 
         const todayFiltered = data.records.filter(
           (record: AttendanceRecord) => {
-            const checkInDate = new Date(record.checkIn);
+            const checkInDate = new Date(record.check_in);
             return checkInDate >= todayStart && checkInDate <= todayEnd;
           }
         );
@@ -71,7 +71,7 @@ export function AttendanceDashboard({
         const weekEnd = endOfWeek(subWeeks(new Date(), 1), { locale: ja });
 
         const weekFiltered = data.records.filter((record: AttendanceRecord) => {
-          const checkInDate = new Date(record.checkIn);
+          const checkInDate = new Date(record.check_in);
           return checkInDate >= weekStart && checkInDate <= weekEnd;
         });
         setWeekRecords(weekFiltered);
@@ -82,7 +82,7 @@ export function AttendanceDashboard({
 
         const monthFiltered = data.records.filter(
           (record: AttendanceRecord) => {
-            const checkInDate = new Date(record.checkIn);
+            const checkInDate = new Date(record.check_in);
             return checkInDate >= monthStart && checkInDate <= monthEnd;
           }
         );
@@ -100,10 +100,12 @@ export function AttendanceDashboard({
   // 在室時間を計算する関数
   const calculateTotalTime = (records: AttendanceRecord[]) => {
     return records.reduce((total, record) => {
-      const checkIn = new Date(record.checkIn);
-      const checkOut = record.checkOut ? new Date(record.checkOut) : new Date();
-      const diffMinutes = differenceInMinutes(checkOut, checkIn);
-      return total + diffMinutes;
+      const check_in = new Date(record.check_in);
+      const check_out = record.check_out
+        ? new Date(record.check_out)
+        : new Date();
+      const diff_minutes = differenceInMinutes(check_out, check_in);
+      return total + diff_minutes;
     }, 0);
   };
 

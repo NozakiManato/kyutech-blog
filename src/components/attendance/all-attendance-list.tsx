@@ -11,14 +11,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface LabMember {
   id: string;
-  profileId: string;
+  userId: string;
   name: string;
   imageUrl: string;
   isCheckedIn: boolean;
   academicYear?: string;
   researchLab: string;
   Attendance: {
-    checkIn: string;
+    check_in: string;
   }[];
 }
 
@@ -139,7 +139,7 @@ export function AllAttendanceList() {
                             <div>
                               <div className="flex items-center space-x-1">
                                 <Link
-                                  href={`/dashboard/${member.profileId}`}
+                                  href={`/dashboard/${member.userId}`}
                                   className="font-medium hover:underline text-sm"
                                 >
                                   {member.name}
@@ -153,18 +153,19 @@ export function AllAttendanceList() {
                                   </Badge>
                                 )}
                               </div>
-                              {member.Attendance[0] && (
-                                <p className="text-xs text-muted-foreground">
-                                  {formatDistanceToNow(
-                                    new Date(member.Attendance[0].checkIn),
-                                    {
-                                      addSuffix: true,
-                                      locale: ja,
-                                    }
-                                  )}
-                                  から在室中
-                                </p>
-                              )}
+                              {member.Attendance[0] &&
+                                member.Attendance[0].check_in && (
+                                  <p className="text-xs text-muted-foreground">
+                                    {formatDistanceToNow(
+                                      new Date(member.Attendance[0].check_in),
+                                      {
+                                        addSuffix: true,
+                                        locale: ja,
+                                      }
+                                    )}
+                                    から在室中
+                                  </p>
+                                )}
                             </div>
                           </div>
                           <div className="flex items-center space-x-1">
@@ -204,7 +205,7 @@ export function AllAttendanceList() {
                             <div>
                               <div className="flex items-center space-x-1">
                                 <Link
-                                  href={`/dashboard/${member.profileId}`}
+                                  href={`/dashboard/profiles/${member.userId}`}
                                   className="font-medium hover:underline text-sm"
                                 >
                                   {member.name}

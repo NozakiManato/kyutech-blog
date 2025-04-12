@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge";
 
 type AttendanceRecord = {
   id: string;
-  checkIn: Date;
-  checkOut: Date | null;
-  profileId: string;
+  check_in: Date;
+  check_out: Date | null;
+  user_id: string;
 };
 
 export interface AttendanceListProps {
@@ -50,23 +50,23 @@ export function AttendanceList({ records }: AttendanceListProps) {
           <div className="flex justify-between">
             <div>
               <p className="font-medium">
-                チェックイン: {formatDate(record.checkIn)}
+                チェックイン: {formatDate(record.check_in)}
               </p>
-              {record.checkOut && (
+              {record.check_out && (
                 <p className="font-medium">
-                  チェックアウト: {formatDate(record.checkOut)}
+                  チェックアウト: {formatDate(record.check_out)}
                 </p>
               )}
             </div>
             <div className="text-right">
               <p className="font-medium">
-                在室時間: {formatDuration(record.checkIn, record.checkOut)}
+                在室時間: {formatDuration(record.check_in, record.check_out)}
               </p>
               <Badge
-                variant={record.checkOut ? "outline" : "default"}
+                variant={record.check_out ? "outline" : "default"}
                 className="mt-1"
               >
-                {record.checkOut ? "完了" : "在室中"}
+                {record.check_out ? "完了" : "在室中"}
               </Badge>
             </div>
           </div>

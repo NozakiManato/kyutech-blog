@@ -21,10 +21,10 @@ export async function GET() {
         researchLab: true,
         Attendance: {
           where: {
-            checkOut: null,
+            check_out: null,
           },
           select: {
-            checkIn: true,
+            check_in: true,
           },
           take: 1,
         },

@@ -20,10 +20,10 @@ async function sendReminderEmails() {
       include: {
         Attendance: {
           where: {
-            checkOut: null,
+            check_out: null,
           },
           orderBy: {
-            checkIn: "desc",
+            check_in: "desc",
           },
           take: 1,
         },
@@ -37,7 +37,7 @@ async function sendReminderEmails() {
           user.email,
           user.name,
           user.userId,
-          user.Attendance[0].checkIn
+          user.Attendance[0].check_in
         );
       }
     }

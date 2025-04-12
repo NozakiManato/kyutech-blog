@@ -4,8 +4,8 @@ export const createAttendance = async (profileId: string) => {
   try {
     return await db.attendance.create({
       data: {
-        profileId,
-        checkIn: new Date(),
+        user_id: profileId,
+        check_in: new Date(),
       },
     });
   } catch (error) {
@@ -18,11 +18,11 @@ export const updateAttendance = async (profileId: string) => {
   try {
     const attendance = await db.attendance.findFirst({
       where: {
-        profileId,
-        checkOut: null,
+        user_id: profileId,
+        check_out: null,
       },
       orderBy: {
-        checkIn: "desc",
+        check_in: "desc",
       },
     });
 
@@ -35,7 +35,7 @@ export const updateAttendance = async (profileId: string) => {
         id: attendance.id,
       },
       data: {
-        checkOut: new Date(),
+        check_out: new Date(),
       },
     });
   } catch (error) {
