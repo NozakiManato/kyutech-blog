@@ -25,16 +25,29 @@ export async function GET(req: Request) {
     const skip = (page - 1) * limit;
 
     // 対象ユーザーのプロフィールを取得
-    const targetProfile = targetUserId
-      ? await db.userProfile.findUnique({
-          where: { userId: targetUserId },
-        })
-      : profile;
+    let targetProfile = profile;
 
-    if (!targetProfile) {
-      return new NextResponse("対象ユーザーのプロフィールが見つかりません", {
-        status: 404,
+    // userIdパラメータが存在し、undefinedでない場合のみ別のユーザーを検索
+    if (targetUserId && targetUserId !== "undefined") {
+      // まずidで検索
+      let foundProfile = await db.userProfile.findUnique({
+        where: { id: targetUserId },
       });
+
+      // idで見つからない場合はuserIdで検索
+      if (!foundProfile) {
+        foundProfile = await db.userProfile.findUnique({
+          where: { userId: targetUserId },
+        });
+      }
+
+      if (foundProfile) {
+        targetProfile = foundProfile;
+      } else {
+        return new NextResponse("対象ユーザーのプロフィールが見つかりません", {
+          status: 404,
+        });
+      }
     }
 
     // 在室記録を取得
