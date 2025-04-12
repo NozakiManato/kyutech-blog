@@ -1,18 +1,17 @@
 import DashBoardShell from "@/components/dashboard/blogs/dashboard-shell";
 import { AttendanceDashboard } from "@/components/attendance/attendance-dashboard";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
-const DashboardPage = async () => {
-  const { userId: currentUserId } = await auth();
+interface DashboardPageProps {
+  params: Promise<{
+    userId: string;
+  }>;
+}
 
-  if (!currentUserId) {
-    redirect("/sign-in");
-  }
-
+const DashboardPage = async (props: DashboardPageProps) => {
+  const targetUserIdOrId = (await props.params).userId;
   return (
     <DashBoardShell>
-      <AttendanceDashboard targetUserId={currentUserId} />
+      <AttendanceDashboard targetUserId={targetUserIdOrId} />
     </DashBoardShell>
   );
 };

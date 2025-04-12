@@ -15,12 +15,14 @@ export async function GET(
 
     const targetUserId = params.userId;
 
-    const profile = await db.userProfile.findUnique({
+    let profile = await db.userProfile.findUnique({
       where: { userId: targetUserId },
     });
 
     if (!profile) {
-      return new NextResponse("プロフィールが見つかりません", { status: 404 });
+      profile = await db.userProfile.findUnique({
+        where: { id: targetUserId },
+      });
     }
 
     return NextResponse.json(profile);

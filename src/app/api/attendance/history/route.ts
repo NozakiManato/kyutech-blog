@@ -27,7 +27,7 @@ export async function GET(req: Request) {
     // 対象ユーザーのプロフィールを取得
     const targetProfile = targetUserId
       ? await db.userProfile.findUnique({
-          where: { userId: targetUserId },
+          where: { id: targetUserId },
         })
       : profile;
 

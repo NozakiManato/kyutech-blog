@@ -124,6 +124,7 @@ export async function GET(req: Request) {
         imageUrl: true,
         isCheckedIn: true,
         academicYear: true,
+        researchLab: true,
         Attendance: {
           where: {
             checkOut: null,
