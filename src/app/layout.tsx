@@ -14,8 +14,47 @@ export const metadata: Metadata = {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
   },
+  metadataBase: new URL(siteConfig.url),
+  manifest: "/site.webmanifest",
   description: siteConfig.description,
-  keywords: ["Next.js", "React", "Tailwindcss", "shadcn/ui"],
+  icons: {
+    icon: [
+      {
+        url: "/favicon.ico",
+        type: "image/x-icon",
+      },
+      {
+        url: "/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: "/android-chrome-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: [
+      {
+        url: "/apple-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
+  keywords: [
+    "Localalabo",
+    "九工大",
+    "電子システム工学科",
+    "4研",
+    "ロカラボ",
+    "九州工業大学",
+    "九工大4研",
+  ],
   authors: [
     {
       name: "NozakiManato",
@@ -23,12 +62,17 @@ export const metadata: Metadata = {
     },
   ],
   openGraph: {
-    type: "website",
-    locale: "ja",
-    url: siteConfig.url,
     title: siteConfig.name,
     description: siteConfig.description,
-    siteName: siteConfig.name,
+    url: siteConfig.url,
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 192,
+        height: 192,
+        alt: siteConfig.name,
+      },
+    ],
   },
 };
 
