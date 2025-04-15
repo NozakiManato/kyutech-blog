@@ -9,16 +9,11 @@ const isPublicRoute = createRouteMatcher([
   "/localabo(.*)",
 ]);
 
-export default clerkMiddleware(
-  async (auth, request) => {
-    if (!isPublicRoute(request)) {
-      await auth.protect();
-    }
-  },
-  {
-    authorizedParties: ["https://www.kyutech-4lab.jp"],
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) {
+    await auth.protect();
   }
-);
+});
 
 export const config = {
   matcher: [

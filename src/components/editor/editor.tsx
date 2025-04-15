@@ -1,6 +1,7 @@
 "use client";
-import EditorJS, { API, EditorConfig } from "@editorjs/editorjs";
 import { useEffect, useRef, useState } from "react";
+import type EditorJS from "@editorjs/editorjs";
+import type { API, EditorConfig } from "@editorjs/editorjs";
 
 // EditorJS型定義
 interface EditorJSOptions {
@@ -55,6 +56,7 @@ export function Editor({
     const initEditor = async () => {
       try {
         // EditorJSとプラグインを動的にインポート
+        const EditorJS = (await import("@editorjs/editorjs")).default;
         const Header = (await import("@editorjs/header")).default;
         const List = (await import("@editorjs/list")).default;
         const Paragraph = (await import("@editorjs/paragraph")).default;
