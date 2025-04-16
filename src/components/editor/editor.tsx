@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import type EditorJS from "@editorjs/editorjs";
 import type { API, EditorConfig } from "@editorjs/editorjs";
+import { upload } from "@vercel/blob/client";
 
 // EditorJS型定義
 interface EditorJSOptions {
@@ -124,12 +125,28 @@ export function Editor({
               class: ImageTool,
               inlineToolbar: true,
               config: {
-                endpoints: {
-                  byFile: "/api/posts/upload-image",
-                  byUrl: "/api/posts/fetch-url",
+                uploader: {
+                  uploadByFile: async (file: File) => {
+                    const newBlob = await upload(file.name, file, {
+                      access: "public",
+                      handleUploadUrl: `/api/posts/upload-file`,
+                    });
+                    if (!newBlob) {
+                      return {
+                        success: 0,
+                        error: "ファイルのアップロードに失敗しました",
+                      };
+                    }
+                    return {
+                      success: 1,
+                      file: {
+                        url: newBlob.url,
+                        name: file.name,
+                        size: file.size,
+                      },
+                    };
+                  },
                 },
-                field: "image",
-                types: "image/*",
               },
             },
             marker: {
@@ -138,34 +155,26 @@ export function Editor({
             Attaches: {
               class: AttachesTool,
               config: {
-                endpoint: "/api/posts/upload-file",
                 uploader: {
-                  uploadByFile(file: File) {
-                    const formData = new FormData();
-                    formData.append("file", file);
-
-                    return fetch("/api/posts/upload-file", {
-                      method: "POST",
-                      body: formData,
-                    })
-                      .then((response) => response.json())
-                      .then((result) => {
-                        return {
-                          success: 1,
-                          file: {
-                            url: result.file.url,
-                            name: result.file.name,
-                            size: result.file.size,
-                          },
-                        };
-                      })
-                      .catch((error) => {
-                        console.error("Error uploading file:", error);
-                        return {
-                          success: 0,
-                          error,
-                        };
-                      });
+                  uploadByFile: async (file: File) => {
+                    const newBlob = await upload(file.name, file, {
+                      access: "public",
+                      handleUploadUrl: `/api/posts/upload-file`,
+                    });
+                    if (!newBlob) {
+                      return {
+                        success: 0,
+                        error: "ファイルのアップロードに失敗しました",
+                      };
+                    }
+                    return {
+                      success: 1,
+                      file: {
+                        url: newBlob.url,
+                        name: file.name,
+                        size: file.size,
+                      },
+                    };
                   },
                 },
               },

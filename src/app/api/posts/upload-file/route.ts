@@ -1,44 +1,60 @@
-import { writeFile } from "fs/promises";
-import { NextRequest, NextResponse } from "next/server";
-import { join } from "path";
-import { v4 as uuidv4 } from "uuid";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
+  // Clerk認証を確認
+  const { userId } = await auth();
+
+  // 認証されていない場合はエラーを返す
+  if (!userId) {
+    return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+  }
+
+  const body = (await request.json()) as HandleUploadBody;
+
   try {
-    const formData = await request.formData();
-    const file = formData.get("file") as File;
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async () => {
+        return {
+          allowedContentTypes: [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/bmp",
+            "image/svg+xml",
+            "application/zip",
+            "video/mp4",
+            "video/mpeg",
+            "application/pdf",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            "text/plain",
+            "text/csv",
+            "text/html",
+            "text/css",
+            "text/javascript",
+          ],
+          addRandomSuffix: true,
+          tokenPayload: JSON.stringify({ userId }),
+        };
+      },
+      onUploadCompleted: async ({ blob, tokenPayload }) => {
+        console.log("アップロード完了:", blob, tokenPayload);
 
-    if (!file) {
-      return NextResponse.json(
-        { error: "このファイルは対応していません" },
-        { status: 400 }
-      );
-    }
-    const originalName = file.name;
-    const fileExtension = originalName.split(".").pop() || "";
-    const fileName = `${uuidv4()}.${fileExtension}`;
-    const filePath = join(process.cwd(), "public", "uploads", fileName);
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    await writeFile(filePath, buffer);
-
-    const fileUrl = `/uploads/${fileName}`;
-    return NextResponse.json({
-      success: 1,
-      file: {
-        url: fileUrl,
-        name: originalName,
-        size: file.size,
-        extension: fileExtension,
+        // ここでデータベースにファイル情報を保存できます
+        // 例: await db.insert({ userId: tokenPayload.userId, fileUrl: blob.url, fileName: blob.pathname });
       },
     });
+
+    return NextResponse.json(jsonResponse);
   } catch (error) {
-    console.error("Error uploading file:", error);
     return NextResponse.json(
-      { error: "ファイルのアップロードに失敗しました" },
-      { status: 500 }
+      { error: error instanceof Error ? error.message : String(error) },
+      { status: 400 }
     );
   }
 }
