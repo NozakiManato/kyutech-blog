@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import EditorJSHTML from "editorjs-html";
 import * as ReactDOMServer from "react-dom/server";
 import { Icon } from "../icons/icon";
@@ -246,6 +244,47 @@ const customParsers = {
       </div>
     `;
   },
+  image: (block) => {
+    const { file, caption, withBorder, withBackground } = block.data;
+
+    if (!file || !file.url) return "";
+
+    // 一意のIDを生成して、複数の画像が存在する場合にも対応
+    const modalId = `image-modal-${block.id}`;
+
+    return `
+      <div class="flex justify-center items-center mb-4">
+        <div class="w-[300px] h-[300px] overflow-hidden flex items-center justify-center border ${
+          withBorder ? "border-border" : ""
+        } ${withBackground ? "bg-muted" : ""}" 
+        data-fullsrc="${file.url}" 
+        onclick="document.getElementById('${modalId}').style.display = 'flex';"
+        style="cursor: zoom-in;">
+          <img src="${file.url}" alt="${
+      caption || "Image"
+    }" class="object-cover w-[300px] h-[300px]" onerror="this.style.display='none'" />
+        </div>
+      </div>
+      ${
+        caption
+          ? `<p class="text-center text-sm text-muted-foreground mt-2">${caption}</p>`
+          : ""
+      }
+      
+      <!-- 埋め込みモーダル -->
+      <div id="${modalId}" 
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50" 
+        style="display: none;"
+        onclick="this.style.display = 'none';">
+        <img
+          src="${file.url}"
+          alt="${caption || "Full view"}"
+          class="max-w-full max-h-full rounded-lg shadow-lg"
+          onclick="event.stopPropagation();"
+        />
+      </div>
+    `;
+  },
 };
 
 // カスタムパーサーを含むeditorjs-htmlパーサーを作成
@@ -256,6 +295,7 @@ const edjsParser = EditorJSHTML({
   Attaches: customParsers.attaches,
   list: customParsers.list,
   code: customParsers.code,
+  image: customParsers.image,
 });
 
 export function PostContent({ data }) {
@@ -263,12 +303,6 @@ export function PostContent({ data }) {
   if (!data || !data.blocks || data.blocks.length === 0) {
     return <div className="text-muted">内容がありません</div>;
   }
-
-  // デバッグ用：ブロックタイプを確認
-  console.log(
-    "Block types:",
-    data.blocks.map((block) => block.type)
-  );
 
   // HTMLに変換
   const html = edjsParser.parse(data);
