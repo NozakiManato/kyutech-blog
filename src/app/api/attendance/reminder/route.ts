@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendCheckoutReminderEmail } from "@/lib/mail";
+import { updateAttendance } from "@/lib/prisma/attendance";
 
 export async function GET() {
   return await sendReminderEmails();
@@ -39,6 +40,7 @@ async function sendReminderEmails() {
           user.userId,
           user.Attendance[0].check_in
         );
+        await updateAttendance(user.id);
       }
     }
 

@@ -18,31 +18,37 @@ export async function sendCheckoutReminderEmail(
   const mailOptions = {
     from: process.env.SMTP_FROM,
     to: email,
-    subject: "【重要】退室手続きのお忘れではありませんか？",
+    subject: "【重要】退室手続きを行いました",
     text: `
 ${name} 様
 
-${customMessage || "退室手続きをお忘れではないでしょうか？"}
+${
+  customMessage ||
+  "まだ研究室に残っている場合、再び在室ボタンを押してください。"
+}
 入室時刻: ${checkInTime.toLocaleString("ja-JP")}
 
-以下のリンクから退室手続きを行ってください：
+以下のリンクから入室手続きを行ってください：
 ${process.env.NEXT_PUBLIC_APP_URL}/dashboard/profiles/${userId}
 
 ※このメールは自動送信されています。
 `,
     html: `
 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-  <h2 style="color: #e11d48;">【重要】退室手続きのお忘れではありませんか？</h2>
+  <h2 style="color: #e11d48;">【重要】退室手続きを行いました</h2>
   
   <p>${name} 様</p>
   
-  <p>${customMessage || "退室手続きをお忘れではないでしょうか？"}</p>
+  <p>${
+    customMessage ||
+    "まだ研究室に残っている場合、再び在室ボタンを押してください。"
+  }</p>
   <p>入室時刻: ${checkInTime.toLocaleString("ja-JP")}</p>
   
   <div style="margin: 30px 0;">
     <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/profiles/${userId}" 
        style="background-color: #e11d48; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px;">
-      退室手続きを行う
+      在室手続きを行う
     </a>
   </div>
   
