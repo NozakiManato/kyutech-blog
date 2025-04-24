@@ -27,7 +27,7 @@ const IndexPage = async () => {
             サービスの特徴
           </h2>
           <p className="max-w-4xl mx-auto text-muted-foreground sm:text-lg sm:leading-7">
-            このプロジェクトはモダンな技術スタックを使って作ったWebアプリケーションです。Next.jsのAppRouterやcontentlayerを利用してマークダウン形式でブログ投稿ができます。
+            このプロジェクトはモダンな技術スタックを使って作ったWebアプリケーションです。Next.jsのAppRouterやEditor.jsを利用してNotionのような書き心地でブログ投稿ができます。
           </p>
         </div>
 

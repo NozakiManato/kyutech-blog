@@ -279,42 +279,40 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                         <Badge variant="secondary">{member.academicYear}</Badge>
                       )}
                     </div>
-                    {member.weekRecords && (
-                      <div
-                        className={`mt-2 p-2 rounded-md ${
+                  </div>
+                  {member.weekRecords && (
+                    <div
+                      className={`mt-2 p-2 rounded-md ${
+                        isOverTwentyHours(member)
+                          ? "bg-green-100 dark:bg-green-900/20"
+                          : "bg-gray-100 dark:bg-gray-800/20"
+                      }`}
+                    >
+                      <p
+                        className={`text-xs font-medium ${
                           isOverTwentyHours(member)
-                            ? "bg-green-100 dark:bg-green-900/20"
-                            : "bg-gray-100 dark:bg-gray-800/20"
+                            ? "text-green-700 dark:text-green-400"
+                            : "text-gray-500 dark:text-gray-400"
                         }`}
                       >
-                        <p
-                          className={`text-xs font-medium ${
-                            isOverTwentyHours(member)
-                              ? "text-green-700 dark:text-green-400"
-                              : "text-gray-500 dark:text-gray-400"
-                          }`}
-                        >
-                          先週の在室時間
-                        </p>
-                        <p
-                          className={`text-lg font-bold ${
-                            isOverTwentyHours(member)
-                              ? "text-green-700 dark:text-green-400"
-                              : "text-gray-700 dark:text-gray-300"
-                          }`}
-                        >
-                          {formatDuration(
-                            calculateTotalTime(member.weekRecords)
-                          )}
-                          {isOverTwentyHours(member) && (
-                            <span className="ml-1 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
-                              20時間以上
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                        先週の在室時間
+                      </p>
+                      <p
+                        className={`text-lg font-bold ${
+                          isOverTwentyHours(member)
+                            ? "text-green-700 dark:text-green-400"
+                            : "text-gray-700 dark:text-gray-300"
+                        }`}
+                      >
+                        {formatDuration(calculateTotalTime(member.weekRecords))}
+                        {isOverTwentyHours(member) && (
+                          <span className="ml-1 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
+                            20時間以上
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="h-2 w-2 rounded-full bg-gray-300"></div>
