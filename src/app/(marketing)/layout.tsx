@@ -1,4 +1,3 @@
-"use cache";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import { marketingConfig } from "@/config/marketing";

@@ -1,4 +1,3 @@
-"use cache";
 export default function DisplayLayout({
   children,
 }: {

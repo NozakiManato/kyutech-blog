@@ -1,23 +1,14 @@
-import { Button, buttonVariants } from "@/components/ui/button";
+"use cache";
 import { Card, CardContent } from "@/components/ui/card";
 import { marketingConfig } from "@/config/marketing";
 import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-const IndexPage = () => {
+const IndexPage = async () => {
   return (
     <>
       <section className="pt-6 md:pt-10 lg:py-32 pb-8 md:pb-12">
         <div className="container text-center flex flex-col items-center gap-4 max-w-4xl">
-          <Link
-            href={siteConfig.links.instagram}
-            className="bg-muted px-4 py-1.5 rounded-2xl font-medium text-sm"
-            target="_blank"
-            rel="noreferrer"
-          >
-            インスタをフォローする
-          </Link>
           <h1 className="font-extrabold text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
             LocaLabo
           </h1>
@@ -25,25 +16,6 @@ const IndexPage = () => {
             このアプリケーションは芹川・張・山脇・陽研究室の在室管理システムです。
             ユーザーは在室と退室を記録することができます。※B4は特に重要!!!
           </p>
-          <div className="space-x-4">
-            <Link
-              href={"/sign-in"}
-              className={cn(buttonVariants({ size: "lg" }))}
-            >
-              始める
-            </Link>
-            <Link
-              href={siteConfig.links.github}
-              className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Github
-            </Link>
-            <Button type="button" variant="ghost" size="lg">
-              <Link href="/profile">プロフィールを見る</Link>
-            </Button>
-          </div>
         </div>
       </section>
       <section
