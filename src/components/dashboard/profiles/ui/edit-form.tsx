@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -19,17 +20,23 @@ import {
 import { saveUserProfileAction } from "@/lib/actions";
 import { profileFormSchema } from "@/lib/validations/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { PutBlobResult } from "@vercel/blob";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 const EditForm = ({ profile, onCancel }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(profile.imageUrl || "未設定");
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
   const form = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       name: profile.name || "名前",
+      imageUrl: profile.imageUrl || "未設定",
       researchLab: profile.researchLab || "研究室",
       academicYear: profile.academicYear || "学年",
       description: profile.description || "未設定",
@@ -38,9 +45,11 @@ const EditForm = ({ profile, onCancel }) => {
       instagram: profile.instagram || "未設定",
     },
   });
+
   useEffect(() => {
     form.reset({
       name: profile.name || "名前",
+      imageUrl: profile.imageUrl || "未設定",
       researchLab: profile.researchLab || "研究室",
       academicYear: profile.academicYear || "学年",
       description: profile.description || "未設定",
@@ -48,14 +57,49 @@ const EditForm = ({ profile, onCancel }) => {
       x: profile.x || "未設定",
       instagram: profile.instagram || "未設定",
     });
+    setPreviewUrl(profile.imageUrl || "未設定");
   }, [profile, form]);
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+
+      const response = await fetch(
+        `api/dashboard/profiles?filename=${file.name}`,
+        {
+          method: "POST",
+          body: file,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("画像のアップロードに失敗しました");
+      }
+      const newBlob = (await response.json()) as PutBlobResult;
+
+      form.setValue("imageUrl", newBlob.url);
+      toast.success("画像がアップロードされました");
+    } catch (error) {
+      console.error(error);
+      toast.error("画像のアップロードに失敗しました");
+      toast.error("画像のアップロードに失敗しました");
+      setPreviewUrl(profile.imageUrl || "未設定");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const onSubmit = async (values: z.infer<typeof profileFormSchema>) => {
     try {
       await saveUserProfileAction({
         userId: profile.userId,
         name: values.name,
-        imageUrl: profile.imageUrl,
+        imageUrl: values.imageUrl,
         researchLab: values.researchLab,
         academicYear: values.academicYear,
         description: values.description,
@@ -88,6 +132,46 @@ const EditForm = ({ profile, onCancel }) => {
           >
             <FormField
               control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>プロフィール画像</FormLabel>
+                  <div className="flex flex-col space-y-2">
+                    {previewUrl && (
+                      <div className="w-24 h-24 rounded-md overflow-hidden">
+                        <img
+                          src={previewUrl}
+                          alt="プロフィール画像"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => inputFileRef.current?.click()}
+                        disabled={isUploading}
+                      >
+                        {isUploading ? "アップロード中..." : "画像を選択"}
+                      </Button>
+                      <Input
+                        type="file"
+                        ref={inputFileRef}
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                        disabled={isUploading}
+                      />
+                      <Input type="hidden" {...field} />
+                    </div>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
@@ -99,6 +183,7 @@ const EditForm = ({ profile, onCancel }) => {
                 </FormItem>
               )}
             />
+
             <div className="flex gap-8 items-center">
               <FormField
                 control={form.control}

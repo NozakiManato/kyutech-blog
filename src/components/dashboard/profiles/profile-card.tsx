@@ -1,7 +1,7 @@
 "use client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { ProfileHeader } from "./ui/profile-header";
 
 import { ProfileEditButtons } from "./ui/profile-edit-button";
@@ -20,6 +20,7 @@ import { profileFormSchema } from "@/lib/validations/profile";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import TechSkillsSection from "./ui/tech-skills-section";
+import { PutBlobResult } from "@vercel/blob";
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
@@ -54,11 +55,15 @@ const ProfileCard = ({
   const [editMode, setEditMode] = useState(false);
   const [editingSkill, setEditingSkill] = useState<TechSkill | null>(null);
   const isLoading = false;
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(profile.imageUrl || "未設定");
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const methods = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       name: profile.name,
+      imageUrl: profile.imageUrl,
       researchLab: profile.researchLab,
       academicYear: profile.academicYear,
       email: profile.email || "",
@@ -73,6 +78,7 @@ const ProfileCard = ({
   const handleProfileEdit = () => {
     methods.reset({
       name: profile.name,
+      imageUrl: profile.imageUrl,
       researchLab: profile.researchLab,
       academicYear: profile.academicYear,
       email: profile.email || "",
@@ -82,7 +88,42 @@ const ProfileCard = ({
       x: profile.x || "",
       instagram: profile.instagram || "",
     });
+    setPreviewUrl(profile.imageUrl || "未設定");
     setEditMode(true);
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+
+      const response = await fetch(
+        `/api/dashboard/profiles?filename=${file.name}`,
+        {
+          method: "POST",
+          body: file,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("画像のアップロードに失敗しました");
+      }
+      const newBlob = (await response.json()) as PutBlobResult;
+
+      methods.setValue("imageUrl", newBlob.url);
+      toast.success("画像がアップロードされました");
+    } catch (error) {
+      console.error(error);
+      toast.error("画像のアップロードに失敗しました");
+      toast.error("画像のアップロードに失敗しました");
+      setPreviewUrl(profile.imageUrl || "未設定");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleProfileSave = async () => {
@@ -240,7 +281,12 @@ const ProfileCard = ({
                     isOwnProfile={isOwnProfile}
                   />
                 ) : (
-                  <ProfileForm />
+                  <ProfileForm
+                    isUploading={isUploading}
+                    previewUrl={previewUrl}
+                    inputFileRef={inputFileRef}
+                    handleFileChange={handleFileChange}
+                  />
                 )}
               </FormProvider>
             </CardContent>

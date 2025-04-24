@@ -21,7 +21,7 @@ export const ProfileHeader = ({
   return (
     <div className="space-y-4">
       <div className="flex items-center space-x-4">
-        <Avatar className="h-20 w-20">
+        <Avatar className="h-32 w-32">
           <AvatarImage src={profile.imageUrl} alt={profile.name} />
           <AvatarFallback>{profile.name[0]}</AvatarFallback>
         </Avatar>

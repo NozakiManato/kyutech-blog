@@ -18,8 +18,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 
-const ProfileForm = () => {
+const ProfileForm = ({
+  isUploading,
+  previewUrl,
+  inputFileRef,
+  handleFileChange,
+}) => {
   const { control, setValue } = useFormContext();
   const { user, isLoaded } = useUser();
 
@@ -30,6 +36,12 @@ const ProfileForm = () => {
       setValue("email", userEmail);
     }
   }, [isLoaded, user, setValue]);
+
+  useEffect(() => {
+    if (previewUrl && previewUrl !== "未設定") {
+      setValue("imageUrl", previewUrl);
+    }
+  }, [previewUrl, setValue]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -116,6 +128,46 @@ const ProfileForm = () => {
           )}
         />
       </div>
+      <FormField
+        control={control}
+        name="imageUrl"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>プロフィール画像</FormLabel>
+            <div className="flex  space-x-2">
+              {previewUrl && (
+                <div className="w-24 h-24 rounded-full overflow-hidden">
+                  <img
+                    src={previewUrl}
+                    alt="プロフィール画像"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="flex items-center space-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => inputFileRef.current?.click()}
+                  disabled={isUploading}
+                >
+                  {isUploading ? "アップロード中..." : "画像を選択"}
+                </Button>
+                <Input
+                  type="file"
+                  ref={inputFileRef}
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  disabled={isUploading}
+                />
+                <Input type="hidden" {...field} />
+              </div>
+            </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={control}
         name="description"
