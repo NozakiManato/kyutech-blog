@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendCheckoutReminderEmail } from "@/lib/mail";
 import { cache } from "react";
-import { toggleCheckedInStatus } from "@/lib/actions";
+import { updateAttendance } from "@/lib/prisma/attendance";
 
 // 在室中のユーザーを取得する部分だけをキャッシュ
 const getActiveUsers = cache(async () => {
@@ -46,7 +46,24 @@ async function sendReminderEmails() {
           user.userId,
           user.Attendance[0].check_in
         );
-        await toggleCheckedInStatus(user.id, false);
+        await updateAttendance(user.userId);
+        await db.userProfile.update({
+          where: {
+            userId: user.userId,
+          },
+          data: {
+            name: user.name,
+            imageUrl: user.imageUrl,
+            email: user.email || "",
+            researchLab: user.researchLab,
+            academicYear: user.academicYear,
+            description: user.description || "",
+            github: user.github || "",
+            x: user.x || "",
+            instagram: user.instagram || "",
+            isCheckedIn: false,
+          },
+        });
       }
     }
 
