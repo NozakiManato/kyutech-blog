@@ -46,8 +46,6 @@ async function sendReminderEmails() {
           user.userId,
           user.Attendance[0].check_in
         );
-        console.log(user.userId);
-        console.log(user.id);
         await db.userProfile.update({
           where: {
             id: user.id,
