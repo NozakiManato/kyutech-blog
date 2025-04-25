@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
+import { getLabMembers } from "@/lib/prisma/lab";
 
 export async function POST(req: Request) {
   try {
@@ -113,30 +114,10 @@ export async function GET(req: Request) {
     const labName = url.searchParams.get("lab");
 
     // 研究室メンバーの在室状況を取得
-    const labMembers = await db.userProfile.findMany({
-      where: labName
-        ? { researchLab: labName }
-        : { researchLab: profile.researchLab },
-      select: {
-        id: true,
-        userId: true,
-        name: true,
-        imageUrl: true,
-        isCheckedIn: true,
-        academicYear: true,
-        researchLab: true,
-        Attendance: {
-          where: {
-            check_out: null,
-          },
-          select: {
-            check_in: true,
-          },
-          take: 1,
-        },
-      },
-      orderBy: [{ isCheckedIn: "desc" }, { name: "asc" }],
-    });
+    const labMembers = await getLabMembers(
+      labName ?? undefined,
+      profile.researchLab
+    );
 
     return NextResponse.json(labMembers);
   } catch (error) {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { db } from "@/lib/db";
+import { getUserProfile } from "@/lib/prisma/user";
 
 export async function GET(
   req: Request,
@@ -15,16 +15,7 @@ export async function GET(
 
     const targetUserId = params.userId;
 
-    let profile = await db.userProfile.findUnique({
-      where: { userId: targetUserId },
-    });
-
-    if (!profile) {
-      profile = await db.userProfile.findUnique({
-        where: { id: targetUserId },
-      });
-    }
-
+    const profile = await getUserProfile(targetUserId);
     return NextResponse.json(profile);
   } catch (error) {
     console.error("[PROFILE_GET]", error);

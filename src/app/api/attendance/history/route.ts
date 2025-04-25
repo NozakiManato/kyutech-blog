@@ -1,31 +1,18 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
+import { cache } from "react";
 
-export async function GET(req: Request) {
-  try {
-    const { userId } = await auth();
-    if (!userId) {
-      return new NextResponse("認証が必要です", { status: 401 });
-    }
-
-    const profile = await db.userProfile.findUnique({
-      where: { userId },
-    });
-
-    if (!profile) {
-      return new NextResponse("プロフィールが見つかりません", { status: 404 });
-    }
-
-    // URLからパラメータを取得
-    const url = new URL(req.url);
-    const targetUserId = url.searchParams.get("userId");
-    const limit = parseInt(url.searchParams.get("limit") || "30");
-    const page = parseInt(url.searchParams.get("page") || "1");
-    const skip = (page - 1) * limit;
-
+// パラメータを受け取るキャッシュ関数
+const getAttendanceHistory = cache(
+  async (
+    userId: string,
+    targetUserId: string | null,
+    limit: number,
+    page: number
+  ) => {
     // 対象ユーザーのプロフィールを取得
-    let targetProfile = profile;
+    let targetProfile;
 
     // userIdパラメータが存在し、undefinedでない場合のみ別のユーザーを検索
     if (targetUserId && targetUserId !== "undefined") {
@@ -44,11 +31,20 @@ export async function GET(req: Request) {
       if (foundProfile) {
         targetProfile = foundProfile;
       } else {
-        return new NextResponse("対象ユーザーのプロフィールが見つかりません", {
-          status: 404,
-        });
+        throw new Error("対象ユーザーのプロフィールが見つかりません");
+      }
+    } else {
+      // 自分自身のプロフィールを取得
+      targetProfile = await db.userProfile.findUnique({
+        where: { userId },
+      });
+
+      if (!targetProfile) {
+        throw new Error("プロフィールが見つかりません");
       }
     }
+
+    const skip = (page - 1) * limit;
 
     // 在室記録を取得
     const attendanceRecords = await db.attendance.findMany({
@@ -69,13 +65,41 @@ export async function GET(req: Request) {
       },
     });
 
-    return NextResponse.json({
+    return {
       records: attendanceRecords,
       total: totalRecords,
       page,
       limit,
       totalPages: Math.ceil(totalRecords / limit),
-    });
+    };
+  }
+);
+
+export async function GET(req: Request) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return new NextResponse("認証が必要です", { status: 401 });
+    }
+
+    // URLからパラメータを取得
+    const url = new URL(req.url);
+    const targetUserId = url.searchParams.get("userId");
+    const limit = parseInt(url.searchParams.get("limit") || "30");
+    const page = parseInt(url.searchParams.get("page") || "1");
+
+    // キャッシュされた関数を呼び出し
+    try {
+      const result = await getAttendanceHistory(
+        userId,
+        targetUserId,
+        limit,
+        page
+      );
+      return NextResponse.json(result);
+    } catch (error) {
+      console.error("[ATTENDANCE_HISTORY_GET]", error);
+    }
   } catch (error) {
     console.error("[ATTENDANCE_HISTORY_GET]", error);
     return new NextResponse("サーバーエラーが発生しました", { status: 500 });

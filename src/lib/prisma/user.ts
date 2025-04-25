@@ -1,28 +1,29 @@
+import { cache } from "react";
 import { db } from "../db";
 import { UserProfile } from "@prisma/client";
 
-export const getUserProfile = async (
-  userIdOrId: string
-): Promise<UserProfile | null> => {
-  try {
-    // まずuserIdで検索
-    let profile = await db.userProfile.findUnique({
-      where: { userId: userIdOrId },
-    });
-
-    // 見つからない場合はidで検索
-    if (!profile) {
-      profile = await db.userProfile.findUnique({
-        where: { id: userIdOrId },
+export const getUserProfile = cache(
+  async (userIdOrId: string): Promise<UserProfile | null> => {
+    try {
+      // まずuserIdで検索
+      let profile = await db.userProfile.findUnique({
+        where: { userId: userIdOrId },
       });
-    }
 
-    return profile;
-  } catch (error) {
-    console.error("Error fetching user profile:", error);
-    return null;
+      // 見つからない場合はidで検索
+      if (!profile) {
+        profile = await db.userProfile.findUnique({
+          where: { id: userIdOrId },
+        });
+      }
+
+      return profile;
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      return null;
+    }
   }
-};
+);
 
 export const createUserProfile = async ({
   userId,

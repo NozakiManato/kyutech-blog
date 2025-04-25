@@ -1,7 +1,28 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendCheckoutReminderEmail } from "@/lib/mail";
-import { updateAttendance } from "@/lib/prisma/attendance";
+import { cache } from "react";
+import { toggleCheckedInStatus } from "@/lib/actions";
+
+// 在室中のユーザーを取得する部分だけをキャッシュ
+const getActiveUsers = cache(async () => {
+  return await db.userProfile.findMany({
+    where: {
+      isCheckedIn: true,
+    },
+    include: {
+      Attendance: {
+        where: {
+          check_out: null,
+        },
+        orderBy: {
+          check_in: "desc",
+        },
+        take: 1,
+      },
+    },
+  });
+});
 
 export async function GET() {
   return await sendReminderEmails();
@@ -13,25 +34,10 @@ export async function POST() {
 
 async function sendReminderEmails() {
   try {
-    // 現在在室中のユーザーを取得
-    const activeUsers = await db.userProfile.findMany({
-      where: {
-        isCheckedIn: true,
-      },
-      include: {
-        Attendance: {
-          where: {
-            check_out: null,
-          },
-          orderBy: {
-            check_in: "desc",
-          },
-          take: 1,
-        },
-      },
-    });
+    // キャッシュされた関数を使用して在室中のユーザーを取得
+    const activeUsers = await getActiveUsers();
 
-    // 各ユーザーにリマインダーメールを送信
+    // 各ユーザーにリマインダーメールを送信（この部分はキャッシュされない）
     for (const user of activeUsers) {
       if (user.email && user.Attendance[0]) {
         await sendCheckoutReminderEmail(
@@ -40,7 +46,7 @@ async function sendReminderEmails() {
           user.userId,
           user.Attendance[0].check_in
         );
-        await updateAttendance(user.id);
+        await toggleCheckedInStatus(user.id, user.isCheckedIn);
       }
     }
 

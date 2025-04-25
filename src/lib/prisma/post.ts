@@ -1,7 +1,8 @@
 import { DataProps } from "@/types";
 import { db } from "../db";
+import { cache } from "react";
 
-export const getAllPosts = async () => {
+export const getAllPosts = cache(async () => {
   try {
     return await db.post.findMany({
       include: {
@@ -15,9 +16,9 @@ export const getAllPosts = async () => {
     console.error("Error fetching all posts:", error);
     return null;
   }
-};
+});
 
-export const getUserPosts = async (authorId: string) => {
+export const getUserPosts = cache(async (authorId: string) => {
   try {
     return await db.post.findMany({
       where: {
@@ -37,9 +38,9 @@ export const getUserPosts = async (authorId: string) => {
     console.error("Error fetching post:", error);
     return null;
   }
-};
+});
 
-export const getPostById = async (id: string) => {
+export const getPostById = cache(async (id: string) => {
   try {
     return await db.post.findUnique({
       where: {
@@ -53,7 +54,7 @@ export const getPostById = async (id: string) => {
     console.error("Error fetching post:", error);
     return null;
   }
-};
+});
 
 export const createPost = async (data: DataProps) => {
   try {

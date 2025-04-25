@@ -1,6 +1,7 @@
+import { cache } from "react";
 import { db } from "../db";
 
-export const getAllSkills = async () => {
+export const getAllSkills = cache(async () => {
   try {
     return await db.techSkill.findMany({
       orderBy: {
@@ -11,9 +12,9 @@ export const getAllSkills = async () => {
     console.error("Error fetching all skills", error);
     return null;
   }
-};
+});
 
-export const getUserSkills = async (profileId: string) => {
+export const getUserSkills = cache(async (profileId: string) => {
   try {
     return await db.techSkill.findMany({
       where: {
@@ -27,9 +28,9 @@ export const getUserSkills = async (profileId: string) => {
     console.error("Error fetching profile skills", error);
     return null;
   }
-};
+});
 
-export const getSkillById = async (id: string) => {
+export const getSkillById = cache(async (id: string) => {
   try {
     return await db.techSkill.findUnique({
       where: {
@@ -40,7 +41,7 @@ export const getSkillById = async (id: string) => {
     console.error("Error fetching skill:", error);
     return null;
   }
-};
+});
 
 export const createSkill = async (data: {
   name: string;
