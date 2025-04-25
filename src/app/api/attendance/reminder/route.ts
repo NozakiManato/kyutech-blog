@@ -46,7 +46,8 @@ async function sendReminderEmails() {
           user.userId,
           user.Attendance[0].check_in
         );
-        await updateAttendance(user.id);
+        console.log(user.userId);
+        console.log(user.id);
         await db.userProfile.update({
           where: {
             id: user.id,
@@ -55,6 +56,7 @@ async function sendReminderEmails() {
             isCheckedIn: false,
           },
         });
+        await updateAttendance(user.id);
       }
     }
 

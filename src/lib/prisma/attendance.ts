@@ -25,13 +25,8 @@ export const updateAttendance = async (profileId: string) => {
         check_in: "desc",
       },
     });
-    const user = await db.userProfile.findFirst({
-      where: {
-        userId: profileId,
-      },
-    });
 
-    if (!attendance || !user) {
+    if (!attendance) {
       throw new Error("チェックイン記録が見つかりません");
     }
 
