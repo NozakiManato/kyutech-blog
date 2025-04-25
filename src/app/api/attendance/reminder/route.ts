@@ -49,7 +49,7 @@ async function sendReminderEmails() {
         await updateAttendance(user.userId);
         await db.userProfile.update({
           where: {
-            userId: user.id,
+            id: user.id,
           },
           data: {
             isCheckedIn: false,
