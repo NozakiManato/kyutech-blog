@@ -46,7 +46,7 @@ async function sendReminderEmails() {
           user.userId,
           user.Attendance[0].check_in
         );
-        await toggleCheckedInStatus(user.id, user.isCheckedIn);
+        await toggleCheckedInStatus(user.id, false);
       }
     }
 
