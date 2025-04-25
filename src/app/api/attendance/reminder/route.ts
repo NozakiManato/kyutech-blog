@@ -49,18 +49,9 @@ async function sendReminderEmails() {
         await updateAttendance(user.userId);
         await db.userProfile.update({
           where: {
-            userId: user.userId,
+            userId: user.id,
           },
           data: {
-            name: user.name,
-            imageUrl: user.imageUrl,
-            email: user.email || "",
-            researchLab: user.researchLab,
-            academicYear: user.academicYear,
-            description: user.description || "",
-            github: user.github || "",
-            x: user.x || "",
-            instagram: user.instagram || "",
             isCheckedIn: false,
           },
         });
