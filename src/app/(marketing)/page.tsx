@@ -13,8 +13,9 @@ const IndexPage = async () => {
             LocaLabo
           </h1>
           <p className="text-muted-foreground sm:text-xl leading-normal">
-            このアプリケーションは芹川・張・山脇・陽研究室の在室管理システムです。
+            このアプリケーションは芹川・張・山脇・楊研究室の在室管理システムです。
             ユーザーは在室と退室を記録することができます。※B4は特に重要!!!
+            Notionライクなテキストエディターを構築しており、週報や研究、就活ハウツーなど何でも書いてください!!!
           </p>
         </div>
       </section>
