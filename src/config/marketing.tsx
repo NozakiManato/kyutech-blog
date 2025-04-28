@@ -185,7 +185,7 @@ export const marketingConfig: MarketingConfig = {
       ),
     },
     {
-      title: "Vercel →",
+      title: "Vercel Blob →",
       description:
         "Vercel Blobは、Vercelが提供するシンプルなファイルストレージサービスで、画像やドキュメントなどのバイナリデータを簡単に保存・配信できます。APIやSDKを使って、サーバーレス環境から手軽にアップロードや管理が可能です。",
       href: "https://vercel.com/docs",
@@ -201,7 +201,7 @@ export const marketingConfig: MarketingConfig = {
       ),
     },
     {
-      title: "Vercel Blob →",
+      title: "Vercel →",
       description:
         "Next.jsアプリケーションのデプロイとスケーリングを簡単に行えるサービスです。高速なパフォーマンス、グローバルCDN、自動デプロイ機能を備えており、開発から本番環境までスムーズに移行できます。",
       href: "https://vercel.com/docs/vercel-blob",
