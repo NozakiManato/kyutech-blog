@@ -1,5 +1,12 @@
 import nodemailer from "nodemailer";
 
+type EmailData = {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+};
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -7,6 +14,23 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASSWORD,
   },
 });
+
+export async function sendEmail({ to, subject, html, text }: EmailData) {
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.SMTP_FROM || process.env.EMAIL_FROM,
+      to,
+      subject,
+      html,
+      text,
+    });
+
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    return { success: false, error };
+  }
+}
 
 export async function sendCheckoutReminderEmail(
   email: string,
