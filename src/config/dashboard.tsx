@@ -26,14 +26,9 @@ export const dashboardConfig: DashboardConfig = {
       icon: Icon.page,
     },
     {
-      title: "サポート",
-      href: "/support",
+      title: "お問い合わせ",
+      href: "/dashboard/contact",
       icon: Icon.help,
-    },
-    {
-      title: "設定",
-      href: "/dashboard/settings",
-      icon: Icon.settings,
     },
   ],
 };
