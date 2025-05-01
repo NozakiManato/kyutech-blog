@@ -22,7 +22,7 @@ export const dashboardConfig: DashboardConfig = {
   supportSidebarNav: [
     {
       title: "ドキュメント",
-      href: "/docs",
+      href: "/dashboard/docs",
       icon: Icon.page,
     },
     {

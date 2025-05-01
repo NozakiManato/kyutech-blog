@@ -19,6 +19,12 @@ const BlogPage = async () => {
           <p className="text-muted-foreground text-xl">
             週報やゼミの資料、研究のことなんでも投稿してください。
           </p>
+          <Link
+            href={"/dashboard/docs"}
+            className="text-xl text-muted-foreground"
+          >
+            ドキュメントページへ
+          </Link>
         </div>
         <Link href={"/posts/create"}>
           <Button>

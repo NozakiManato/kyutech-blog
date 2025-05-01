@@ -100,7 +100,6 @@ export function Editor({
               config: {
                 services: {
                   youtube: true,
-                  codesandbox: true,
                   facebook: true,
                   instagram: true,
                   twitter: true,
