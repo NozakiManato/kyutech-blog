@@ -154,7 +154,11 @@ const customParsers = {
 
     const fileName = file.name || "ファイル";
     const fileSize = file.size ? formatFileSize(file.size) : "";
-    const fileExtension = file.extension || fileName.split(".").pop() || "";
+    const fileExtension = (
+      file.extension ||
+      fileName.split(".").pop() ||
+      ""
+    ).toLowerCase();
     const IconComponent = getFileIconComponent(fileExtension);
 
     return `
