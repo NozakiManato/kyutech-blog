@@ -30,9 +30,11 @@ export function ContactForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const form = e.currentTarget;
+
     setFormState({ isSubmitting: true });
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(form);
     const formValues = {
       name: formData.get("name") as string,
       email: formData.get("email") as string,
@@ -61,7 +63,9 @@ export function ContactForm() {
       }
 
       // 成功した場合はフォームをリセット
-      e.currentTarget.reset();
+      if (form) {
+        form.reset();
+      }
 
       setFormState({
         success: true,
