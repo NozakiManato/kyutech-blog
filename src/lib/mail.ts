@@ -53,7 +53,7 @@ ${
 入室時刻: ${checkInTime.toLocaleString("ja-JP")}
 
 以下のリンクから入室手続きを行ってください：
-${process.env.NEXT_PUBLIC_APP_URL}/dashboard/profiles/${userId}
+${process.env.NEXT_PUBLIC_APP_URL}/mobile/attendance
 
 ※このメールは自動送信されています。
 `,
