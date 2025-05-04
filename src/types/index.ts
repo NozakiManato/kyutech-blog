@@ -162,7 +162,7 @@ export type profileProps = {
   userId: string;
   name: string;
   imageUrl: string;
-  email: string;
+  email?: string;
   researchLab: string;
   academicYear: string;
   description: string | "";
