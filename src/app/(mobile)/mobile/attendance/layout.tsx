@@ -11,8 +11,8 @@ export default function MobileLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
-          <div className="mr-4 flex">
+        <div className="container flex h-14 items-center justify-center">
+          <div className="flex">
             <Link href={"/localabo"} className="items-center flex">
               <Image src="/icon.svg" alt="Icon" width="50" height="50" />
               <span className="font-bold inline-block pl-1 text-4xl my-auto">
@@ -39,7 +39,7 @@ export default function MobileLayout({
           </Link>
         </SignedOut>
       </header>
-      <main className="flex-1">
+      <main className="flex-1 flex items-center justify-center">
         <div className="container py-4">
           <Card className="container py-4">
             <CardContent className="p-2 md:p-4">{children}</CardContent>

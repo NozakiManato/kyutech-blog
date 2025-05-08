@@ -8,17 +8,19 @@ export default async function RoomStatusPage() {
     return <div>プロフィールがありません</div>;
   }
   return (
-    <div className="mx-auto max-w-md">
-      <RoomStatusManager
-        profile={{
-          ...profile,
-          email: profile.email ?? "",
-          description: profile.description ?? "",
-          github: profile.github ?? "",
-          x: profile.x ?? "",
-          instagram: profile.instagram ?? "",
-        }}
-      />
+    <div className="flex items-center justify-center">
+      <div className="mx-auto max-w-md w-full">
+        <RoomStatusManager
+          profile={{
+            ...profile,
+            email: profile.email ?? "",
+            description: profile.description ?? "",
+            github: profile.github ?? "",
+            x: profile.x ?? "",
+            instagram: profile.instagram ?? "",
+          }}
+        />
+      </div>
     </div>
   );
 }
