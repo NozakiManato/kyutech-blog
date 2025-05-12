@@ -1,15 +1,7 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AllAttendanceList } from "@/components/attendance/all-attendance-list";
 
 export default async function LocalaboPage() {
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
   return (
     <div className="py-8">
       <div className="grid gap-6">

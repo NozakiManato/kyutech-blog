@@ -1,8 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LabAttendanceList } from "@/components/attendance/lab-attendance-list";
-import { getUserProfile } from "@/lib/prisma/user";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -13,17 +10,6 @@ type Props = {
 
 export default async function LabLocalaboPage(props: Props) {
   const params = await props.params;
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
-  const profile = await getUserProfile(userId);
-
-  if (!profile) {
-    redirect("/profile");
-  }
 
   // URLパラメータの研究室名をデコード
   const labName = decodeURIComponent(params.lab);
