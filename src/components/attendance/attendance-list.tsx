@@ -1,6 +1,6 @@
 "use client";
 
-import { format } from "date-fns";
+import { format, subHours } from "date-fns";
 import { ja } from "date-fns/locale";
 
 type AttendanceRecord = {
@@ -48,9 +48,9 @@ export function AttendanceList({ records }: AttendanceListProps) {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {records.map((record) => {
-            const checkIn = new Date(record.check_in);
+            const checkIn = subHours(new Date(record.check_in), 9);
             const checkOut = record.check_out
-              ? new Date(record.check_out)
+              ? subHours(new Date(record.check_out), 9)
               : null;
             const duration = checkOut
               ? (
