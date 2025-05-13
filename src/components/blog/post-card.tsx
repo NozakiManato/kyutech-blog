@@ -1,3 +1,5 @@
+"use client";
+
 import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
 import {
@@ -13,7 +15,7 @@ import { PostCardProps } from "@/types";
 import { PostContent } from "../editor/post-content";
 import PostOperations from "../dashboard/blogs/post-operations";
 
-export async function PostCard({ post, profile }: PostCardProps) {
+export function PostCard({ post, profile }: PostCardProps) {
   // 投稿日時を「〜前」の形式で表示
   const timeAgo = formatDistanceToNow(new Date(post.createdAt), {
     addSuffix: true,
