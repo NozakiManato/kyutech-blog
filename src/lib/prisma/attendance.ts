@@ -1,11 +1,16 @@
 import { db } from "../db";
 
-export const createAttendance = async (profileId: string) => {
+const toJST = (date: Date) => {
+  return new Date(date.getTime() + 9 * 60 * 60 * 1000);
+};
+
+export const createAttendance = async (profileId: string, comment?: string) => {
   try {
     return await db.attendance.create({
       data: {
         user_id: profileId,
-        check_in: new Date(),
+        check_in: toJST(new Date()),
+        comment: comment || null,
       },
     });
   } catch (error) {
@@ -14,7 +19,7 @@ export const createAttendance = async (profileId: string) => {
   }
 };
 
-export const updateAttendance = async (profileId: string) => {
+export const updateAttendance = async (profileId: string, comment?: string) => {
   try {
     const attendance = await db.attendance.findFirst({
       where: {
@@ -35,7 +40,8 @@ export const updateAttendance = async (profileId: string) => {
         id: attendance.id,
       },
       data: {
-        check_out: new Date(),
+        check_out: toJST(new Date()),
+        comment: comment || null,
       },
     });
   } catch (error) {

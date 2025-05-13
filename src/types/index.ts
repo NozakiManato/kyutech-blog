@@ -167,6 +167,7 @@ export type profileProps = {
   academicYear: string;
   description: string | "";
   isCheckedIn: boolean;
+  comment?: string;
   github: string | "";
   x: string | "";
   instagram: string | "";

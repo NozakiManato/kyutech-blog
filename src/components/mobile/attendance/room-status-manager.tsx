@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { toggleCheckedInStatus } from "@/lib/actions";
 import { profileProps } from "@/types";
 import { LogIn, LogOut } from "lucide-react";
@@ -21,20 +22,24 @@ type RoomStatusManagerProps = {
 
 export default function RoomStatusManager({ profile }: RoomStatusManagerProps) {
   const [user, setUser] = useState<profileProps>(profile);
-
+  const [checkOutComment, setCheckOutComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const handleToggleCheckedInStatus = async () => {
+
+  const handleToggleCheckedInStatus = async (isCheckIn: boolean) => {
     try {
       setIsLoading(true);
+      const comment = isCheckIn ? "" : checkOutComment;
       const newStatus = await toggleCheckedInStatus(
         profile.userId,
-        !profile.isCheckedIn
+        !profile.isCheckedIn,
+        comment
       );
       setUser({ ...profile, isCheckedIn: newStatus });
       if (newStatus) {
         toast.success("在室に変更しました");
       } else {
-        toast.error("退室に変更しました");
+        toast.success("退室に変更しました");
+        setCheckOutComment("");
       }
     } catch (error) {
       console.log("チェックイン状態更新エラー:", error);
@@ -43,6 +48,7 @@ export default function RoomStatusManager({ profile }: RoomStatusManagerProps) {
       setIsLoading(false);
     }
   };
+
   return (
     <>
       <CardHeader className="text-center">
@@ -74,11 +80,27 @@ export default function RoomStatusManager({ profile }: RoomStatusManagerProps) {
               : "退室中"}
           </div>
         </div>
+
+        {user.isCheckedIn && (
+          <div className="space-y-2">
+            <Input
+              placeholder="活動報告を入力（任意）"
+              value={checkOutComment}
+              onChange={(e) => setCheckOutComment(e.target.value)}
+              maxLength={50}
+            />
+            {checkOutComment && (
+              <p className="text-sm text-gray-500 text-right">
+                {checkOutComment.length}/50文字
+              </p>
+            )}
+          </div>
+        )}
       </CardContent>
       <CardFooter className="flex flex-col gap-3 py-2">
         <Button
           className="w-full h-16 text-lg"
-          onClick={handleToggleCheckedInStatus}
+          onClick={() => handleToggleCheckedInStatus(true)}
           disabled={isLoading || user.isCheckedIn === true}
           variant={user.isCheckedIn ? "outline" : "default"}
         >
@@ -87,7 +109,7 @@ export default function RoomStatusManager({ profile }: RoomStatusManagerProps) {
         </Button>
         <Button
           className="w-full h-16 text-lg"
-          onClick={handleToggleCheckedInStatus}
+          onClick={() => handleToggleCheckedInStatus(false)}
           disabled={isLoading || user.isCheckedIn === false}
           variant={!user.isCheckedIn ? "outline" : "default"}
         >

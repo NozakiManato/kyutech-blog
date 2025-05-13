@@ -68,7 +68,8 @@ export const saveUserProfileAction = async ({
 
 export async function toggleCheckedInStatus(
   userId: string,
-  isCheckedIn: boolean
+  isCheckedIn: boolean,
+  comment?: string
 ) {
   try {
     const profile = await getUserProfile(userId);
@@ -83,10 +84,10 @@ export async function toggleCheckedInStatus(
 
     // Attendanceテーブルへの記録
     if (isCheckedIn) {
-      await createAttendance(profile.id);
+      await createAttendance(profile.id, comment);
     } else {
       try {
-        await updateAttendance(profile.id);
+        await updateAttendance(profile.id, comment);
       } catch (error) {
         // チェックイン記録が見つからない場合は、プロフィールの状態のみを更新
         console.error(error);

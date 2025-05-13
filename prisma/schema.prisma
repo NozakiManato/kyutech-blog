@@ -25,7 +25,7 @@ model UserProfile {
   updatedAt    DateTime @updatedAt
   posts        Post[]
   techSkills   TechSkill[]
-  Attendance Attendance[]
+  Attendance   Attendance[]
 
   @@index([userId])
 }
@@ -62,6 +62,7 @@ model Attendance {
   profile    UserProfile @relation(fields: [user_id], references: [id], onDelete: Cascade)
   check_in   DateTime    @default(now()) @map("check_in")
   check_out  DateTime?   @map("check_out")
+  comment    String?     @map("comment")
   created_at DateTime    @default(now()) @map("created_at")
 
   @@index([user_id])
