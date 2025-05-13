@@ -2,13 +2,13 @@
 
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
-import { Badge } from "@/components/ui/badge";
 
 type AttendanceRecord = {
   id: string;
   check_in: Date;
   check_out: Date | null;
   user_id: string;
+  comment?: string | null;
 };
 
 export interface AttendanceListProps {
@@ -16,22 +16,6 @@ export interface AttendanceListProps {
 }
 
 export function AttendanceList({ records }: AttendanceListProps) {
-  const formatDate = (date: Date) => {
-    return format(new Date(date), "yyyy年MM月dd日 HH:mm", { locale: ja });
-  };
-
-  const formatDuration = (checkIn: Date, checkOut: Date | null) => {
-    if (!checkOut) return "在室中";
-
-    const start = new Date(checkIn);
-    const end = new Date(checkOut);
-    const diffMs = end.getTime() - start.getTime();
-    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-    return `${diffHrs}時間${diffMins}分`;
-  };
-
   if (records.length === 0) {
     return (
       <div className="text-center py-6 text-muted-foreground">
@@ -41,37 +25,62 @@ export function AttendanceList({ records }: AttendanceListProps) {
   }
 
   return (
-    <div className="space-y-4">
-      {records.map((record) => (
-        <div
-          key={record.id}
-          className="flex flex-col space-y-1 rounded-lg border p-4"
-        >
-          <div className="flex justify-between">
-            <div>
-              <p className="font-medium">
-                チェックイン: {formatDate(record.check_in)}
-              </p>
-              {record.check_out && (
-                <p className="font-medium">
-                  チェックアウト: {formatDate(record.check_out)}
-                </p>
-              )}
-            </div>
-            <div className="text-right">
-              <p className="font-medium">
-                在室時間: {formatDuration(record.check_in, record.check_out)}
-              </p>
-              <Badge
-                variant={record.check_out ? "outline" : "default"}
-                className="mt-1"
-              >
-                {record.check_out ? "完了" : "在室中"}
-              </Badge>
-            </div>
-          </div>
-        </div>
-      ))}
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              日付
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              チェックイン
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              チェックアウト
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              滞在時間
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              コメント
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {records.map((record) => {
+            const checkIn = new Date(record.check_in);
+            const checkOut = record.check_out
+              ? new Date(record.check_out)
+              : null;
+            const duration = checkOut
+              ? (
+                  (checkOut.getTime() - checkIn.getTime()) /
+                  (1000 * 60 * 60)
+                ).toFixed(1)
+              : null;
+
+            return (
+              <tr key={record.id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {format(checkIn, "yyyy年MM月dd日", { locale: ja })}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {format(checkIn, "HH:mm", { locale: ja })}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {checkOut ? format(checkOut, "HH:mm", { locale: ja }) : "-"}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {duration ? `${duration}時間` : "-"}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-900">
+                  {record.comment || "-"}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }

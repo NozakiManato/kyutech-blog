@@ -35,6 +35,7 @@ export function AttendanceDashboard({
   const [todayRecords, setTodayRecords] = useState<AttendanceRecord[]>([]);
   const [weekRecords, setWeekRecords] = useState<AttendanceRecord[]>([]);
   const [monthRecords, setMonthRecords] = useState<AttendanceRecord[]>([]);
+  const [totalHours, setTotalHours] = useState(0);
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -52,6 +53,22 @@ export function AttendanceDashboard({
 
         const data = await response.json();
         setRecords(data.records);
+
+        // 合計時間を計算
+        const total = data.records.reduce(
+          (sum: number, record: AttendanceRecord) => {
+            if (record.check_out) {
+              const checkIn = new Date(record.check_in);
+              const checkOut = new Date(record.check_out);
+              const duration =
+                (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
+              return sum + duration;
+            }
+            return sum;
+          },
+          0
+        );
+        setTotalHours(total);
 
         // 今日の記録を抽出
         const today = new Date();
@@ -132,7 +149,24 @@ export function AttendanceDashboard({
 
         {/* 在室時間サマリー */}
         <div className="md:col-span-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 h-full">
+            <Card className="h-full">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">
+                  合計在室時間
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="h-8 w-24" />
+                ) : (
+                  <div className="text-2xl font-bold ">
+                    {totalHours.toFixed(1)}時間
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             <Card className="h-full">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -183,6 +217,7 @@ export function AttendanceDashboard({
           )}
         </CardContent>
       </Card>
+
       {/* 在室記録タブ */}
       <Card>
         <CardHeader>

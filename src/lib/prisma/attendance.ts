@@ -49,3 +49,29 @@ export const updateAttendance = async (profileId: string, comment?: string) => {
     throw error;
   }
 };
+
+export const getUserAttendance = async (profileId: string) => {
+  try {
+    const attendances = await db.attendance.findMany({
+      where: {
+        user_id: profileId,
+      },
+      orderBy: {
+        check_in: "desc",
+      },
+    });
+
+    return attendances.map((attendance) => ({
+      ...attendance,
+      check_in: attendance.check_in,
+      check_out: attendance.check_out ? attendance.check_out : null,
+      duration: attendance.check_out
+        ? (attendance.check_out.getTime() - attendance.check_in.getTime()) /
+          (1000 * 60 * 60)
+        : null,
+    }));
+  } catch (error) {
+    console.error("Error getting user attendance:", error);
+    throw error;
+  }
+};
