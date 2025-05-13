@@ -65,8 +65,8 @@ const BlogPage = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 lg:py-10">
-      <div className="flex justify-between items-center mb-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-6 mb-8">
         <div className="space-y-4">
           <h1 className="font-extrabold text-4xl lg:text-5xl tracking-tight">
             Blog🚀
@@ -76,17 +76,19 @@ const BlogPage = () => {
           </p>
           <Link
             href={"/dashboard/docs"}
-            className="text-xl text-muted-foreground"
+            className="inline-block text-muted-foreground hover:text-foreground transition-colors underline"
           >
-            ドキュメントページへ
+            ドキュメントを見る →
           </Link>
         </div>
-        <Link href={"/posts/create"}>
-          <Button>
-            <Icon.add />
-            新しい投稿
-          </Button>
-        </Link>
+        <div className="flex-shrink-0">
+          <Link href={"/posts/create"}>
+            <Button>
+              <Icon.add />
+              新しい投稿
+            </Button>
+          </Link>
+        </div>
       </div>
       <hr className="my-8" />
 
@@ -102,7 +104,7 @@ const BlogPage = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {data?.pages.map((page) =>
             page.map((post) => (
               <PostCard
@@ -120,7 +122,7 @@ const BlogPage = () => {
               />
             ))
           )}
-          <div ref={ref} className="h-10">
+          <div ref={ref} className="h-10 col-span-full">
             {isFetchingNextPage && (
               <div className="text-center">
                 <p className="text-muted-foreground">読み込み中...</p>
