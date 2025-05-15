@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { saveUserProfileAction } from "@/lib/actions";
+import { saveUserProfileAction, toggleCheckedInStatus } from "@/lib/actions";
 import {
   Form,
   FormControl,
@@ -80,7 +80,9 @@ const AdditionalInfoForm = ({ userId }: ProfileFormProps) => {
         instagram: values.instagram || "",
         isCheckedIn: true,
       });
-
+      if (result.success) {
+        await toggleCheckedInStatus(userId, true);
+      }
       if (result.success) {
         toast.success("プロフィールが保存されました");
         router.push("/");
