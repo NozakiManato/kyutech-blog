@@ -171,10 +171,10 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
             {presentMembers.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center justify-between p-4 rounded-lg border bg-card"
+                className="flex items-center justify-between p-3 rounded-lg border bg-card"
               >
-                <div className="flex items-center space-x-4">
-                  <Avatar>
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage src={member.imageUrl} alt={member.name} />
                     <AvatarFallback>
                       {member.name.slice(0, 2).toUpperCase()}
@@ -184,16 +184,18 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                     <div className="flex items-center space-x-2">
                       <Link
                         href={`/dashboard/${member.userId}`}
-                        className="font-medium hover:underline"
+                        className="font-medium hover:underline text-sm"
                       >
                         {member.name}
                       </Link>
                       {member.academicYear && (
-                        <Badge variant="secondary">{member.academicYear}</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          {member.academicYear}
+                        </Badge>
                       )}
                     </div>
                     {member.Attendance[0] && (
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {formatDistanceToNow(
                           new Date(member.Attendance[0].check_in),
                           {
@@ -208,7 +210,7 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                 </div>
                 {member.weekRecords && (
                   <div
-                    className={`mt-2 p-2 rounded-md ${
+                    className={`p-1.5 rounded-md ${
                       isOverTwentyHours(member)
                         ? "bg-green-100 dark:bg-green-900/20"
                         : "bg-gray-100 dark:bg-gray-800/20"
@@ -224,20 +226,24 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                       先週の在室時間
                     </p>
                     <p
-                      className={`text-lg font-bold ${
+                      className={`text-sm font-bold ${
                         isOverTwentyHours(member)
                           ? "text-green-700 dark:text-green-400"
                           : "text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {formatDuration(calculateTotalTime(member.weekRecords))}
-                      {isOverTwentyHours(member)}
+                      {isOverTwentyHours(member) && (
+                        <span className="ml-1 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
+                          20時間以上
+                        </span>
+                      )}
                     </p>
                   </div>
                 )}
                 <div className="flex items-center space-x-2">
                   <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span className="text-sm text-muted-foreground">在室中</span>
+                  <span className="text-xs text-muted-foreground">在室中</span>
                 </div>
               </div>
             ))}
@@ -258,10 +264,10 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
             {absentMembers.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center justify-between p-4 rounded-lg border bg-card"
+                className="flex items-center justify-between p-3 rounded-lg border bg-card"
               >
-                <div className="flex items-center space-x-4">
-                  <Avatar>
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage src={member.imageUrl} alt={member.name} />
                     <AvatarFallback>
                       {member.name.slice(0, 2).toUpperCase()}
@@ -271,52 +277,54 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                     <div className="flex items-center space-x-2">
                       <Link
                         href={`/dashboard/profiles/${member.userId}`}
-                        className="font-medium hover:underline"
+                        className="font-medium hover:underline text-sm"
                       >
                         {member.name}
                       </Link>
                       {member.academicYear && (
-                        <Badge variant="secondary">{member.academicYear}</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          {member.academicYear}
+                        </Badge>
                       )}
                     </div>
                   </div>
-                  {member.weekRecords && (
-                    <div
-                      className={`mt-2 p-2 rounded-md ${
+                </div>
+                {member.weekRecords && (
+                  <div
+                    className={`p-1.5 rounded-md ${
+                      isOverTwentyHours(member)
+                        ? "bg-green-100 dark:bg-green-900/20"
+                        : "bg-gray-100 dark:bg-gray-800/20"
+                    }`}
+                  >
+                    <p
+                      className={`text-xs font-medium ${
                         isOverTwentyHours(member)
-                          ? "bg-green-100 dark:bg-green-900/20"
-                          : "bg-gray-100 dark:bg-gray-800/20"
+                          ? "text-green-700 dark:text-green-400"
+                          : "text-gray-500 dark:text-gray-400"
                       }`}
                     >
-                      <p
-                        className={`text-xs font-medium ${
-                          isOverTwentyHours(member)
-                            ? "text-green-700 dark:text-green-400"
-                            : "text-gray-500 dark:text-gray-400"
-                        }`}
-                      >
-                        先週の在室時間
-                      </p>
-                      <p
-                        className={`text-lg font-bold ${
-                          isOverTwentyHours(member)
-                            ? "text-green-700 dark:text-green-400"
-                            : "text-gray-700 dark:text-gray-300"
-                        }`}
-                      >
-                        {formatDuration(calculateTotalTime(member.weekRecords))}
-                        {isOverTwentyHours(member) && (
-                          <span className="ml-1 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
-                            20時間以上
-                          </span>
-                        )}
-                      </p>
-                    </div>
-                  )}
-                </div>
+                      先週の在室時間
+                    </p>
+                    <p
+                      className={`text-sm font-bold ${
+                        isOverTwentyHours(member)
+                          ? "text-green-700 dark:text-green-400"
+                          : "text-gray-700 dark:text-gray-300"
+                      }`}
+                    >
+                      {formatDuration(calculateTotalTime(member.weekRecords))}
+                      {isOverTwentyHours(member) && (
+                        <span className="ml-1 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
+                          20時間以上
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                )}
                 <div className="flex items-center space-x-2">
                   <div className="h-2 w-2 rounded-full bg-gray-300"></div>
-                  <span className="text-sm text-muted-foreground">退室中</span>
+                  <span className="text-xs text-muted-foreground">退室中</span>
                 </div>
               </div>
             ))}

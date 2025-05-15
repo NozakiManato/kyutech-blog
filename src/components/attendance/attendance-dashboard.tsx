@@ -73,7 +73,9 @@ export function AttendanceDashboard({
         // 今日の記録を抽出
         const today = new Date();
         const todayStart = new Date(today.setHours(0, 0, 0, 0));
+        todayStart.setHours(todayStart.getHours());
         const todayEnd = new Date(today.setHours(23, 59, 59, 999));
+        todayEnd.setHours(todayEnd.getHours());
 
         const todayFiltered = data.records.filter(
           (record: AttendanceRecord) => {
@@ -122,7 +124,7 @@ export function AttendanceDashboard({
         ? new Date(record.check_out)
         : new Date();
       const diff_minutes = differenceInMinutes(check_out, check_in);
-      return total + diff_minutes;
+      return total + diff_minutes + 9 * 60;
     }, 0);
   };
 

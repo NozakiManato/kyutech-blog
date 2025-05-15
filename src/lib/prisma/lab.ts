@@ -27,7 +27,7 @@ export const getAllLabs = cache(async () => {
 
 export const getLabMembers = cache(
   async (labName?: string, userLab?: string) => {
-    return await db.userProfile.findMany({
+    const members = await db.userProfile.findMany({
       where: labName ? { researchLab: labName } : { researchLab: userLab },
       select: {
         id: true,
@@ -45,5 +45,16 @@ export const getLabMembers = cache(
       },
       orderBy: [{ isCheckedIn: "desc" }, { name: "asc" }],
     });
+
+    // チェックイン時間をUTCに戻す
+    return members.map((member) => ({
+      ...member,
+      Attendance: member.Attendance.map((attendance) => ({
+        ...attendance,
+        check_in: new Date(
+          attendance.check_in.getTime() - 9 * 60 * 60 * 1000
+        ).toISOString(),
+      })),
+    }));
   }
 );

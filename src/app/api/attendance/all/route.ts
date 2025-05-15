@@ -5,7 +5,7 @@ import { cache } from "react";
 
 // データベースクエリをcache関数でラップ
 const getAllMembersAttendance = cache(async () => {
-  return await db.userProfile.findMany({
+  const members = await db.userProfile.findMany({
     select: {
       id: true,
       userId: true,
@@ -26,6 +26,17 @@ const getAllMembersAttendance = cache(async () => {
     },
     orderBy: [{ researchLab: "asc" }, { isCheckedIn: "desc" }, { name: "asc" }],
   });
+
+  // チェックイン時間をUTCに戻す
+  return members.map((member) => ({
+    ...member,
+    Attendance: member.Attendance.map((attendance) => ({
+      ...attendance,
+      check_in: new Date(
+        attendance.check_in.getTime() - 9 * 60 * 60 * 1000
+      ).toISOString(),
+    })),
+  }));
 });
 
 export async function GET() {
