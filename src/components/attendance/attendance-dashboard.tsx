@@ -124,7 +124,7 @@ export function AttendanceDashboard({
         ? new Date(record.check_out)
         : new Date();
       const diff_minutes = differenceInMinutes(check_out, check_in);
-      return total + diff_minutes + 9 * 60;
+      return total + diff_minutes + 4 * 60 + 30;
     }, 0);
   };
 
