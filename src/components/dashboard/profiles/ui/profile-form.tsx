@@ -26,16 +26,20 @@ const ProfileForm = ({
   inputFileRef,
   handleFileChange,
 }) => {
-  const { control, setValue } = useFormContext();
+  const { control, setValue, getValues } = useFormContext();
   const { user, isLoaded } = useUser();
 
   // ユーザー情報が読み込まれた後にメールアドレスを設定
   useEffect(() => {
     if (isLoaded && user) {
-      const userEmail = user.emailAddresses[0]?.emailAddress || "";
-      setValue("email", userEmail);
+      const currentEmail = getValues("email");
+      // メールアドレスが空の場合のみ、Clerkのメールアドレスを設定
+      if (!currentEmail) {
+        const userEmail = user.emailAddresses[0]?.emailAddress || "";
+        setValue("email", userEmail);
+      }
     }
-  }, [isLoaded, user, setValue]);
+  }, [isLoaded, user, setValue, getValues]);
 
   useEffect(() => {
     if (previewUrl && previewUrl !== "未設定") {
