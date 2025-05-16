@@ -34,7 +34,7 @@ const getJSTNow = () => {
 export function AttendanceDashboard({
   targetUserId,
 }: {
-  targetUserId?: string;
+  targetUserId: string;
 }) {
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -243,7 +243,10 @@ export function AttendanceDashboard({
                   ))}
                 </div>
               ) : (
-                <AttendanceList records={monthRecords} />
+                <AttendanceList
+                  records={monthRecords}
+                  targetUserId={targetUserId}
+                />
               )}
             </TabsContent>
             <TabsContent value="all">
@@ -254,7 +257,7 @@ export function AttendanceDashboard({
                   ))}
                 </div>
               ) : (
-                <AttendanceList records={records} />
+                <AttendanceList records={records} targetUserId={targetUserId} />
               )}
             </TabsContent>
           </Tabs>

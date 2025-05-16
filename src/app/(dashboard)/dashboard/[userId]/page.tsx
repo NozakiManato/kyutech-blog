@@ -1,5 +1,6 @@
 import DashBoardShell from "@/components/dashboard/blogs/dashboard-shell";
 import { AttendanceDashboard } from "@/components/attendance/attendance-dashboard";
+import { getUserProfile } from "@/lib/prisma/user";
 
 interface DashboardPageProps {
   params: Promise<{
@@ -8,10 +9,15 @@ interface DashboardPageProps {
 }
 
 const DashboardPage = async (props: DashboardPageProps) => {
-  const targetUserIdOrId = (await props.params).userId;
+  const targetUserId = (await props.params).userId;
+
+  const profile = await getUserProfile(targetUserId);
+
+  const currentUserId = profile!.userId;
+
   return (
     <DashBoardShell>
-      <AttendanceDashboard targetUserId={targetUserIdOrId} />
+      <AttendanceDashboard targetUserId={currentUserId} />
     </DashBoardShell>
   );
 };
