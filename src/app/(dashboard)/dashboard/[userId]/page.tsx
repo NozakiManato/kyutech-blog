@@ -17,7 +17,10 @@ const DashboardPage = async (props: DashboardPageProps) => {
 
   return (
     <DashBoardShell>
-      <AttendanceDashboard targetUserId={currentUserId} />
+      <AttendanceDashboard
+        targetUserId={targetUserId}
+        currentUserId={currentUserId}
+      />
     </DashBoardShell>
   );
 };

@@ -57,7 +57,6 @@ const getAttendanceHistory = cache(
       skip,
       take: limit,
     });
-
     // 総レコード数を取得
     const totalRecords = await db.attendance.count({
       where: {
