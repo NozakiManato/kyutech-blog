@@ -25,6 +25,12 @@ type AttendanceRecord = {
   user_id: string;
 };
 
+// 現在時刻を日本時間に変換する関数
+const getJSTNow = () => {
+  const now = new Date();
+  return new Date(now.getTime() + 9 * 60 * 60 * 1000);
+};
+
 export function AttendanceDashboard({
   targetUserId,
 }: {
@@ -71,11 +77,9 @@ export function AttendanceDashboard({
         setTotalHours(total);
 
         // 今日の記録を抽出
-        const today = new Date();
+        const today = getJSTNow();
         const todayStart = new Date(today.setHours(0, 0, 0, 0));
-        todayStart.setHours(todayStart.getHours());
         const todayEnd = new Date(today.setHours(23, 59, 59, 999));
-        todayEnd.setHours(todayEnd.getHours());
 
         const todayFiltered = data.records.filter(
           (record: AttendanceRecord) => {
@@ -86,8 +90,8 @@ export function AttendanceDashboard({
         setTodayRecords(todayFiltered);
 
         // 先週の記録を抽出
-        const weekStart = startOfWeek(subWeeks(new Date(), 1), { locale: ja });
-        const weekEnd = endOfWeek(subWeeks(new Date(), 1), { locale: ja });
+        const weekStart = startOfWeek(subWeeks(today, 1), { locale: ja });
+        const weekEnd = endOfWeek(subWeeks(today, 1), { locale: ja });
 
         const weekFiltered = data.records.filter((record: AttendanceRecord) => {
           const checkInDate = new Date(record.check_in);
@@ -96,8 +100,8 @@ export function AttendanceDashboard({
         setWeekRecords(weekFiltered);
 
         // 今月の記録を抽出
-        const monthStart = startOfMonth(new Date());
-        const monthEnd = endOfMonth(new Date());
+        const monthStart = startOfMonth(today);
+        const monthEnd = endOfMonth(today);
 
         const monthFiltered = data.records.filter(
           (record: AttendanceRecord) => {
@@ -122,9 +126,9 @@ export function AttendanceDashboard({
       const check_in = new Date(record.check_in);
       const check_out = record.check_out
         ? new Date(record.check_out)
-        : new Date();
+        : getJSTNow();
       const diff_minutes = differenceInMinutes(check_out, check_in);
-      return total + diff_minutes + 4 * 60 + 30;
+      return total + diff_minutes;
     }, 0);
   };
 
