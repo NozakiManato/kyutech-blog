@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LabAttendanceList } from "@/components/attendance/lab-attendance-list";
 import { notFound } from "next/navigation";
+import { WeeklyAttendanceChart } from "@/components/attendance/weekly-attendance-chart";
 
 type Props = {
   params: Promise<{
@@ -34,6 +35,8 @@ export default async function LabLocalaboPage(props: Props) {
             <LabAttendanceList labName={labName} />
           </CardContent>
         </Card>
+
+        <WeeklyAttendanceChart labName={labName} />
       </div>
     </div>
   );
