@@ -8,11 +8,13 @@ import {
   startOfWeek,
   endOfWeek,
   subWeeks,
+  isWeekend,
 } from "date-fns";
 import { ja } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { isHoliday } from "@holiday-jp/holiday_jp";
 
 interface AttendanceRecord {
   id: string;
@@ -120,18 +122,53 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
     return `${hours}時間${mins}分`;
   };
 
-  // 芹川研究室のメンバーで先週の在室時間が20時間を超えているかチェックする関数
-  const isOverTwentyHours = (member: LabMember) => {
+  // 平日かどうかを判定する関数
+  const isSchoolDay = (date: Date) => {
+    return !isWeekend(date) && !isHoliday(date);
+  };
+
+  // 日本時間に変換する関数
+  const toJST = (date: Date) => {
+    return new Date(date.getTime() + 9 * 60 * 60 * 1000);
+  };
+
+  // 先週の登校日数を計算する関数
+  const calculateSchoolDays = () => {
+    // 現在のUTC時間を日本時間に変換
+    const now = toJST(new Date());
+    // 1週間前の日付を取得（日本時間）
+    const lastWeek = subWeeks(now, 1);
+    // 1週間前の月曜日を取得（日本時間）
+    const weekStart = startOfWeek(lastWeek, { locale: ja, weekStartsOn: 1 });
+    // 1週間前の日曜日を取得（日本時間）
+    const weekEnd = endOfWeek(lastWeek, { locale: ja, weekStartsOn: 1 });
+
+    let schoolDays = 0;
+    const currentDate = new Date(weekStart);
+
+    // 先週の各日をチェック
+    while (currentDate <= weekEnd) {
+      const isSchoolDayResult = isSchoolDay(currentDate);
+
+      if (isSchoolDayResult) {
+        schoolDays++;
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return schoolDays;
+  };
+
+  // 芹川研究室のメンバーで先週の在室時間が登校日×4時間を超えているかチェックする関数
+  const isOverRequiredHours = (member: LabMember) => {
     if (member.researchLab !== "芹川研究室") return false;
     if (!member.weekRecords) return false;
 
     const totalMinutes = calculateTotalTime(member.weekRecords);
-    console.log(
-      `メンバー: ${member.name}, 研究室: ${
-        member.researchLab
-      }, 在室時間: ${totalMinutes}分, 20時間以上: ${totalMinutes > 20 * 60}`
-    );
-    return totalMinutes > 20 * 60; // 20時間 = 20 * 60分
+    const schoolDays = calculateSchoolDays();
+    const requiredMinutes = schoolDays * 4 * 60; // 登校日数 × 4時間
+
+    return totalMinutes > requiredMinutes;
   };
 
   if (isLoading) {
@@ -211,14 +248,16 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                 {member.weekRecords && (
                   <div
                     className={`p-1.5 rounded-md ${
-                      isOverTwentyHours(member)
+                      member.researchLab === "芹川研究室" &&
+                      isOverRequiredHours(member)
                         ? "bg-green-100 dark:bg-green-900/20"
                         : "bg-gray-100 dark:bg-gray-800/20"
                     }`}
                   >
                     <p
                       className={`text-xs font-medium ${
-                        isOverTwentyHours(member)
+                        member.researchLab === "芹川研究室" &&
+                        isOverRequiredHours(member)
                           ? "text-green-700 dark:text-green-400"
                           : "text-gray-500 dark:text-gray-400"
                       }`}
@@ -227,15 +266,16 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                     </p>
                     <p
                       className={`text-sm font-bold ${
-                        isOverTwentyHours(member)
+                        member.researchLab === "芹川研究室" &&
+                        isOverRequiredHours(member)
                           ? "text-green-700 dark:text-green-400"
                           : "text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {formatDuration(calculateTotalTime(member.weekRecords))}
-                      {isOverTwentyHours(member) && (
-                        <span className="ml-1 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
-                          20時間以上
+                      {member.researchLab === "芹川研究室" && (
+                        <span className="ml-1 text-xs bg-gray-500 text-white px-1.5 py-0.5 rounded-full">
+                          {formatDuration(calculateSchoolDays() * 4 * 60)}
                         </span>
                       )}
                     </p>
@@ -292,14 +332,16 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                 {member.weekRecords && (
                   <div
                     className={`p-1.5 rounded-md ${
-                      isOverTwentyHours(member)
+                      member.researchLab === "芹川研究室" &&
+                      isOverRequiredHours(member)
                         ? "bg-green-100 dark:bg-green-900/20"
                         : "bg-gray-100 dark:bg-gray-800/20"
                     }`}
                   >
                     <p
                       className={`text-xs font-medium ${
-                        isOverTwentyHours(member)
+                        member.researchLab === "芹川研究室" &&
+                        isOverRequiredHours(member)
                           ? "text-green-700 dark:text-green-400"
                           : "text-gray-500 dark:text-gray-400"
                       }`}
@@ -308,15 +350,16 @@ export function LabAttendanceList({ labName }: AttendanceListProps) {
                     </p>
                     <p
                       className={`text-sm font-bold ${
-                        isOverTwentyHours(member)
+                        member.researchLab === "芹川研究室" &&
+                        isOverRequiredHours(member)
                           ? "text-green-700 dark:text-green-400"
                           : "text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {formatDuration(calculateTotalTime(member.weekRecords))}
-                      {isOverTwentyHours(member) && (
-                        <span className="ml-1 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
-                          20時間以上
+                      {member.researchLab === "芹川研究室" && (
+                        <span className="ml-1 text-xs bg-gray-500 text-white px-1.5 py-0.5 rounded-full">
+                          {formatDuration(calculateSchoolDays() * 4 * 60)}
                         </span>
                       )}
                     </p>
