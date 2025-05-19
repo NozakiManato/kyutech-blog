@@ -80,13 +80,32 @@ export function AttendanceDashboard({
 
         // 今日の記録を抽出
         const today = getJSTNow();
-        const todayStart = new Date(today.setHours(0, 0, 0, 0));
-        const todayEnd = new Date(today.setHours(23, 59, 59, 999));
+        const todayStart = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate(),
+          0,
+          0,
+          0,
+          0
+        );
+        const todayEnd = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate(),
+          23,
+          59,
+          59,
+          999
+        );
 
         const todayFiltered = data.records.filter(
           (record: AttendanceRecord) => {
             const checkInDate = new Date(record.check_in);
-            return checkInDate >= todayStart && checkInDate <= todayEnd;
+            const checkInJST = new Date(
+              checkInDate.getTime() + 9 * 60 * 60 * 1000
+            );
+            return checkInJST >= todayStart && checkInJST <= todayEnd;
           }
         );
         setTodayRecords(todayFiltered);
