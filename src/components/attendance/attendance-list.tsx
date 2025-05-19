@@ -1,17 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, addHours } from "date-fns";
 import { ja } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuth } from "@clerk/nextjs";
-
-// 日本時間に変換する関数
-const toJST = (date: Date) => {
-  return new Date(date.getTime() + 9 * 60 * 60 * 1000);
-};
 
 type AttendanceRecord = {
   id: string;
@@ -112,83 +107,83 @@ export function AttendanceList({
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {records.map((record) => {
-            const checkIn = toJST(new Date(record.check_in));
-            const checkOut = record.check_out
-              ? toJST(new Date(record.check_out))
-              : null;
-            const duration = checkOut
-              ? {
-                  hours: Math.floor(
-                    (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60)
-                  ),
-                  minutes: Math.floor(
-                    ((checkOut.getTime() - checkIn.getTime()) %
-                      (1000 * 60 * 60)) /
-                      (1000 * 60)
-                  ),
-                }
-              : null;
-
-            return (
-              <tr key={record.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {format(checkIn, "yyyy年MM月dd日", { locale: ja })}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {format(checkIn, "HH:mm", { locale: ja })}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {checkOut
-                    ? format(checkOut, "HH:mm", { locale: ja })
-                    : "在室中"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {duration
-                    ? `${duration.hours}時間${duration.minutes}分`
-                    : "-"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {editingComment === record.id ? (
-                    <div className="flex items-center gap-2">
-                      <Input
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
-                        maxLength={100}
-                        className="w-48"
-                      />
+          {records.map((record) => (
+            <tr key={record.id}>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {format(
+                  addHours(new Date(record.check_in), -9),
+                  "yyyy年MM月dd日",
+                  {
+                    locale: ja,
+                  }
+                )}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {format(addHours(new Date(record.check_in), -9), "HH:mm", {
+                  locale: ja,
+                })}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {record.check_out
+                  ? format(addHours(new Date(record.check_out), -9), "HH:mm", {
+                      locale: ja,
+                    })
+                  : "在室中"}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {record.check_out
+                  ? `${Math.floor(
+                      (new Date(record.check_out).getTime() -
+                        new Date(record.check_in).getTime()) /
+                        (1000 * 60 * 60)
+                    )}時間${Math.floor(
+                      ((new Date(record.check_out).getTime() -
+                        new Date(record.check_in).getTime()) %
+                        (1000 * 60 * 60)) /
+                        (1000 * 60)
+                    )}分`
+                  : "-"}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {editingComment === record.id ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      maxLength={100}
+                      className="w-48"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => handleSaveComment(record.id)}
+                    >
+                      保存
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setEditingComment(null)}
+                    >
+                      キャンセル
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span>{record.comment || "-"}</span>
+                    {isOwnDashboard && (
                       <Button
                         size="sm"
-                        onClick={() => handleSaveComment(record.id)}
+                        variant="ghost"
+                        onClick={() => handleEditComment(record)}
                       >
-                        保存
+                        編集
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setEditingComment(null)}
-                      >
-                        キャンセル
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <span>{record.comment || "-"}</span>
-                      {isOwnDashboard && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleEditComment(record)}
-                        >
-                          編集
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
+                    )}
+                  </div>
+                )}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
