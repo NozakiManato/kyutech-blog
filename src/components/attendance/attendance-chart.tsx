@@ -10,6 +10,7 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import { useEffect, useState } from "react";
 
 type AttendanceRecord = {
   id: string;
@@ -37,9 +38,23 @@ type CustomTooltipProps = {
   label?: string;
 };
 
+const getJSTNow = () => {
+  const now = new Date();
+  return new Date(now.getTime() + 9 * 60 * 60 * 1000);
+};
+
 export function AttendanceChart({ records }: AttendanceChartProps) {
-  const today = new Date();
-  const weekStart = startOfWeek(today, { locale: ja, weekStartsOn: 1 });
+  const [currentTime, setCurrentTime] = useState(getJSTNow());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(getJSTNow());
+    }, 60000); // 1分ごとに更新
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const weekStart = startOfWeek(currentTime, { locale: ja, weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
   const chartData: ChartData[] = weekDays.map((date) => {
@@ -53,10 +68,11 @@ export function AttendanceChart({ records }: AttendanceChartProps) {
     });
 
     const totalHours = dayRecords.reduce((acc, record) => {
-      if (!record.check_out) return acc;
+      const checkOutTime = record.check_out
+        ? new Date(record.check_out)
+        : currentTime;
       const duration =
-        new Date(record.check_out).getTime() -
-        new Date(record.check_in).getTime();
+        checkOutTime.getTime() - new Date(record.check_in).getTime();
       return acc + duration / (1000 * 60 * 60);
     }, 0);
 

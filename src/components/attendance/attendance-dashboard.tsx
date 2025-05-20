@@ -43,7 +43,6 @@ export function AttendanceDashboard({
   const [todayRecords, setTodayRecords] = useState<AttendanceRecord[]>([]);
   const [weekRecords, setWeekRecords] = useState<AttendanceRecord[]>([]);
   const [monthRecords, setMonthRecords] = useState<AttendanceRecord[]>([]);
-  const [totalHours, setTotalHours] = useState(0);
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -61,22 +60,6 @@ export function AttendanceDashboard({
 
         const data = await response.json();
         setRecords(data.records);
-
-        // 合計時間を計算
-        const total = data.records.reduce(
-          (sum: number, record: AttendanceRecord) => {
-            if (record.check_out) {
-              const checkIn = new Date(record.check_in);
-              const checkOut = new Date(record.check_out);
-              const duration =
-                (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
-              return sum + duration;
-            }
-            return sum;
-          },
-          0
-        );
-        setTotalHours(total);
 
         // 今日の記録を抽出
         const today = getJSTNow();
@@ -166,6 +149,9 @@ export function AttendanceDashboard({
   // 先週の在室時間
   const weekTotalTime = calculateTotalTime(weekRecords);
 
+  // 合計在室時間
+  const totalTime = calculateTotalTime(records);
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -188,7 +174,7 @@ export function AttendanceDashboard({
                   <Skeleton className="h-8 w-24" />
                 ) : (
                   <div className="text-2xl font-bold ">
-                    {totalHours.toFixed(1)}時間
+                    {formatDuration(totalTime)}
                   </div>
                 )}
               </CardContent>
