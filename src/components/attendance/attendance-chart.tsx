@@ -59,7 +59,9 @@ export function AttendanceChart({ records }: AttendanceChartProps) {
 
   const chartData: ChartData[] = weekDays.map((date) => {
     const dayRecords = records.filter((record) => {
-      const recordDate = new Date(record.check_in);
+      const recordDate = new Date(
+        new Date(record.check_in).getTime() - 9 * 60 * 60 * 1000
+      );
       return (
         recordDate.getDate() === date.getDate() &&
         recordDate.getMonth() === date.getMonth() &&
