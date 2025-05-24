@@ -3,6 +3,11 @@ import { db } from "@/lib/db";
 import { sendCheckoutReminderEmail } from "@/lib/mail";
 import { cache } from "react";
 import { updateAttendance } from "@/lib/prisma/attendance";
+import { UserProfile, Attendance } from "@prisma/client";
+
+type UserWithAttendance = UserProfile & {
+  Attendance: Attendance[];
+};
 
 // 在室中のユーザーを取得する部分だけをキャッシュ
 const getActiveUsers = cache(async () => {
@@ -32,30 +37,48 @@ export async function POST() {
   return await sendReminderEmails();
 }
 
-async function sendReminderEmails() {
-  try {
-    // キャッシュされた関数を使用して在室中のユーザーを取得
-    const activeUsers = await getActiveUsers();
-
-    // 各ユーザーにリマインダーメールを送信（この部分はキャッシュされない）
-    for (const user of activeUsers) {
-      if (user.email && user.Attendance[0]) {
-        await sendCheckoutReminderEmail(
-          user.email,
-          user.name,
-          user.userId,
-          user.Attendance[0].check_in
-        );
-        await db.userProfile.update({
+async function processUser(user: UserWithAttendance) {
+  if (user.email && user.Attendance[0]) {
+    try {
+      // データベースの更新を先に実行
+      await Promise.all([
+        db.userProfile.update({
           where: {
             id: user.id,
           },
           data: {
             isCheckedIn: false,
           },
-        });
-        await updateAttendance(user.id);
-      }
+        }),
+        updateAttendance(user.id),
+      ]);
+
+      // メール送信は非同期で実行（レスポンスを待たない）
+      sendCheckoutReminderEmail(
+        user.email,
+        user.name,
+        user.userId,
+        user.Attendance[0].check_in
+      ).catch((error) => {
+        console.error(`Error sending email to user ${user.id}:`, error);
+      });
+    } catch (error) {
+      console.error(`Error processing user ${user.id}:`, error);
+    }
+  }
+}
+
+async function sendReminderEmails() {
+  try {
+    const activeUsers = await getActiveUsers();
+
+    // バッチサイズを小さくして、タイムアウトを防ぐ
+    const BATCH_SIZE = 3;
+
+    // ユーザーをバッチに分割して処理
+    for (let i = 0; i < activeUsers.length; i += BATCH_SIZE) {
+      const batch = activeUsers.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(processUser));
     }
 
     return NextResponse.json({ success: true });
