@@ -108,7 +108,6 @@ export function AllAttendanceList() {
       title: string;
       emptyMessage: string;
       dotClass: string;
-      statusLabel: string;
       description: (member: LabMember) => string | null;
     }
   > = {
@@ -116,7 +115,6 @@ export function AllAttendanceList() {
       title: "在室",
       emptyMessage: "現在在室しているメンバーはいません",
       dotClass: "bg-green-500",
-      statusLabel: "在室中",
       description: (member) => {
         const checkIn = member.Attendance[0]?.check_in;
         if (!checkIn) return null;
@@ -130,14 +128,12 @@ export function AllAttendanceList() {
       title: "学内",
       emptyMessage: "現在学内にいるメンバーはいません",
       dotClass: "bg-amber-500",
-      statusLabel: "学内",
       description: () => "キャンパス内に滞在中",
     },
     OFF_CAMPUS: {
       title: "学外",
       emptyMessage: "退室しているメンバーはいません",
       dotClass: "bg-gray-300",
-      statusLabel: "退室中",
       description: () => "退室済み",
     },
   };
@@ -230,9 +226,6 @@ export function AllAttendanceList() {
                 <div
                   className={`h-2 w-2 rounded-full ${config.dotClass}`}
                 ></div>
-                <span className="text-xs text-muted-foreground">
-                  {config.statusLabel}
-                </span>
               </div>
             </div>
           );
