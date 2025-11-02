@@ -1,19 +1,22 @@
-import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { updateAttendance } from "@/lib/prisma/attendance";
 import { PresenceStatus } from "@prisma/client";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const body = await request.json();
+    const { userId } = body;
 
     if (!userId) {
-      return new NextResponse("認証が必要です", { status: 401 });
+      return NextResponse.json(
+        { error: "ユーザーIDが必要です" },
+        { status: 400 }
+      );
     }
 
     const profile = await db.userProfile.findUnique({
-      where: { userId },
+      where: { id: userId },
       select: {
         id: true,
         presenceStatus: true,
@@ -22,7 +25,10 @@ export async function POST() {
     });
 
     if (!profile) {
-      return new NextResponse("プロフィールが見つかりません", { status: 404 });
+      return NextResponse.json(
+        { error: "プロフィールが見つかりません" },
+        { status: 404 }
+      );
     }
 
     const activeAttendance = await db.attendance.findFirst({
@@ -48,11 +54,18 @@ export async function POST() {
     }
 
     return NextResponse.json({
+      success: true,
       presenceStatus: PresenceStatus.ON_CAMPUS,
       isCheckedIn: false,
+      message: "学内ステータスに更新しました",
     });
   } catch (error) {
     console.error("[ATTENDANCE_INSIDE_AREA_POST]", error);
-    return new NextResponse("サーバーエラーが発生しました", { status: 500 });
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "学内ステータスの更新に失敗しました";
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
