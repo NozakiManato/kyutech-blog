@@ -29,6 +29,16 @@ export async function POST(request: NextRequest) {
     }
 
     await updateAttendance(userId, { nextStatus: PresenceStatus.OFF_CAMPUS });
+
+    // 学内状態も確実に解除
+    await db.userProfile.update({
+      where: { id: userId },
+      data: {
+        presenceStatus: PresenceStatus.OFF_CAMPUS,
+        isCheckedIn: false,
+      },
+    });
+
     return NextResponse.json({
       success: true,
       isCheckedIn: false,
