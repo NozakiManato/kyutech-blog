@@ -14,12 +14,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 既にチェックイン済みか確認
-    const profile = await db.userProfile.findUnique({
-      where: { id: userId },
-      select: { isCheckedIn: true },
+    // 既にアクティブな入室記録（check_outがnull）があるか確認
+    const activeAttendance = await db.attendance.findFirst({
+      where: {
+        user_id: userId,
+        check_out: null,
+      },
+      orderBy: {
+        check_in: "desc",
+      },
     });
-    if (profile?.isCheckedIn) {
+
+    if (activeAttendance) {
       return NextResponse.json({
         success: false,
         isCheckedIn: true,
