@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { updateAttendance } from "@/lib/prisma/attendance";
 import { PresenceStatus } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
@@ -31,27 +30,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const activeAttendance = await db.attendance.findFirst({
-      where: {
-        user_id: profile.id,
-        check_out: null,
+    // 学内ステータスに更新（退室記録は作成しない）
+    // ON_CAMPUSは研究室外なのでisCheckedInはfalseにする
+    await db.userProfile.update({
+      where: { id: profile.id },
+      data: {
+        presenceStatus: PresenceStatus.ON_CAMPUS,
+        isCheckedIn: false,
       },
-      orderBy: { check_in: "desc" },
     });
-
-    if (activeAttendance) {
-      await updateAttendance(profile.id, {
-        nextStatus: PresenceStatus.ON_CAMPUS,
-      });
-    } else {
-      await db.userProfile.update({
-        where: { id: profile.id },
-        data: {
-          isCheckedIn: false,
-          presenceStatus: PresenceStatus.ON_CAMPUS,
-        },
-      });
-    }
 
     return NextResponse.json({
       success: true,
