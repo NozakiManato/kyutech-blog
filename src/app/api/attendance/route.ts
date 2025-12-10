@@ -70,9 +70,24 @@ export async function POST(req: Request) {
         );
       }
 
-      await updateAttendance(profile.id, {
-        nextStatus: PresenceStatus.OFF_CAMPUS,
-      });
+      try {
+        await updateAttendance(profile.id, {
+          nextStatus: PresenceStatus.OFF_CAMPUS,
+        });
+      } catch (error) {
+        // チェックイン記録の更新に失敗した場合でも、プロフィールの状態を更新
+        console.error("チェックイン記録の更新エラー:", error);
+        console.warn(
+          "チェックイン記録の更新に失敗しましたが、プロフィールの状態を更新します"
+        );
+        await db.userProfile.update({
+          where: { id: profile.id },
+          data: {
+            isCheckedIn: false,
+            presenceStatus: PresenceStatus.OFF_CAMPUS,
+          },
+        });
+      }
     } else {
       return new NextResponse("不正なアクションです", { status: 400 });
     }

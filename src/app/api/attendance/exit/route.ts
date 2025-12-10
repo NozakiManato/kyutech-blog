@@ -28,9 +28,18 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    await updateAttendance(userId, { nextStatus: PresenceStatus.OFF_CAMPUS });
+    // チェックイン記録があれば更新、なければプロフィールの状態のみ更新
+    try {
+      await updateAttendance(userId, { nextStatus: PresenceStatus.OFF_CAMPUS });
+    } catch (error) {
+      // チェックイン記録が見つからない場合は、プロフィールの状態のみを更新
+      console.error("チェックイン記録の更新エラー:", error);
+      console.warn(
+        "チェックイン記録が見つかりませんが、プロフィールの状態を更新します"
+      );
+    }
 
-    // 学内状態も確実に解除
+    // 学内状態も確実に解除（updateAttendanceが成功した場合でも、ここで確実に更新）
     await db.userProfile.update({
       where: { id: userId },
       data: {
