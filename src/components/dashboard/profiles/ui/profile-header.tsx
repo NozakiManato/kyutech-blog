@@ -10,14 +10,12 @@ import { profileProps } from "@/types";
 interface ProfileHeaderProps {
   profile: profileProps;
   onToggleCheckedIn: () => void;
-  onSetOnCampus?: () => void;
   isOwnProfile?: boolean;
 }
 
 export const ProfileHeader = ({
   profile,
   onToggleCheckedIn,
-  onSetOnCampus,
   isOwnProfile = false,
 }: ProfileHeaderProps) => {
   const presenceLabelMap: Record<
@@ -25,7 +23,7 @@ export const ProfileHeader = ({
     { label: string; style: string }
   > = {
     IN_LAB: { label: "在室", style: "bg-green-100 text-green-700" },
-    ON_CAMPUS: { label: "学内", style: "bg-amber-100 text-amber-700" },
+    ON_CAMPUS: { label: "在室", style: "bg-green-100 text-green-700" },
     OFF_CAMPUS: { label: "学外", style: "bg-gray-100 text-gray-600" },
   };
 
@@ -63,14 +61,6 @@ export const ProfileHeader = ({
               }`}
             >
               {profile.isCheckedIn ? "退室" : "入室"}
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={onSetOnCampus}
-              disabled={profile.presenceStatus === "ON_CAMPUS"}
-              className="flex-1 md:flex-none px-4 py-2 text-base md:text-lg"
-            >
-              学内
             </Button>
           </div>
         )}

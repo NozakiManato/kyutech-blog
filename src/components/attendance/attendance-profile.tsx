@@ -75,9 +75,9 @@ export function AttendanceProfile({ targetUserId }: { targetUserId?: string }) {
       badge: "bg-green-100 text-green-700",
     },
     ON_CAMPUS: {
-      label: "学内",
-      card: "bg-amber-200 hover:bg-amber-300 dark:bg-amber-900/20 hover:dark:bg-amber-900/30",
-      badge: "bg-amber-100 text-amber-700",
+      label: "在室",
+      card: "bg-green-300 hover:bg-green-400 dark:bg-green-950/20 hover:dark:bg-green-950/30",
+      badge: "bg-green-100 text-green-700",
     },
     OFF_CAMPUS: {
       label: "学外",

@@ -91,16 +91,19 @@ export function AllAttendanceList() {
   }
 
   // 研究室ごとにメンバーをグループ化
-  const labGroups = members.reduce((groups, member) => {
-    const lab = member.researchLab;
-    if (!groups[lab]) {
-      groups[lab] = [];
-    }
-    groups[lab].push(member);
-    return groups;
-  }, {} as Record<string, LabMember[]>);
+  const labGroups = members.reduce(
+    (groups, member) => {
+      const lab = member.researchLab;
+      if (!groups[lab]) {
+        groups[lab] = [];
+      }
+      groups[lab].push(member);
+      return groups;
+    },
+    {} as Record<string, LabMember[]>
+  );
 
-  type PresenceBucket = "IN_LAB" | "ON_CAMPUS" | "OFF_CAMPUS";
+  type PresenceBucket = "IN_LAB" | "OFF_CAMPUS";
 
   const statusConfigs: Record<
     PresenceBucket,
@@ -123,12 +126,6 @@ export function AllAttendanceList() {
           locale: ja,
         })}から在室中`;
       },
-    },
-    ON_CAMPUS: {
-      title: "学内",
-      emptyMessage: "現在学内にいるメンバーはいません",
-      dotClass: "bg-amber-500",
-      description: () => "キャンパス内に滞在中",
     },
     OFF_CAMPUS: {
       title: "学外",
@@ -239,7 +236,6 @@ export function AllAttendanceList() {
       {Object.entries(labGroups).map(([lab, labMembers]) => {
         const buckets: Record<PresenceBucket, LabMember[]> = {
           IN_LAB: [],
-          ON_CAMPUS: [],
           OFF_CAMPUS: [],
         };
 
@@ -247,7 +243,8 @@ export function AllAttendanceList() {
           const status =
             member.presenceStatus ??
             (member.isCheckedIn ? "IN_LAB" : "OFF_CAMPUS");
-          buckets[status].push(member);
+          const bucket = status === "ON_CAMPUS" ? "IN_LAB" : status;
+          buckets[bucket].push(member);
         });
 
         return (

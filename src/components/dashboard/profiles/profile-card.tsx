@@ -197,29 +197,6 @@ const ProfileCard = ({
     }
   };
 
-  const handleSetOnCampusStatus = async () => {
-    try {
-      const response = await fetch("/api/attendance/inside-area", {
-        method: "POST",
-      });
-
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(text || "学内ステータスの更新に失敗しました");
-      }
-
-      setProfile((prev) => ({
-        ...prev,
-        isCheckedIn: false,
-        presenceStatus: "ON_CAMPUS",
-      }));
-      toast.success("学内ステータスに変更しました");
-    } catch (error) {
-      console.error("学内ステータス更新エラー:", error);
-      toast.error("学内ステータスの更新に失敗しました");
-    }
-  };
-
   const handleAddSkill = async (newSkill: Omit<TechSkill, "id">) => {
     try {
       if (!profile.id) {
@@ -315,7 +292,6 @@ const ProfileCard = ({
                   <ProfileHeader
                     profile={profile}
                     onToggleCheckedIn={handleToggleCheckedInStatus}
-                    onSetOnCampus={handleSetOnCampusStatus}
                     isOwnProfile={isOwnProfile}
                   />
                 ) : (
